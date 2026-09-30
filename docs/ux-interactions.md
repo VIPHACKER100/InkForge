@@ -80,7 +80,19 @@ Three alignment buttons (**Upper**, **Middle**, **Lower**) call `setTextAlignmen
 
 - The 10 paper buttons (`setPaper(this)`) switch paper style and re-render; **Clean Notes** enforces a non-handwriting font list.
 - The **Header** checkbox toggles the Date / P. No. worksheet header (`S.showHeaderBox`); the inputs on each page can be edited directly and re-render via `redrawPageCanvas()`.
-- Ink presets (🖊️🔵⚫💙🟣🔴🟢) call `setInkPreset(hex, name)`; the custom color picker sets any color. Active presets feature responsive highlight rings. Bleed and pressure sliders tune the writing effect.
+- **Ink presets** (🖊️🔵⚫💙🟣🔴🟢) call `setInkPreset(hex, name)`. The active preset is tracked by `updateInkPresetActive()`, which applies an `.active-ink` CSS class (accent-coloured ring) to the currently selected button. The list of available presets is:
+
+  | Button | Name | Hex | Notes |
+  | :--- | :--- | :--- | :--- |
+  | 🖊️ | Blue Ink Pen | `#000F55` | **New** — authentic ballpoint / gel pen deep royal blue |
+  | 🔵 | Navy | `#1c2340` | Default — professional dark blue |
+  | ⚫ | Black | `#1a1a1a` | Graphite-toned dark |
+  | 💙 | Blue | `#0a3d62` | Deep blue ink |
+  | 🟣 | Purple | `#6d2177` | Creative violet tones |
+  | 🔴 | Red | `#8b0000` | Corrections and emphasis |
+  | 🟢 | Green | `#2d6a4f` | Forest / nature-toned green |
+
+  The custom color picker sets any arbitrary hex color; on a match with a preset it also activates its ring. Bleed and pressure sliders tune the writing effect.
 
 ### Theme Packs
 The **One-click Note Themes** swatch grid calls `applyTheme(themeId)` (Default / Vintage / Cute / Science / Minimal / Scrapbook), which reconfigures paper + ink + rotation + font size together.

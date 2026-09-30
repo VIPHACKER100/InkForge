@@ -31,7 +31,7 @@ When animation finishes, the canvas is finalized through the normal `renderText(
 | `stopAnimation()` | Cancels the loop and hides the pen cursor |
 | `buildCharQueue(text)` | Thin wrapper returning the character queue from `layoutText()` |
 | `layoutText(text)` | Unified layout engine (routes to Two-Column / Cornell / Clean-Standard) |
-| `getCharVariation(rotMax, pressure, fontSize)` | Generates per-character human variation |
+| `getCharVariation(rotMax, pressure, fontSize, isIndic, paperStyle)` | Generates per-character human variation (returns `tiltDeg`, `scaleX`, `scaleY`, `shearX`, `baselineOff`, `spacingExtra`, `pressureMod`, `opacity`, `isRetrace`) |
 
 ---
 
@@ -47,7 +47,7 @@ The text is sanitized, run through `parseRichSyntax()` to strip study syntax and
 A `requestAnimationFrame` loop processes `S.animSpeed` characters per frame (1–30, default 8). For each character it:
 
 - Draws the glyph with the configured font, size, and ink color
-- Applies per-character variation (tilt, scale, baseline offset, spacing, opacity) via `getCharVariation()`
+- Applies per-character variation (tilt, anisotropic scale X/Y, micro-shear via `ctx.transform()`, baseline offset, spacing, opacity) via `getCharVariation()`
 - Advances a pen-cursor element to the character position
 - Auto-scrolls the viewport to keep the writing line visible
 
@@ -66,13 +66,16 @@ Each character is rendered slightly differently using randomized parameters from
 | Parameter | Behavior |
 | :--- | :--- |
 | `tiltDeg` | Slight left/right rotation (±`rotationMax`°, default 1°) |
-| `scaleX` / `scaleY` | Small horizontal/vertical scaling jitter |
+| `scaleX` | Anisotropic horizontal scaling jitter (independent of `scaleY`) |
+| `scaleY` | Anisotropic vertical scaling jitter (±8% × `realism`) |
+| `shearX` | Horizontal micro-shear applied via `ctx.transform()` (±0.022 × `realism`), giving each letter a subtly different slant |
 | `baselineOff` | Tiny baseline wander for organic lines |
 | `spacingExtra` | Letter-spacing jitter |
 | `pressureMod` | Subtle opacity variation weighted by the pressure setting (0.12) |
 | `opacity` | Per-glyph alpha applied during drawing |
+| `isRetrace` | Whether this glyph gets a faint 1px double-stroke (Rare Imperfections mode) |
 
-The `Bleed` setting (`S.bleed`, 0–2, default 0.5) adds a small shadow offset below each glyph, emulating pen pressure bleeding into the paper.
+The `Bleed` setting (`S.bleed`, 0–2.5, default 0.5) adds a drop-shadow offset below each glyph emulating ink spread into paper fibers. When **Rare Imperfections** is enabled the bleed radius is further modulated per character by `pressureMod` so heavier-pressure glyphs bleed slightly more, mirroring real pen dynamics.
 
 ---
 

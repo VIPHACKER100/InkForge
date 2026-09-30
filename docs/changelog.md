@@ -6,6 +6,34 @@
 
 All notable changes to Inkflow are documented in this file.
 
+## [1.6.25] — 2026-10-01
+
+### ✨ Enhanced Realism Engine
+
+- **Anisotropic Scale Jitter**: `getCharVariation()` now returns independent `scaleX` and `scaleY` values (previously the same value was shared). `scaleX` is biased toward horizontal compression (`×0.9` coefficient) while `scaleY` allows slight vertical stretch (`×1.1` coefficient), reproducing how real pen strokes widen and shorten under varying hand pressure.
+- **Micro-Shear (`shearX`)**: Each glyph receives a subtle horizontal shear (±0.022 × `S.realism` × `scriptRotMult`) applied via `ctx.transform()` in all main draw loops (`renderText`, `renderSinglePage`, and the animation `step()` RAF loop). This gives individual letters a slightly different lean direction, breaking the "mechanical italic" look of uniform slant.
+- **Pressure-Correlated Ink Bleed**: When **Rare Imperfections** is enabled, the per-glyph bleed shadow radius is dynamically modulated by `pressureMod` — heavier pressure glyphs bleed slightly more, matching real fluid ink dynamics on paper fibers.
+- **Universal Retrace Rendering**: The retrace / double-stroke pass (`isRetrace`) now executes in every draw context (static render, single-page redraw, and animation loop), not only in `renderText`. This ensures all render paths produce identical retrace artefacts.
+- **Clean Style Guard**: All three new transforms (`shearX`, anisotropic scale, retrace bleed) are automatically neutralised when `paperStyle === 'clean'`, preserving the crisp typographic baseline for Clean Notes.
+- **Devanagari / Indic Protection**: `shearX` is scaled by `scriptRotMult` (0.3) for Indic script, preventing shear from breaking connected matras and shirorekha top lines.
+
+### 🖊️ Blue Ink Pen Preset
+
+- **New Ink Preset — Blue Ink Pen (`#000F55`)**: A deep royal-blue gel / ballpoint pen colour added as the first preset in the ink row (`🖊️`). The hex `#000F55` closely matches the authentic ink tone of common ball-point pens.
+- **`updateInkPresetActive()` Helper**: Centralises preset button active-state management. Compares `S.inkColor` (case-insensitively) against every `button[data-ink]` element and toggles the `.active-ink` CSS class (accent-ring highlight). Called by `setInkPreset()`, the freeform color-picker `input` handler, `restoreState()`, and `resetToDefaults()` so the ring always reflects the live ink color.
+- **CSS `.active-ink` Style**: Added transition-smooth accent ring (`outline: 2px solid var(--accent); outline-offset: 2px; transform: scale(1.12)`) with per-button hover/active micro-animations for all preset buttons.
+
+### ✅ Testing
+
+- **Smoke test suite**: Expanded to cover enhanced realism transforms:
+  - `getCharVariation` with full `paperStyle` parameter returns neutral values on `'clean'`
+  - Anisotropic `scaleX` ≠ `scaleY` when `realism > 0`
+  - `shearX` magnitude scales with `S.realism`
+  - `setInkPreset('#000F55', 'Blue Ink Pen')` updates `S.inkColor`, picker value, and label text
+  - `index.html` contains `data-ink="#000F55"` and `data-ink-name="Blue Ink Pen"` preset button
+
+---
+
 ## [1.6.24] — 2026-09-08
 
 ### ✒️ Expanded Free Handwriting Fonts Collection (OFL / Apache 2.0)

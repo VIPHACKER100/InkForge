@@ -79,12 +79,12 @@ The **Question & answer numbers in left margin** checkbox (below the layout sele
 | Control | Range | Default | Effect |
 | :--- | :--- | :--- | :--- |
 | **Ink Color** | Color picker (hex) | `#1c2340` | Color of all rendered text |
-| **Ink Presets** | Navy / Black / Blue / Purple / Red / Green | — | One-click ink colors |
+| **Ink Presets** | Blue Ink Pen / Navy / Black / Blue / Purple / Red / Green | — | One-click ink colors; the active preset shows an accent-coloured ring via `.active-ink` |
 | **Rotation Max** | 0° – 12° | 1.0° | Maximum character tilt angle |
-| **Realism / Jitter** | 0.0 – 1.0 | 0.5 | Organic handwriting jitter intensity (scale, rotation, baseline drift) |
-| **Rare Imperfections** | Toggle (Checkbox) | `false` | Enables 1px retrace double-strokes (~1.8%) and right-margin space compression |
-| **Ink Bleed** | 0.0 – 2.5 | 0.5 | Shadow blur simulating ink spread |
-| **Pen Pressure** | 0.0 – 0.3 | 0.12 | Stroke thickness variation |
+| **Realism / Jitter** | 0.0 – 1.0 | 0.5 | Organic handwriting jitter intensity — scales tilt, anisotropic X/Y scale, micro-shear, and baseline drift |
+| **Rare Imperfections** | Toggle (Checkbox) | `false` | Enables 1px retrace double-strokes (~1.8% of glyphs) and right-margin space compression; also modulates bleed radius with per-glyph pressure |
+| **Ink Bleed** | 0.0 – 2.5 | 0.5 | Shadow blur simulating ink spread into paper fibers; bleed radius is pressure-correlated when Rare Imperfections is on |
+| **Pen Pressure** | 0.0 – 0.3 | 0.12 | Stroke thickness variation and opacity fluctuation |
 | **Margin** | 20px – 100px | 80px | Page boundary padding |
 
 ---

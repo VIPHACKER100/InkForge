@@ -47,9 +47,12 @@ Structured-content layout for `clean` paper + Standard layout. Parses `#`/`##` h
 Generates an FNV-1a hash of a string and returns a seeded `mulberry32` pseudo-random number generator function for deterministic variation generation.
 - **Returns**: `Function` returning deterministic random floats `[0, 1)`.
 
-### `getCharVariation(rotMax, pressure, fontSize, prng, isIndic)`
-Generates individual glyph transforms (rotation, scale, baseline offset, pressure modifier, opacity) scaled by `fontSize` and `S.realism`. Automatically scales down jitter for Indic script characters (`isIndic === true`).
-- **Returns**: `{ tiltDeg, scaleY, scaleX, shearX, baselineOff, spacingExtra, pressureMod, opacity }`
+### `getCharVariation(rotMax, pressure, fontSize, prng, isIndic, paperStyle)`
+Generates individual glyph transforms scaled by `fontSize` and `S.realism`. Returns neutral values when `paperStyle === 'clean'`. Automatically tightens jitter for Indic/Devanagari script (`scriptRotMult = 0.3`, `scriptScaleMult = 0.4`).
+- **Parameters**: `rotMax` (Float), `pressure` (Float), `fontSize` (Number), `prng` (PRNG Function), `isIndic` (Boolean), `paperStyle` (String)
+- **Returns**: `{ tiltDeg, scaleX, scaleY, shearX, baselineOff, spacingExtra, pressureMod, opacity, isRetrace }`
+  - `shearX` — micro-shear applied via `ctx.transform()` (±0.022 × `realism`)
+  - `isRetrace` — `true` on ~1.8% of glyphs when `S.rareImperfections` is enabled, triggering a faint 1px double-stroke
 
 ### `renderText(text)`
 Renders text onto canvas pages with full handwriting simulation.
@@ -72,10 +75,6 @@ Draws Cornell dividers and `Cues / Questions`, `Main Notes`, `Summary` labels.
 ### `drawRoundedRect(ctx, x, y, width, height, radius)`
 Strokes a rounded-rectangle path (used by the header box).
 
-### `getCharVariation(rotMax, pressure, fontSize)`
-Generates randomized per-character variation parameters.
-- **Returns**: `{ tiltDeg, scaleX, scaleY, baselineOff, spacingExtra, pressureMod, opacity }`
-
 ### `getAlignmentOffset(alignment, fontSize, lineHeight)`
 Returns the vertical baseline shift for `top` (Upper: `-(lineH * 0.62)`), `middle` (Middle: `-(lineH * 0.32)`), and `bottom` (Lower: `0`) text alignments relative to notebook line baselines.
 
@@ -93,10 +92,6 @@ Returns a fully-decoded `<img>` for a drafted glyph (cached), or `null` while de
 
 ## Text Processing & Rich Syntax
 
-### `getCharVariation(char, lineIdx, charIdx, globalIdx)`
-Calculates deterministic human handwriting variations (scale ±7-8%, rotation ±3-4°, baseline drift random walk, pressure simulation width/opacity variation) for a character instance using PRNG hash.
-- **Parameters**: `char` (String), `lineIdx` (Integer), `charIdx` (Integer), `globalIdx` (Integer)
-- **Returns**: `{ scale, rotation, baselineShift, opacity, strokeWidthMult }`
 
 ### `sanitizeText(str)`
 Strips non-printable control characters and Private Use Area codepoints. Returns cleaned string.
@@ -388,7 +383,20 @@ Applies a theme preset (`default | vintage | cute | science | minimal | scrapboo
 Activates a paper style, enforces the clean-style font allow-list when needed, and toggles header visibility.
 
 ### `setInkPreset(hex, name)`
-Sets the ink color from a preset button and updates the label.
+Sets `S.inkColor` to `hex`, updates the `#ink-color` picker value and `#ink-color-label` text, then calls `updateInkPresetActive()`, `syncAllEditorStyles()`, and `debounceRender()`.
+
+### `updateInkPresetActive()`
+Iterates over all `button[data-ink]` elements and applies the `.active-ink` CSS class (accent-coloured ring) to whichever button's `data-ink` attribute matches `S.inkColor` (case-insensitive). Called automatically by `setInkPreset()`, the color picker `input` handler, `restoreState()`, and `resetToDefaults()`. Available ink presets:
+
+| Button | Name | Hex |
+| :--- | :--- | :--- |
+| 🖊️ | Blue Ink Pen | `#000F55` |
+| 🔵 | Navy | `#1c2340` |
+| ⚫ | Black | `#1a1a1a` |
+| 💙 | Blue | `#0a3d62` |
+| 🟣 | Purple | `#6d2177` |
+| 🔴 | Red | `#8b0000` |
+| 🟢 | Green | `#2d6a4f` |
 
 ### `setTextAlignment(alignment)`
 Sets `S.textAlignment` (`top` / `middle` / `bottom`), updates the alignment UI, and re-renders.

@@ -129,8 +129,9 @@ const cy = y + v.baselineOff + wobble + alignOffset + clampedDrift;
 
 ### Rare Imperfections
 When `S.rareImperfections` is enabled:
-1. **Retrace / Double-Stroke**: ~1.8% of characters are tagged (`isRetrace: true`) and rendered with a faint 1px offset secondary stroke (`ctx.globalAlpha = opacity * 0.35`).
-2. **Margin Space Compression**: Words approaching the right margin (`x + wordWidth > rightMargin - 45`) have their space allocation compressed by 35% on ~35% of marginal occurrences to simulate misjudged margin space.
+1. **Retrace / Double-Stroke**: ~1.8% of characters are tagged (`isRetrace: true`) and rendered with a faint 1px offset secondary stroke (`ctx.globalAlpha = opacity * 0.35`). This retrace pass now executes in **all** draw contexts — static render (`renderText`), single-page redraw (`renderSinglePage`), and the animation `step()` RAF loop — so every output path shows identical retrace artefacts.
+2. **Pressure-Correlated Ink Bleed**: The shadow blur radius is modulated per glyph by `pressureMod`, so heavier-pressure characters bleed slightly more ink into the paper fibers (see [Ink Bleed](#ink-bleed) below).
+3. **Margin Space Compression**: Words approaching the right margin (`x + wordWidth > rightMargin - 45`) have their space allocation compressed by 35% on ~35% of marginal occurrences to simulate misjudged margin space.
 
 > **Key fix (v1.2.0)**: The `wobble` function uses `lineCharIndex` (reset to 0 at every line break) instead of global `charIndex`. This eliminates typewriter artifacts on long passages.
 
@@ -167,9 +168,13 @@ Real paper fibers absorb ink, causing microscopic bleeds. This is simulated by l
 ```javascript
 if (S.paperStyle !== 'clean' && S.bleed > 0.05) {
   ctx.shadowColor = S.shadowColor || S.inkColor;
-  ctx.shadowBlur = S.bleed * 1.4;
+  // Pressure-correlated radius: heavier glyphs bleed slightly more
+  const bleedFactor = S.rareImperfections ? v.pressureMod : 1.0;
+  ctx.shadowBlur = S.bleed * 1.4 * bleedFactor;
 }
 ```
+
+When **Rare Imperfections** is disabled the bleed radius is the static `S.bleed × 1.4`. When enabled, `bleedFactor` is derived from `pressureMod` so glyphs drawn with more simulated pen pressure spread slightly more ink into the paper fibers, reproducing natural fluid dynamics.
 
 ---
 
