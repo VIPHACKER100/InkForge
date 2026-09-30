@@ -108,12 +108,13 @@ Devanagari script features connected matras and horizontal top hanging lines (*s
 ### Transform Equations
 
 $$k = \text{FontSize} / 22, \quad r = S.\text{realism}$$
-$$\text{MaxTilt} = \max(\text{rotMax}, 3.5 \times r) \times \text{scriptRotMult}$$
-$$\text{ScaleJitter} = 0.075 \times r \times \text{scriptScaleMult}$$
+$$\text{MaxTilt} = \max(\text{rotMax}, 3.8 \times r) \times \text{scriptRotMult}$$
+$$\text{ScaleJitter} = 0.08 \times r \times \text{scriptScaleMult}$$
 $$\text{Tilt} = \text{random}(-\text{MaxTilt}, \text{MaxTilt})$$
-$$\text{Scale}_X = 1.0 + \text{random}(-\text{ScaleJitter}, \text{ScaleJitter})$$
-$$\text{Scale}_Y = 1.0 + \text{random}(-\text{ScaleJitter}, \text{ScaleJitter})$$
-$$\text{Baseline Offset} = \text{random}(-0.4, 0.4) \times k \times r \times \text{scriptScaleMult}$$
+$$\text{Scale}_X = 1.0 + \text{random}(-0.9 \times \text{ScaleJitter}, 0.9 \times \text{ScaleJitter})$$
+$$\text{Scale}_Y = 1.0 + \text{random}(-\text{ScaleJitter}, 1.1 \times \text{ScaleJitter})$$
+$$\text{Shear}_X = \text{random}(-0.022, 0.022) \times r \times \text{scriptRotMult}$$
+$$\text{Baseline Offset} = \text{random}(-0.55, 0.55) \times k \times r \times \text{scriptScaleMult}$$
 $$\text{Pressure Modifier} = \left(1 - \text{random}(0, \text{Pressure} \times 1.4)\right) \times \left(1 + \text{random}(-0.15, 0.15) \times r\right)$$
 $$\text{Opacity} = 1.0 - \text{random}(0, 0.15) \times r$$
 

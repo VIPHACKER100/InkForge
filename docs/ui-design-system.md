@@ -127,6 +127,7 @@ Each preset sets paper style, ink color, rotation chaos, bleed, pressure, and fo
 ### Ink Colors (User-Selectable)
 | Name | Hex | Usage |
 | :--- | :--- | :--- |
+| Blue Ink Pen | `#000F55` | Authentic ballpoint / gel pen deep royal blue |
 | Navy | `#1c2340` | Default ink — professional dark blue |
 | Black | `#1a1a1a` | Graphite-toned dark |
 | Blue | `#0a3d62` | Deep blue ink |

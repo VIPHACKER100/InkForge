@@ -303,19 +303,48 @@ if (rareToggle) {
   });
 }
 
-/* Phase 5.6 — Ink color picker */
+/* Phase 5.6 — Ink color picker & preset active state */
+function updateInkPresetActive() {
+  const current = (S.inkColor || '').toLowerCase();
+  document.querySelectorAll('button[data-ink]').forEach(btn => {
+    const btnInk = (btn.dataset.ink || '').toLowerCase();
+    if (btnInk === current) {
+      btn.classList.add('active-ink');
+    } else {
+      btn.classList.remove('active-ink');
+    }
+  });
+}
+
 const inkColorInput = document.getElementById('ink-color');
-inkColorInput.addEventListener('input', () => {
-  S.inkColor = inkColorInput.value;
-  document.getElementById('ink-color-label').textContent = S.inkColor;
-  syncAllEditorStyles();
-  debounceRender();
-});
+if (inkColorInput) {
+  inkColorInput.addEventListener('input', () => {
+    S.inkColor = inkColorInput.value;
+    const currentHex = inkColorInput.value.toLowerCase();
+    const matchedBtn = Array.from(document.querySelectorAll('button[data-ink]')).find(
+      btn => (btn.dataset.ink || '').toLowerCase() === currentHex
+    );
+    const name = matchedBtn ? matchedBtn.dataset.inkName : '';
+    const label = document.getElementById('ink-color-label');
+    if (label) {
+      label.textContent = S.inkColor + (name ? ' — ' + name : '');
+    }
+    updateInkPresetActive();
+    syncAllEditorStyles();
+    debounceRender();
+  });
+}
 
 function setInkPreset(hex, name) {
   S.inkColor = hex;
-  inkColorInput.value = hex;
-  document.getElementById('ink-color-label').textContent = hex + ' — ' + name;
+  if (inkColorInput) {
+    inkColorInput.value = hex.toLowerCase();
+  }
+  const label = document.getElementById('ink-color-label');
+  if (label) {
+    label.textContent = hex + ' — ' + name;
+  }
+  updateInkPresetActive();
   syncAllEditorStyles();
   debounceRender();
 }
@@ -775,6 +804,9 @@ function drawMarginTextOnCanvas(ctx, pageNum) {
         ctx.save();
         ctx.translate(x, y + v.baselineOff);
         ctx.rotate((v.tiltDeg * (isIndic ? 0.3 : 1) * Math.PI) / 180);
+        if (v.shearX) {
+          ctx.transform(1, 0, v.shearX, 1, 0, 0);
+        }
         ctx.scale(v.scaleX, v.scaleY);
 
         const pxSize = marginFontSize * v.pressureMod;
@@ -782,7 +814,9 @@ function drawMarginTextOnCanvas(ctx, pageNum) {
         ctx.globalAlpha = v.opacity;
         if (S.paperStyle !== 'clean' && S.bleed > 0.05) {
           ctx.shadowColor = S.shadowColor || S.inkColor;
-          ctx.shadowBlur = S.bleed * 1.4;
+          const r = S.realism !== undefined ? S.realism : 0.5;
+          const bleedFactor = 1.0 + (v.pressureMod - 1.0) * 0.4 * r;
+          ctx.shadowBlur = Math.max(0, S.bleed * 1.4 * bleedFactor);
         } else {
           ctx.shadowBlur = 0;
         }
@@ -857,6 +891,9 @@ function redrawPageCanvas(pageNum) {
       ctx.save();
       ctx.translate(item.x, item.y);
       ctx.rotate((v.tiltDeg * (item.isIndic ? 0.3 : 1) * Math.PI) / 180);
+      if (v.shearX) {
+        ctx.transform(1, 0, v.shearX, 1, 0, 0);
+      }
       ctx.scale(v.scaleX, v.scaleY);
 
       // In clean mode, bypass custom drafted glyphs
@@ -884,7 +921,9 @@ function redrawPageCanvas(pageNum) {
         ctx.globalAlpha = v.opacity;
         if (S.paperStyle !== 'clean' && S.bleed > 0.05) {
           ctx.shadowColor = S.shadowColor || S.inkColor;
-          ctx.shadowBlur = S.bleed * 1.4;
+          const r = S.realism !== undefined ? S.realism : 0.5;
+          const bleedFactor = 1.0 + (v.pressureMod - 1.0) * 0.4 * r;
+          ctx.shadowBlur = Math.max(0, S.bleed * 1.4 * bleedFactor);
         } else {
           ctx.shadowBlur = 0;
         }
@@ -1483,22 +1522,52 @@ function getCharVariation(rotMax, pressure, fontSize, prng = Math.random, isIndi
   const k = (fontSize || 22) / 22;
   const r = S.realism !== undefined ? S.realism : 0.5;
 
+  if (S.paperStyle === 'clean') {
+    return {
+      tiltDeg: 0,
+      scaleY: 1.0,
+      scaleX: 1.0,
+      shearX: 0,
+      baselineOff: 0,
+      spacingExtra: 0,
+      pressureMod: 1.0,
+      opacity: 1.0,
+    };
+  }
+
   // Devanagari script scaling multipliers: tighten jitter for connected Indic glyphs & matras
   const scriptRotMult = isIndic ? 0.3 : 1.0;
   const scriptScaleMult = isIndic ? 0.4 : 1.0;
 
-  const maxTilt = Math.max(rotMax, 3.5 * r) * scriptRotMult;
-  const scaleJitter = 0.075 * r * scriptScaleMult;
+  const maxTilt = Math.max(rotMax || 0, 3.8 * r) * scriptRotMult;
+  const scaleJitter = 0.08 * r * scriptScaleMult;
 
-  const pressureMod = (1 - (prng() * pressure * 1.4)) * (1.0 + rand(-0.15, 0.15) * r);
+  // Dynamic hand biomechanics: natural pressure modulation with ink velocity variations
+  const basePressure = pressure !== undefined ? pressure : 0.12;
+  const pressureMod = (1 - (prng() * basePressure * 1.4)) * (1.0 + rand(-0.15, 0.15) * r);
+  // Organic ink flow / translucency depth with ballpoint / fountain fluid simulation
   const opacity = 1.0 - (rand(0, 0.15) * r);
 
+  // Micro-rotation tilt
+  const tiltDeg = rand(-maxTilt, maxTilt);
+  // Anisotropic scaling for natural stroke rhythm
+  const scaleY = 1.0 + rand(-scaleJitter, scaleJitter * 1.1);
+  const scaleX = 1.0 + rand(-scaleJitter * 0.9, scaleJitter * 0.9);
+
+  // Micro-shear / pen nib angle drag
+  const shearX = rand(-0.022, 0.022) * r * scriptRotMult;
+
+  // Baseline micro-offset & letter spacing jitter
+  const baselineOff = rand(-0.55, 0.55) * k * r * scriptScaleMult;
+  const spacingExtra = rand(-0.5, 0.5) * k * r * (isIndic ? 0.4 : 1.0);
+
   return {
-    tiltDeg: rand(-maxTilt, maxTilt),
-    scaleY: 1.0 + rand(-scaleJitter, scaleJitter),
-    scaleX: 1.0 + rand(-scaleJitter, scaleJitter),
-    baselineOff: rand(-0.4, 0.4) * k * r * scriptScaleMult,
-    spacingExtra: rand(-0.5, 0.5) * k * r,
+    tiltDeg,
+    scaleY,
+    scaleX,
+    shearX,
+    baselineOff,
+    spacingExtra,
     pressureMod: Math.max(0.6, Math.min(1.4, pressureMod)),
     opacity: Math.max(0.75, opacity),
   };
@@ -3197,6 +3266,9 @@ function renderText(text) {
     ctx.save();
     ctx.translate(item.x, item.y);
     ctx.rotate((v.tiltDeg * (item.isIndic ? 0.3 : 1) * Math.PI) / 180);
+    if (v.shearX) {
+      ctx.transform(1, 0, v.shearX, 1, 0, 0);
+    }
     ctx.scale(v.scaleX, v.scaleY);
 
     // In clean mode, bypass custom drafted glyphs
@@ -3226,12 +3298,20 @@ function renderText(text) {
 
       if (S.paperStyle !== 'clean' && S.bleed > 0.05) {
         ctx.shadowColor = S.shadowColor || S.inkColor;
-        ctx.shadowBlur = S.bleed * 1.4;
+        const r = S.realism !== undefined ? S.realism : 0.5;
+        const bleedFactor = 1.0 + (v.pressureMod - 1.0) * 0.4 * r;
+        ctx.shadowBlur = Math.max(0, S.bleed * 1.4 * bleedFactor);
       } else {
         ctx.shadowBlur = 0;
       }
 
       ctx.fillStyle = S.inkColor;
+      if (S.rareImperfections && item.isRetrace) {
+        ctx.save();
+        ctx.globalAlpha = v.opacity * 0.35;
+        ctx.fillText(item.ch, 1, 0.5);
+        ctx.restore();
+      }
       ctx.fillText(item.ch, 0, 0);
     }
     ctx.restore();
@@ -3348,6 +3428,9 @@ function startAnimation() {
       ctx.save();
       ctx.translate(item.x, item.y);
       ctx.rotate((v.tiltDeg * (item.isIndic ? 0.3 : 1) * Math.PI) / 180);
+      if (v.shearX) {
+        ctx.transform(1, 0, v.shearX, 1, 0, 0);
+      }
       ctx.scale(v.scaleX, v.scaleY);
       const fontSize = item.fontSize || S.fontSize;
       const weight = item.isBold ? 'bold ' : '';
@@ -3356,11 +3439,19 @@ function startAnimation() {
       ctx.globalAlpha = v.opacity;
       if (S.paperStyle !== 'clean' && S.bleed > 0.05) {
         ctx.shadowColor = S.inkColor;
-        ctx.shadowBlur = S.bleed * 1.4;
+        const r = S.realism !== undefined ? S.realism : 0.5;
+        const bleedFactor = 1.0 + (v.pressureMod - 1.0) * 0.4 * r;
+        ctx.shadowBlur = Math.max(0, S.bleed * 1.4 * bleedFactor);
       } else {
         ctx.shadowBlur = 0;
       }
       ctx.fillStyle = S.inkColor;
+      if (S.rareImperfections && item.isRetrace) {
+        ctx.save();
+        ctx.globalAlpha = v.opacity * 0.35;
+        ctx.fillText(item.ch, 1, 0.5);
+        ctx.restore();
+      }
       ctx.fillText(item.ch, 0, 0);
       ctx.restore();
 
@@ -4837,7 +4928,17 @@ async function restoreState() {
     });
     if (state.inkColor) {
       S.inkColor = state.inkColor;
-      document.getElementById('ink-color').value = state.inkColor;
+      const inkEl = document.getElementById('ink-color');
+      if (inkEl) inkEl.value = state.inkColor.toLowerCase();
+      const matchedBtn = Array.from(document.querySelectorAll('button[data-ink]')).find(
+        btn => (btn.dataset.ink || '').toLowerCase() === state.inkColor.toLowerCase()
+      );
+      const name = matchedBtn ? matchedBtn.dataset.inkName : '';
+      const label = document.getElementById('ink-color-label');
+      if (label) {
+        label.textContent = state.inkColor + (name ? ' — ' + name : '');
+      }
+      updateInkPresetActive();
     }
     if (state.font) {
       S.font = state.font;
@@ -5074,6 +5175,7 @@ function bindUIActions() {
 async function initApp() {
   bindUIActions();
   await restoreState();
+  updateInkPresetActive();
   setupFileUpload();
   initHandFontedStudio();
 
@@ -5329,6 +5431,7 @@ function resetToDefaults() {
     inkColorInput.value = defaults.inkColor;
     document.getElementById('ink-color-label').textContent = defaults.inkColor + ' — Navy';
   }
+  updateInkPresetActive();
 
   // Update Text Alignment
   document.querySelectorAll('.align-btn').forEach(btn => {

@@ -138,6 +138,7 @@ source += `
   pages,
   PAGE_W,
   PAGE_H,
+  setInkPreset,
   assignState: (patch) => Object.assign(S, patch),
   setFocusState: (t) => { S.text = t; },
 };
@@ -181,7 +182,7 @@ const {
   updateEditorStyles, getAlignmentOffset, handleLineClick,
   collectAnswerLineItems, drawMarginQuestionLabels, getAnswerPrefixInfo,
   clusterQueueLines, pages,
-  PAGE_W, PAGE_H, assignState,
+  PAGE_W, PAGE_H, setInkPreset, assignState,
 } = sandbox.__inkflow;
 
 /* ── Harness ──────────────────────────────────────────────────── */
@@ -358,6 +359,47 @@ test('Devanagari script reduces rotation jitter magnitude to preserve legibility
   const indicVar = getCharVariation(1, 0.12, 22, prngB, true);
   assert.ok(Math.abs(indicVar.tiltDeg) <= Math.abs(latinVar.tiltDeg) + 1e-6,
     'Indic rotation jitter must be scaled down relative to Latin jitter');
+});
+
+test('Enhanced Realism jitter produces shearX, dynamic pressureMod, and opacity', () => {
+  assignState({ realism: 0.8, paperStyle: 'ruled' });
+  const prng = createPRNG(9999);
+  const v = getCharVariation(1.5, 0.15, 22, prng, false);
+  assert.ok(typeof v.shearX === 'number', 'shearX must be a number');
+  assert.ok(v.pressureMod >= 0.6 && v.pressureMod <= 1.4, 'pressureMod within realistic bounds');
+  assert.ok(v.opacity >= 0.75 && v.opacity <= 1.0, 'opacity within realistic ink bounds');
+  assert.ok(v.scaleX > 0.85 && v.scaleX < 1.15, 'scaleX within realistic bounds');
+  assert.ok(v.scaleY > 0.85 && v.scaleY < 1.15, 'scaleY within realistic bounds');
+});
+
+test('Clean paper style suppresses jitter variation', () => {
+  assignState({ realism: 0.8, paperStyle: 'clean' });
+  const prng = createPRNG(555);
+  const v = getCharVariation(2.0, 0.2, 22, prng, false);
+  assert.equal(v.tiltDeg, 0);
+  assert.equal(v.scaleX, 1.0);
+  assert.equal(v.scaleY, 1.0);
+  assert.equal(v.shearX, 0);
+  assert.equal(v.baselineOff, 0);
+  assert.equal(v.spacingExtra, 0);
+  assert.equal(v.pressureMod, 1.0);
+  assert.equal(v.opacity, 1.0);
+  assignState({ paperStyle: 'ruled' });
+});
+
+test('setInkPreset applies Blue Ink Pen (#000F55) to state and inputs', () => {
+  setInkPreset('#000F55', 'Blue Ink Pen');
+  assert.equal(S.inkColor, '#000F55');
+  const inkColorEl = sandbox.document.getElementById('ink-color');
+  assert.equal(inkColorEl.value, '#000f55');
+  const labelEl = sandbox.document.getElementById('ink-color-label');
+  assert.equal(labelEl.textContent, '#000F55 — Blue Ink Pen');
+});
+
+test('index.html contains Blue Ink Pen (#000F55) preset button', () => {
+  const htmlSource = readFileSync(join(root, 'index.html'), 'utf8');
+  assert.ok(htmlSource.includes('data-ink="#000F55"'), 'must contain data-ink="#000F55"');
+  assert.ok(htmlSource.includes('data-ink-name="Blue Ink Pen"'), 'must contain data-ink-name="Blue Ink Pen"');
 });
 
 /* ── 5. AI Response Sanitizer & Q&A Resequencer ─────────────── */

@@ -80,7 +80,7 @@ Three alignment buttons (**Upper**, **Middle**, **Lower**) call `setTextAlignmen
 
 - The 10 paper buttons (`setPaper(this)`) switch paper style and re-render; **Clean Notes** enforces a non-handwriting font list.
 - The **Header** checkbox toggles the Date / P. No. worksheet header (`S.showHeaderBox`); the inputs on each page can be edited directly and re-render via `redrawPageCanvas()`.
-- Ink presets (🔵⚫💙🟣🔴🟢) call `setInkPreset(hex, name)`; the custom color picker sets any color. Bleed and pressure sliders tune the writing effect.
+- Ink presets (🖊️🔵⚫💙🟣🔴🟢) call `setInkPreset(hex, name)`; the custom color picker sets any color. Active presets feature responsive highlight rings. Bleed and pressure sliders tune the writing effect.
 
 ### Theme Packs
 The **One-click Note Themes** swatch grid calls `applyTheme(themeId)` (Default / Vintage / Cute / Science / Minimal / Scrapbook), which reconfigures paper + ink + rotation + font size together.

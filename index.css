@@ -2061,6 +2061,19 @@ html.dark .drop-zone {
   flex-wrap: wrap;
   margin-top: 8px;
 }
+.ink-presets-row button[data-ink] {
+  transition: transform 0.15s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+  font-size: 13px;
+  padding: 4px 7px;
+}
+.ink-presets-row button[data-ink]:hover {
+  transform: translateY(-1px);
+}
+.ink-presets-row button[data-ink].active-ink {
+  border-color: var(--accent, #6366f1);
+  box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.45);
+  background: var(--bg-hover, rgba(99, 102, 241, 0.15));
+}
 .sb-label-mt { margin-top: 12px; }
 .sb-label-sm { margin-top: 8px; }
 .animation-buttons-row {

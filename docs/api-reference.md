@@ -49,7 +49,7 @@ Generates an FNV-1a hash of a string and returns a seeded `mulberry32` pseudo-ra
 
 ### `getCharVariation(rotMax, pressure, fontSize, prng, isIndic)`
 Generates individual glyph transforms (rotation, scale, baseline offset, pressure modifier, opacity) scaled by `fontSize` and `S.realism`. Automatically scales down jitter for Indic script characters (`isIndic === true`).
-- **Returns**: `{ tiltDeg, scaleY, scaleX, baselineOff, spacingExtra, pressureMod, opacity }`
+- **Returns**: `{ tiltDeg, scaleY, scaleX, shearX, baselineOff, spacingExtra, pressureMod, opacity }`
 
 ### `renderText(text)`
 Renders text onto canvas pages with full handwriting simulation.
