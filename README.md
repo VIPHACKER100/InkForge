@@ -4,13 +4,13 @@ Inkflow turns typed text into realistic handwritten notes, rendered on canvas wi
 variation: baseline wobble, pen pressure, ink bleed, smudge, and cursive connections. It runs
 entirely in the browser as an installable PWA — no account, no server required.
 
-![Version](https://img.shields.io/badge/version-1.7.0-blue) ![Tests](https://img.shields.io/badge/tests-197%20passing-brightgreen) ![License](https://img.shields.io/badge/license-MIT-green)
+![Version](https://img.shields.io/badge/version-1.8.0-blue) ![Tests](https://img.shields.io/badge/tests-216%20passing-brightgreen) ![License](https://img.shields.io/badge/license-MIT-green)
 
 ## ✨ Features
 
 - **Handwriting engine** — 48 fonts (Print / Cursive & Script / Devanagari), seeded per-character
-  realism (jitter, pressure, baseline drift, rare imperfections), ink bleed, smudge, cursive
-  connections, and a crisp ✨ **Clean** paper mode
+  realism (anisotropic scale, micro-shear, pressure, baseline drift, rare imperfections), pressure-
+  correlated ink bleed, smudge, cursive connections, and a crisp ✨ **Clean** paper mode
 - **Margin Q/Ans labels** — numbered question/answer marks in the left margin (Standard layout)
 - **AI actions** — Smart Arrange (fully offline), Summarize, Grammar fix, Lecture→Notes, Assignment
   generation via OpenRouter, Anthropic, or local Ollama; every result is sanitized and Q:/A: pairs
@@ -21,7 +21,9 @@ entirely in the browser as an installable PWA — no account, no server required
 - **Export** — PNG / JPG / transparent PNG / SVG / multi-page PDF (Compact/Standard/High size
   presets) / clipboard / print
 - **Voice to Notes** — live speech-to-text via Web Speech API
-- **PWA** — installable, offline-capable via service worker
+- **About page** — standalone `about.html` with an interactive realism playground, docs directory,
+  and a brand emblem wired into the toolbar, favicon, and PWA manifest
+- **PWA** — installable, offline-capable via service worker (app shell + About page precached)
 
 ## 🚀 Quick Start
 

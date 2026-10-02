@@ -48,8 +48,9 @@ Complete reference for all user-configurable controls in Inkflow.
 | Control | Range | Default | Effect |
 | :--- | :--- | :--- | :--- |
 | **Ink Color** | Color picker (hex) | `#1c2340` | Color of all rendered text |
+| **Ink Presets** | 7 one-click buttons | — | Blue Ink Pen `#000F55`, Navy `#1c2340`, Black `#1a1a1a`, Blue `#0a3d62`, Purple `#6d2177`, Red `#8b0000`, Green `#2d6a4f`; the button matching the live color carries an accent ring |
 | **Rotation Max** | 0° – 12° | 1.0° | Maximum character tilt angle |
-| **Ink Bleed** | 0.0 – 2.5 | 0.5 | Shadow blur simulating ink spread |
+| **Ink Bleed** | 0.0 – 2.5 | 0.5 | Shadow blur simulating ink spread (per-glyph radius scales with pen pressure since 1.8.0) |
 | **Pen Pressure** | 0.0 – 0.3 | 0.12 | Stroke thickness variation |
 | **Margin** | 20px – 100px | 80px | Page boundary padding |
 

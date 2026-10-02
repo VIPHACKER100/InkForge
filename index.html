@@ -29,6 +29,10 @@
   <link rel="manifest" href="manifest.json" />
   <meta name="theme-color" content="#6C63FF" />
 
+  <!-- Brand favicon & Apple touch icon (upstream 1.6.26) -->
+  <link rel="icon" type="image/jpeg" href="./inkflow_logo.jpeg" />
+  <link rel="apple-touch-icon" href="./inkflow_logo.jpeg" />
+
   <!-- Mermaid for diagram support -->
   <script defer src="https://cdn.jsdelivr.net/npm/mermaid@11.4.1/dist/mermaid.min.js"
     integrity="sha384-rbtjAdnIQE/aQJGEgXrVUlMibdfTSa4PQju4HDhN3sR2PmaKFzhEafuePsl9H/9I" crossorigin="anonymous"></script>
@@ -54,7 +58,10 @@
 ════════════════════════════════════════ -->
   <header id="toolbar">
     <button id="hamburger" class="btn icon-btn" aria-label="Toggle sidebar" aria-controls="sidebar" aria-expanded="false">☰</button>
-    <div class="logo">Ink<span>flow</span></div>
+    <a href="./about.html" class="logo" title="About Inkflow">
+      <div class="logo-img-wrapper"><img src="./inkflow_logo.jpeg" alt="Inkflow Logo" class="logo-img" /></div>
+      <span class="logo-text">Ink<span>flow</span></span>
+    </a>
 
     <div class="toolbar-group">
       <button class="btn sm" id="btn-animate" title="Watch notes write themselves" aria-label="Animate handwriting">✍ <span class="btn-label">Animate</span></button>
@@ -67,6 +74,7 @@
 
     <div class="toolbar-group">
       <span id="page-indicator-toolbar" class="btn-label">Page 1 of 1</span>
+      <a href="./about.html" class="btn sm" id="btn-about" title="About Inkflow" aria-label="About Inkflow" style="text-decoration: none;">ℹ️ <span class="btn-label">About</span></a>
       <button class="dark-toggle" id="dark-toggle" aria-label="Toggle dark mode">
         <span id="dark-icon">☀️</span>
       </button>
@@ -97,14 +105,14 @@ Try pasting a paragraph of lecture notes!"></textarea>
             <button class="btn accent btn-render" onclick="triggerRender()" aria-label="Render handwriting onto canvas">✦ Render</button>
             <button class="btn" onclick="clearText()" title="Clear text" aria-label="Clear text">✕</button>
             <div class="dropdown">
-              <button class="btn" title="Insert Diagram template" aria-label="Insert Diagram template">📊 Diagram ▾</button>
+              <button class="btn" title="Insert Diagram template" aria-label="Insert Diagram template" aria-haspopup="true" aria-expanded="false">📊 Diagram ▾</button>
               <div class="dropdown-content">
-                <a href="#" onclick="insertDiagramTemplate('flowchart')">Flowchart</a>
-                <a href="#" onclick="insertDiagramTemplate('cycle')">Cycle</a>
-                <a href="#" onclick="insertDiagramTemplate('hierarchy')">Hierarchy (Tree)</a>
-                <a href="#" onclick="insertDiagramTemplate('pipeline')">Pipeline</a>
-                <a href="#" onclick="insertDiagramTemplate('pyramid')">Pyramid</a>
-                <a href="#" onclick="insertDiagramTemplate('mermaid')">Mermaid (Logic)</a>
+                <a href="#" onclick="insertDiagramTemplate('flowchart'); return false;">Flowchart</a>
+                <a href="#" onclick="insertDiagramTemplate('cycle'); return false;">Cycle</a>
+                <a href="#" onclick="insertDiagramTemplate('hierarchy'); return false;">Hierarchy (Tree)</a>
+                <a href="#" onclick="insertDiagramTemplate('pipeline'); return false;">Pipeline</a>
+                <a href="#" onclick="insertDiagramTemplate('pyramid'); return false;">Pyramid</a>
+                <a href="#" onclick="insertDiagramTemplate('mermaid'); return false;">Mermaid (Logic)</a>
               </div>
             </div>
           </div>
@@ -405,12 +413,13 @@ Try pasting a paragraph of lecture notes!"></textarea>
             <span id="ink-color-label">#1c2340 — Navy</span>
           </div>
           <div class="ink-presets-row">
-            <button class="btn sm" onclick="setInkPreset('#1c2340','Navy')" title="Navy" aria-label="Ink color: Navy">🔵</button>
-            <button class="btn sm" onclick="setInkPreset('#1a1a1a','Black')" title="Black" aria-label="Ink color: Black">⚫</button>
-            <button class="btn sm" onclick="setInkPreset('#0a3d62','Blue')" title="Blue Ink" aria-label="Ink color: Blue">💙</button>
-            <button class="btn sm" onclick="setInkPreset('#6d2177','Purple')" title="Purple" aria-label="Ink color: Purple">🟣</button>
-            <button class="btn sm" onclick="setInkPreset('#8b0000','Red')" title="Red" aria-label="Ink color: Red">🔴</button>
-            <button class="btn sm" onclick="setInkPreset('#2d6a4f','Green')" title="Green" aria-label="Ink color: Green">🟢</button>
+            <button class="btn sm" onclick="setInkPreset('#000F55','Blue Ink Pen')" data-ink="#000F55" data-ink-name="Blue Ink Pen" title="Blue Ink Pen (#000F55)" aria-label="Ink color: Blue Ink Pen">🖊️</button>
+            <button class="btn sm" onclick="setInkPreset('#1c2340','Navy')" data-ink="#1c2340" data-ink-name="Navy" title="Navy" aria-label="Ink color: Navy">🔵</button>
+            <button class="btn sm" onclick="setInkPreset('#1a1a1a','Black')" data-ink="#1a1a1a" data-ink-name="Black" title="Black" aria-label="Ink color: Black">⚫</button>
+            <button class="btn sm" onclick="setInkPreset('#0a3d62','Blue')" data-ink="#0a3d62" data-ink-name="Blue" title="Blue Ink" aria-label="Ink color: Blue">💙</button>
+            <button class="btn sm" onclick="setInkPreset('#6d2177','Purple')" data-ink="#6d2177" data-ink-name="Purple" title="Purple" aria-label="Ink color: Purple">🟣</button>
+            <button class="btn sm" onclick="setInkPreset('#8b0000','Red')" data-ink="#8b0000" data-ink-name="Red" title="Red" aria-label="Ink color: Red">🔴</button>
+            <button class="btn sm" onclick="setInkPreset('#2d6a4f','Green')" data-ink="#2d6a4f" data-ink-name="Green" title="Green" aria-label="Ink color: Green">🟢</button>
           </div>
 
           <div class="sb-label sb-label-mt">Ink Bleed <span class="val" id="bleed-val">0.5</span></div>
@@ -583,6 +592,13 @@ Try pasting a paragraph of lecture notes!"></textarea>
             <button class="btn" onclick="stopAnimation()" aria-label="Stop writing animation">■ Stop</button>
           </div>
         </div>
+      </div>
+
+      <!-- ── SIDEBAR FOOTER LINKS (upstream 1.6.26) ── -->
+      <div class="sidebar-footer-links">
+        <a href="./about.html">ℹ️ About Inkflow</a>
+        <a href="./docs/README.md" target="_blank">📖 Docs</a>
+        <a href="https://github.com/VIPHACKER100/Inkflow" target="_blank" rel="noopener noreferrer">⭐ GitHub</a>
       </div>
 
     </aside><!-- /sidebar -->

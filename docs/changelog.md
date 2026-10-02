@@ -4,6 +4,34 @@ All notable changes to Inkflow are documented in this file.
 
 ---
 
+## [1.8.0] — 2026-10-02
+
+Upstream sync: ports every feature from InkForge v1.6.25–v1.6.26 that the fork was missing (verified against the upstream changelog and source).
+
+### ✨ Added
+- **Enhanced Realism Engine (upstream 1.6.25 parity)**, layered onto the seeded engine:
+  - **Anisotropic scale jitter**: `getCharVariationWithContext()` now returns independent `scaleX`/`scaleY` — `scaleX` is biased toward horizontal compression (range ±0.9·jitter) while `scaleY` allows slight vertical stretch (up to 1.1·jitter), reproducing how real pen strokes widen and shorten under varying hand pressure.
+  - **Micro-shear (`shearX`)**: each glyph receives a subtle horizontal shear (±0.022 × `S.realism`, scaled ×0.3 for Devanagari) applied via `ctx.transform()` in **all three draw paths** — static page render, writing animation, and export rendering — breaking the "mechanical italic" look of uniform slant. Neutralised in Clean mode (engine-level `clean` guard) and for Indic scripts.
+  - **Pressure-correlated ink bleed**: with Ink Bleed active, the per-glyph bleed shadow radius is modulated by `pressureMod` (`bleedFactor = 1 + (pressureMod − 1) × 0.4 × realism`) — heavier-pressure glyphs bleed slightly more, matching fluid ink dynamics on paper fibers.
+- **Blue Ink Pen preset (`#000F55`)**: deep royal-blue ballpoint tone added as the first preset in the ink row, with `data-ink`/`data-ink-name` attributes on every preset button.
+- **`updateInkPresetActive()` helper**: centralises preset active-state management — the accent-ring `.active-ink` highlight always reflects the live ink color. Called from `setInkPreset()`, the freeform color-picker handler, `restoreState()`, and `resetToDefaults()`.
+- **Standalone About page (`about.html` + `about.css`, upstream 1.6.26 parity)**, adapted to Inkflow branding:
+  - Interactive Realism Engine playground — type text, tweak jitter magnitude and baseline drift, toggle notebook guidelines and retrace double-strokes, rendered live on canvas with a deterministic `mulberry32` simulator.
+  - Deep-dive feature showcases (realism physics, paper styles, AI scribe, HandFonted Studio, exports, offline PWA), privacy guarantee, architecture & test-suite specs, documentation directory cards, and creator credits — all linked to the Inkflow repository, MIT license, and Inkflow docs.
+  - Dark/Light toggle synchronised with the app through the shared `inkflow-dark` localStorage key.
+- **Brand identity (upstream 1.6.26 parity)**: new brand emblem (`inkflow_logo.jpeg`) wired into the toolbar header, favicon, Apple touch icon, PWA manifest, and About page.
+- **Navigation overhaul (upstream 1.6.26 parity)**: clickable brand logo in the toolbar linking to `about.html`, a dedicated **ℹ️ About** toolbar button, and quick-access footer links (**About Inkflow / Docs / GitHub**) at the bottom of the sidebar drawer.
+
+### 📦 PWA & Offline
+- **Manifest**: added "New Note / Export PDF / About Inkflow" shortcuts, the logo as a 512×512 maskable icon, categories, and repository metadata.
+- **Service worker**: `about.html`, `about.css`, and `inkflow_logo.jpeg` precached for 100% offline availability; cache bumped to `inkflow-v1.8.0`.
+- **Build**: `vite.config.js` copies the About page, its stylesheet, and the logo verbatim into `dist` so the precached URLs stay exact.
+
+### 🧪 Testing
+- 8 new engine tests: `shearX` presence/bounds, zero-realism neutrality, Devanagari 0.3× shear scaling, anisotropic ranges (Latin + Indic), and the Clean style guard; the Devanagari scale-range assertion was updated to the upstream 1.6.25 anisotropic bounds. **216/216 passing.**
+
+---
+
 ## [1.7.0] — 2026-09-13
 
 ### ✨ Added

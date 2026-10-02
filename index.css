@@ -124,6 +124,9 @@ body {
 }
 
 .logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
   font-family: var(--font-ui);
   font-size: 22px;
   font-weight: 600;
@@ -131,11 +134,76 @@ body {
   letter-spacing: -0.02em;
   margin-right: 8px;
   flex-shrink: 0;
+  text-decoration: none;
+  user-select: none;
 }
 
 .logo span {
   color: var(--text-primary);
   font-weight: 400;
+}
+
+/* Upstream v1.6.26 — clickable brand emblem in the toolbar header */
+.logo-img-wrapper {
+  position: relative;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #ffffff;
+  border: 1.5px solid var(--accent-light);
+  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.18);
+  transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.35s ease, border-color 0.35s ease;
+  flex-shrink: 0;
+}
+
+.logo-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transform: scale(1.18);
+  transition: transform 0.35s ease;
+}
+
+.logo:hover .logo-img-wrapper {
+  transform: scale(1.12) rotate(-6deg);
+  border-color: var(--accent);
+  box-shadow: 0 5px 16px var(--accent-light);
+}
+
+.logo:hover .logo-img {
+  transform: scale(1.26);
+}
+
+/* Upstream v1.6.26 — quick-access links pinned to the bottom of the sidebar drawer */
+.sidebar-footer-links {
+  padding: 14px 16px;
+  border-top: 1px solid var(--sidebar-border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 13px;
+}
+
+.sidebar-footer-links a:first-child {
+  color: var(--accent);
+  text-decoration: none;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.sidebar-footer-links a {
+  color: var(--text-secondary);
+  text-decoration: none;
+}
+
+.sidebar-footer-links a:hover {
+  color: var(--accent);
 }
 
 .toolbar-spacer {
@@ -524,6 +592,16 @@ select:focus {
   transform: scale(1.18);
   border-color: var(--accent);
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+/* Upstream v1.6.25 — accent ring on the preset matching the live ink color */
+.ink-presets-row button[data-ink].active-ink {
+  border-color: var(--accent);
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+  transform: scale(1.12);
+  box-shadow: 0 0 0 2px var(--accent-light);
+  background: var(--accent-light);
 }
 
 /* Checkbox Control */
@@ -2013,15 +2091,26 @@ html.dark .tab-btn.active {
   position: absolute;
   top: 100%;
   left: 0;
-  background-color: var(--sidebar-bg);
+  /* Opaque composite: glass sidebar tint layered over the opaque app background —
+     content below the open menu never bleeds through (overlapping-sections fix) */
+  background-color: var(--app-bg);
+  background-image: linear-gradient(var(--sidebar-bg), var(--sidebar-bg));
   min-width: 160px;
   box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
   border: 1px solid var(--sidebar-border);
   border-radius: 8px;
   z-index: 1000;
-  -webkit-backdrop-filter: blur(24px) saturate(1.4);
-  backdrop-filter: blur(24px) saturate(1.4);
-  margin-top: 8px;
+  /* No gap between the trigger button and the panel: an 8px margin here created a
+     hover dead-zone that closed the menu before the pointer could reach the items */
+  margin-top: 0;
+}
+
+/* The Diagram menu sits in the action row near the sidebar's right edge — align the
+   panel to the container's right so it never overflows past the sidebar and gets
+   clipped by #sidebar's overflow-x: hidden */
+.action-buttons-row .dropdown-content {
+  left: auto;
+  right: 0;
 }
 
 .dropdown-content a {
@@ -2038,8 +2127,24 @@ html.dark .tab-btn.active {
   color: var(--accent);
 }
 
-.dropdown:hover .dropdown-content {
+.dropdown:hover .dropdown-content,
+.dropdown.open .dropdown-content {
   display: block;
+}
+
+/* While the Diagram menu is visible (hover or click), release the sidebar
+   section's clipping (.sb-section / .sb-body use overflow:hidden for the collapse
+   animation) so the panel extends past the section boundary instead of being cut
+   off mid-list. The panel's z-index then stacks it above the following sections.
+   The :has() form covers the hover path; the .dropdown-open class is the JS-set
+   fallback for browsers without :has(). */
+.sb-section:has(.dropdown:hover),
+.sb-section:has(.dropdown.open),
+.sb-section.dropdown-open,
+.sb-section:has(.dropdown:hover) .sb-body,
+.sb-section:has(.dropdown.open) .sb-body,
+.sb-section.dropdown-open .sb-body {
+  overflow: visible;
 }
 
 .btn-render, .btn-start {
@@ -3026,5 +3131,5 @@ body.sidebar-open #sidebar-backdrop { opacity: 1; }
 @media (max-width: 480px) {
   #canvas-area { padding: 8px 6px 80px; }
   .canvas-container { max-width: calc(100vw - 12px); }
-  .logo span { display: none; } /* logo text collapses to "Ink" on the smallest screens */
+  .logo .logo-text span { display: none; } /* logo text collapses to "Ink" on the smallest screens */
 }

@@ -141,7 +141,9 @@ function createPRNG(seed) {
  * @param {number} fontSize - Font size in pixels
  * @param {CharacterVariationContext} context - Position context (optional)
  * @param {object} [opts] - Seeded realism path (upstream v1.6.22):
- *   { prng, realism, isIndic }. When omitted, the legacy unseeded behavior runs.
+ *   { prng, realism, isIndic, clean }. When omitted, the legacy unseeded
+ *   behavior runs. `clean: true` neutralises every transform (upstream
+ *   v1.6.25 Clean Style Guard).
  * @returns {object} Variation parameters with position-aware scaling applied
  *
  * Requirements: 1.1-1.8
@@ -159,13 +161,35 @@ function getCharVariationWithContext(rotMax, pressure, fontSize, context, opts) 
     const scriptScaleMult = opts.isIndic ? 0.4 : 1.0;
     const prand = (min, max) => min + prng() * (max - min);
 
+    // Upstream v1.6.25 Clean Style Guard: crisp typographic baseline, no
+    // jitter, no shear, no pressure/opacity modulation.
+    if (opts.clean) {
+      return {
+        tiltDeg: 0,
+        scaleY: 1.0,
+        scaleX: 1.0,
+        shearX: 0,
+        baselineOff: 0,
+        spacingExtra: 0,
+        pressureMod: 1.0,
+        opacity: 1.0,
+      };
+    }
+
     const maxTilt = Math.max(rotMax, 3.5 * r) * scriptRotMult;
     const scaleJitter = 0.075 * r * scriptScaleMult;
 
     const baseVariation = {
       tiltDeg: prand(-maxTilt, maxTilt),
-      scaleY: 1.0 + prand(-scaleJitter, scaleJitter),
-      scaleX: 1.0 + prand(-scaleJitter, scaleJitter),
+      // Upstream v1.6.25 anisotropic scale: scaleX is biased toward horizontal
+      // compression (×0.9) while scaleY allows slight vertical stretch (×1.1),
+      // mimicking pen-stroke width change under varying hand pressure.
+      scaleY: 1.0 + prand(-scaleJitter, scaleJitter * 1.1),
+      scaleX: 1.0 + prand(-scaleJitter * 0.9, scaleJitter * 0.9),
+      // Upstream v1.6.25 micro-shear: subtle per-glyph pen-nib angle drag so
+      // letters lean in slightly different directions. Scaled by scriptRotMult
+      // so connected Indic matras and the shirorekha stay intact.
+      shearX: prand(-0.022, 0.022) * r * scriptRotMult,
       baselineOff: prand(-0.4, 0.4) * k * r * scriptScaleMult,
       spacingExtra: prand(-0.4, 0.6) * k,
       pressureMod: (1 - prng() * pressure * 1.4) * (1 + prand(-0.15, 0.15) * r),

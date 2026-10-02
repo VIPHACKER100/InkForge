@@ -681,14 +681,31 @@ bindSlider('speed-slider', 'spd-val', 'animSpeed', parseInt);
 const inkColorInput = document.getElementById('ink-color');
 inkColorInput?.addEventListener('input', () => {
   S.inkColor = inkColorInput.value;
-  document.getElementById('ink-color-label').textContent = S.inkColor;
+  // Upstream v1.6.25: label names the matching preset (if any) and the
+  // accent-ring active state follows the live ink color.
+  const matchedBtn = Array.from(document.querySelectorAll('button[data-ink]')).find(
+    (btn) => (btn.dataset.ink || '').toLowerCase() === inkColorInput.value.toLowerCase()
+  );
+  document.getElementById('ink-color-label').textContent =
+    S.inkColor + (matchedBtn ? ' — ' + matchedBtn.dataset.inkName : '');
+  updateInkPresetActive();
   debounceRender();
 });
 
+// Upstream v1.6.25: centralises preset button active-state management —
+// highlights the button whose data-ink matches the live S.inkColor.
+function updateInkPresetActive() {
+  const current = (S.inkColor || '').toLowerCase();
+  document.querySelectorAll('button[data-ink]').forEach((btn) => {
+    btn.classList.toggle('active-ink', (btn.dataset.ink || '').toLowerCase() === current);
+  });
+}
+
 function setInkPreset(hex, name) {
   S.inkColor = hex;
-  inkColorInput.value = hex;
+  inkColorInput.value = hex.toLowerCase();
   document.getElementById('ink-color-label').textContent = hex + ' — ' + name;
+  updateInkPresetActive();
   syncMarkdownPenControls();
   debounceRender();
 }
@@ -1206,7 +1223,7 @@ function layoutTextTemplated(text) {
   // Clean style (upstream v1.4.0): crisp typographic mode — no variation at all.
   const cleanNeutral = S.paperStyle === 'clean';
   const cleanStandard = cleanNeutral && S.noteLayout === 'standard' && S.showMarginLabels;
-  const NEUTRAL_V = { tiltDeg: 0, scaleX: 1, scaleY: 1, baselineOff: 0, spacingExtra: 0, pressureMod: 1, opacity: 1 };
+  const NEUTRAL_V = { tiltDeg: 0, scaleX: 1, scaleY: 1, shearX: 0, baselineOff: 0, spacingExtra: 0, pressureMod: 1, opacity: 1 };
 
   const margin = S.margin;
   const template = window.templateManager
@@ -1807,6 +1824,10 @@ window.renderSpecificPage = function (pageIdx, forceRedraw) {
     drawCtx.save();
     drawCtx.translate(item.x, item.y);
     drawCtx.rotate((v.tiltDeg * (item.isIndic ? 0.3 : 1) * Math.PI) / 180);
+    // Upstream v1.6.25 micro-shear: per-glyph pen-nib angle drag
+    if (v.shearX) {
+      drawCtx.transform(1, 0, v.shearX, 1, 0, 0);
+    }
     drawCtx.scale(v.scaleX, v.scaleY);
 
     if (draftedGlyphs[item.ch] && S.paperStyle !== 'clean') {
@@ -1828,7 +1849,11 @@ window.renderSpecificPage = function (pageIdx, forceRedraw) {
       drawCtx.globalAlpha = item.isPrediction ? 0.3 : v.opacity;
       if (S.bleed > 0.05 && S.paperStyle !== 'clean') {
         drawCtx.shadowColor = itemInkColor;
-        drawCtx.shadowBlur = S.bleed * 1.4;
+        // Upstream v1.6.25 pressure-correlated bleed: heavier-pressure glyphs
+        // bleed slightly more, matching fluid ink on paper fibers.
+        const r = S.realism !== undefined ? S.realism : 0.5;
+        const bleedFactor = 1.0 + (v.pressureMod - 1.0) * 0.4 * r;
+        drawCtx.shadowBlur = Math.max(0, S.bleed * 1.4 * bleedFactor);
       } else {
         drawCtx.shadowBlur = 0;
       }
@@ -2031,7 +2056,34 @@ function toggleCollaboration() {
 /**
  * PHASE 6.0 — DIAGRAM TEMPLATES
  */
+
+/* Diagram template dropdown — click toggles the menu (hover still opens it on
+   desktop, tap works on touch); outside click and Escape close it. The
+   .dropdown-open class on the owning .sb-section releases that section's
+   overflow clipping while the menu is open (CSS :has() covers modern browsers;
+   this is the fallback for older ones). */
+const diagramDropdown = document.querySelector('.action-buttons-row .dropdown');
+
+function setDiagramMenuOpen(open) {
+  if (!diagramDropdown) return;
+  diagramDropdown.classList.toggle('open', open);
+  diagramDropdown.closest('.sb-section')?.classList.toggle('dropdown-open', open);
+  diagramDropdown.querySelector('button')?.setAttribute('aria-expanded', open ? 'true' : 'false');
+}
+
+diagramDropdown?.querySelector('button')?.addEventListener('click', (e) => {
+  e.stopPropagation();
+  setDiagramMenuOpen(!diagramDropdown.classList.contains('open'));
+});
+document.addEventListener('click', (e) => {
+  if (diagramDropdown && !diagramDropdown.contains(e.target)) setDiagramMenuOpen(false);
+});
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape' && diagramDropdown?.classList.contains('open')) setDiagramMenuOpen(false);
+});
+
 function insertDiagramTemplate(type) {
+  setDiagramMenuOpen(false);
   const textarea = document.getElementById('text-input');
   if (!textarea) return;
   const start = textarea.selectionStart;
@@ -2142,13 +2194,22 @@ function startAnimation() {
       ctx.save();
       ctx.translate(item.x, item.y);
       ctx.rotate((v.tiltDeg * (item.isIndic ? 0.3 : 1) * Math.PI) / 180);
+      // Upstream v1.6.25 micro-shear: per-glyph pen-nib angle drag
+      if (v.shearX) {
+        ctx.transform(1, 0, v.shearX, 1, 0, 0);
+      }
       ctx.scale(v.scaleX, v.scaleY);
       const pxSize = baseFontSize * v.pressureMod;
       ctx.font = `${item.bold ? '600 ' : ''}${Math.max(10, pxSize)}px ${item.fontStack}`;
       ctx.globalAlpha = v.opacity;
       if (S.bleed > 0.05 && S.paperStyle !== 'clean') {
         ctx.shadowColor = S.inkColor;
-        ctx.shadowBlur = S.bleed * 1.4;
+        // Upstream v1.6.25 pressure-correlated bleed
+        const r = S.realism !== undefined ? S.realism : 0.5;
+        const bleedFactor = 1.0 + (v.pressureMod - 1.0) * 0.4 * r;
+        ctx.shadowBlur = Math.max(0, S.bleed * 1.4 * bleedFactor);
+      } else {
+        ctx.shadowBlur = 0;
       }
       ctx.fillStyle = S.inkColor;
       ctx.fillText(item.ch, 0, 0);
@@ -2574,6 +2635,7 @@ async function restoreState() {
     if (state.inkColor) {
       S.inkColor = state.inkColor;
       document.getElementById('ink-color').value = state.inkColor;
+      updateInkPresetActive();
     }
     if (state.font) {
       S.font = state.font;
@@ -2722,6 +2784,7 @@ function navigatePage(dir) {
 ─────────────────────────────────────────── */
 async function initApp() {
   await restoreState();
+  updateInkPresetActive(); // upstream v1.6.25: ring reflects the restored/default ink color on load
   setupFileUpload();
   initHandFontedStudio();
 
@@ -3003,6 +3066,7 @@ function resetToDefaults() {
   if (inkColorInput) {
     inkColorInput.value = defaults.inkColor;
     document.getElementById('ink-color-label').textContent = defaults.inkColor + ' — Navy';
+    updateInkPresetActive();
   }
 
   // Update Text Alignment

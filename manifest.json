@@ -1,19 +1,66 @@
 {
   "name": "Inkflow — AI Handwritten Notes",
   "short_name": "Inkflow",
-  "description": "Generate beautiful AI-powered handwritten notes in your browser",
+  "description": "Turn plain text into beautiful handwritten-style notes with an AI assistant, custom fonts, study tools, and multi-format exports.",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#f7f3ea",
   "theme_color": "#6C63FF",
   "orientation": "any",
+  "lang": "en",
+  "categories": ["productivity", "education", "utilities"],
   "icons": [
+    {
+      "src": "./inkflow_logo.jpeg",
+      "sizes": "512x512",
+      "type": "image/jpeg",
+      "purpose": "any maskable"
+    },
     {
       "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%236C63FF'/><text x='50' y='70' font-size='60' text-anchor='middle' fill='white'>✍</text></svg>",
       "sizes": "any",
       "type": "image/svg+xml"
     }
   ],
-  "categories": ["productivity", "education"],
-  "lang": "en"
+  "shortcuts": [
+    {
+      "name": "New Note",
+      "short_name": "New",
+      "description": "Start a new blank note",
+      "url": "/index.html?action=new",
+      "icons": [
+        {
+          "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 96 96'><text y='80' font-size='80'>📝</text></svg>",
+          "sizes": "96x96"
+        }
+      ]
+    },
+    {
+      "name": "Export PDF",
+      "short_name": "PDF",
+      "description": "Export current notes as PDF",
+      "url": "/index.html?action=export-pdf",
+      "icons": [
+        {
+          "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 96 96'><text y='80' font-size='80'>📄</text></svg>",
+          "sizes": "96x96"
+        }
+      ]
+    },
+    {
+      "name": "About Inkflow",
+      "short_name": "About",
+      "description": "Learn about Inkflow features and architecture",
+      "url": "./about.html",
+      "icons": [
+        {
+          "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 96 96'><text y='80' font-size='80'>ℹ️</text></svg>",
+          "sizes": "96x96"
+        }
+      ]
+    }
+  ],
+  "related_applications": [],
+  "prefer_related_applications": false,
+  "repository": "https://github.com/VIPHACKER100/Inkflow.git"
 }

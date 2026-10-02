@@ -138,14 +138,28 @@
       ctx.save();
       ctx.translate(item.x, item.y);
       ctx.rotate((v.tiltDeg * (item.isIndic ? 0.3 : 1) * Math.PI) / 180);
+      // Upstream v1.6.25 micro-shear: per-glyph pen-nib angle drag
+      if (v.shearX) {
+        ctx.transform(1, 0, v.shearX, 1, 0, 0);
+      }
       ctx.scale(v.scaleX, v.scaleY);
       const pxSize = S.fontSize * v.pressureMod;
       ctx.font = `${item.bold ? '600 ' : ''}${Math.max(10, pxSize)}px ${item.fontStack}`;
       ctx.globalAlpha = v.opacity;
+      if (S.bleed > 0.05 && S.paperStyle !== 'clean') {
+        // Upstream v1.6.25 pressure-correlated bleed
+        ctx.shadowColor = item.inkColor || S.inkColor;
+        const r = S.realism !== undefined ? S.realism : 0.5;
+        const bleedFactor = 1.0 + (v.pressureMod - 1.0) * 0.4 * r;
+        ctx.shadowBlur = Math.max(0, S.bleed * 1.4 * bleedFactor);
+      } else {
+        ctx.shadowBlur = 0;
+      }
       ctx.fillStyle = item.inkColor || S.inkColor;
       ctx.fillText(item.ch, 0, 0);
       if (item.isRetrace) {
         // Rare imperfection (upstream v1.6.22): faint 1px-offset retrace stroke
+        ctx.shadowBlur = 0;
         ctx.globalAlpha = v.opacity * 0.35;
         ctx.fillText(item.ch, 1, 1);
       }

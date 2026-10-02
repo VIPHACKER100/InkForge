@@ -86,10 +86,14 @@ describe('getCharVariationWithContext — seeded realism path', () => {
     const prng = mulberry32(13);
     const r = 1;
     const maxTilt = Math.max(1, 3.5 * r) * 0.3;
+    const j = 0.075 * 0.4; // anisotropic scale jitter (upstream v1.6.25)
     for (let i = 0; i < 300; i++) {
       const v = getCharVariationWithContext(1, 0.12, 22, null, { prng: prng, realism: r, isIndic: true });
       expect(Math.abs(v.tiltDeg)).toBeLessThanOrEqual(maxTilt + 1e-9);
-      expect(Math.abs(v.scaleY - 1)).toBeLessThanOrEqual(0.075 * 0.4 + 1e-9);
+      // scaleX ∈ ±0.9·j (compression bias); scaleY ∈ [−1·j, +1.1·j] (stretch bias)
+      expect(Math.abs(v.scaleX - 1)).toBeLessThanOrEqual(j * 0.9 + 1e-9);
+      expect(v.scaleY).toBeGreaterThanOrEqual(1 - j - 1e-9);
+      expect(v.scaleY).toBeLessThanOrEqual(1 + j * 1.1 + 1e-9);
     }
   });
 

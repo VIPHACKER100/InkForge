@@ -507,6 +507,81 @@ runner.test('Fatigue accumulation matches specification (0.02px per char after 5
 });
 
 // ─────────────────────────────────────────────────────────────
+// UPSTREAM v1.6.25 — ANISOTROPIC SCALE, MICRO-SHEAR & CLEAN GUARD
+// ─────────────────────────────────────────────────────────────
+
+runner.test('v1.6.25 seeded path returns shearX key', function() {
+  const prng = jitterEngine.createPRNG(jitterEngine.hashString('shear-key'));
+  const v = getCharVariationWithContext(1.0, 0.12, 22, null, { prng, realism: 0.5 });
+  this.assertTrue('shearX' in v, 'shearX should be present in seeded variation');
+  this.assertTrue(typeof v.shearX === 'number');
+});
+
+runner.test('v1.6.25 shearX magnitude stays within ±0.022·r and is non-zero when realism > 0', function() {
+  const prng = jitterEngine.createPRNG(jitterEngine.hashString('shear-magnitude'));
+  let sawNonZero = false;
+  for (let i = 0; i < 200; i++) {
+    const v = getCharVariationWithContext(1.0, 0.12, 22, null, { prng, realism: 1.0 });
+    this.assertTrue(Math.abs(v.shearX) <= 0.022 + 1e-9, `|shearX| ${v.shearX} exceeds 0.022·r`);
+    if (v.shearX !== 0) sawNonZero = true;
+  }
+  this.assertTrue(sawNonZero, 'shearX should take non-zero values when realism > 0');
+});
+
+runner.test('v1.6.25 shearX is neutral when realism = 0', function() {
+  const prng = jitterEngine.createPRNG(jitterEngine.hashString('shear-zero'));
+  for (let i = 0; i < 50; i++) {
+    const v = getCharVariationWithContext(1.0, 0.12, 22, null, { prng, realism: 0 });
+    this.assertEqual(v.shearX, 0, 'shearX must be 0 when realism = 0');
+  }
+});
+
+runner.test('v1.6.25 shearX is scaled by 0.3 for Devanagari to protect matras', function() {
+  const prng = jitterEngine.createPRNG(jitterEngine.hashString('shear-indic'));
+  for (let i = 0; i < 200; i++) {
+    const v = getCharVariationWithContext(1.0, 0.12, 22, null, { prng, realism: 1.0, isIndic: true });
+    this.assertTrue(Math.abs(v.shearX) <= 0.022 * 0.3 + 1e-9, `Indic |shearX| ${v.shearX} exceeds 0.0066`);
+  }
+});
+
+runner.test('v1.6.25 anisotropic scale: scaleX biased to compression, scaleY allowed to stretch', function() {
+  const prng = jitterEngine.createPRNG(jitterEngine.hashString('anisotropic'));
+  const scaleJitter = 0.075 * 1.0; // r = 1
+  let sawStretchBeyondX = false;
+  for (let i = 0; i < 500; i++) {
+    const v = getCharVariationWithContext(1.0, 0.12, 22, null, { prng, realism: 1.0 });
+    this.assertInRange(v.scaleX, 1 - scaleJitter * 0.9, 1 + scaleJitter * 0.9, 'scaleX range ±0.9·jitter');
+    this.assertInRange(v.scaleY, 1 - scaleJitter, 1 + scaleJitter * 1.1, 'scaleY range −1·jitter to +1.1·jitter');
+    if (v.scaleY > 1 + scaleJitter * 0.9) sawStretchBeyondX = true; // unreachable for scaleX
+  }
+  this.assertTrue(sawStretchBeyondX, 'scaleY should stretch beyond the full scaleX range (vertical stretch bias)');
+});
+
+runner.test('v1.6.25 anisotropic scale tightens for Devanagari (0.4× scriptScaleMult)', function() {
+  const prng = jitterEngine.createPRNG(jitterEngine.hashString('anisotropic-indic'));
+  const scaleJitter = 0.075 * 0.4; // r = 1, isIndic
+  for (let i = 0; i < 200; i++) {
+    const v = getCharVariationWithContext(1.0, 0.12, 22, null, { prng, realism: 1.0, isIndic: true });
+    this.assertInRange(v.scaleX, 1 - scaleJitter * 0.9, 1 + scaleJitter * 0.9, 'Indic scaleX range');
+    this.assertInRange(v.scaleY, 1 - scaleJitter, 1 + scaleJitter * 1.1, 'Indic scaleY range');
+  }
+});
+
+runner.test('v1.6.25 clean style guard neutralises all transforms', function() {
+  const prng = jitterEngine.createPRNG(jitterEngine.hashString('clean-guard'));
+  for (let i = 0; i < 20; i++) {
+    const v = getCharVariationWithContext(8.0, 0.3, 44, null, { prng, realism: 1.0, clean: true });
+    this.assertEqual(v.tiltDeg, 0, 'clean tiltDeg must be 0');
+    this.assertEqual(v.scaleX, 1.0, 'clean scaleX must be 1');
+    this.assertEqual(v.scaleY, 1.0, 'clean scaleY must be 1');
+    this.assertEqual(v.shearX, 0, 'clean shearX must be 0');
+    this.assertEqual(v.baselineOff, 0, 'clean baselineOff must be 0');
+    this.assertEqual(v.pressureMod, 1.0, 'clean pressureMod must be 1');
+    this.assertEqual(v.opacity, 1.0, 'clean opacity must be 1');
+  }
+});
+
+// ─────────────────────────────────────────────────────────────
 // RUN ALL TESTS
 // ─────────────────────────────────────────────────────────────
 

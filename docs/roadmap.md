@@ -8,6 +8,17 @@ This plan is grounded in a codebase analysis (knowledge-graph audit, lint/test r
 
 ## Progress Log
 
+**2026-10-02 — Pass #9 (upstream sync: InkForge v1.6.25–v1.6.26 → v1.8.0)**
+
+- ✅ Upstream download `InkForge-1.6.26` diffed against this fork; everything after the already-ported v1.6.24 was carried over (see `docs/changelog.md` [1.8.0])
+- ✅ **Realism engine 1.6.25**: anisotropic scale (scaleX ±0.9·jitter compression / scaleY up to 1.1·jitter stretch), micro-shear `shearX` (±0.022·r, ×0.3 for Devanagari) applied in all three draw paths (render / animation / exports), pressure-correlated ink bleed (`bleedFactor = 1 + (pressureMod − 1) × 0.4 × r`), engine-level `clean` style guard — 8 new engine tests (216 total)
+- ✅ **Blue Ink Pen preset (#000F55)** + `updateInkPresetActive()` accent-ring sync (preset click, freeform picker, restore, reset, and app init) with `data-ink`/`data-ink-name` attributes on all preset buttons
+- ✅ **About page 1.6.26**: standalone `about.html` + `about.css` adapted to Inkflow branding (repo links, MIT license, `inkflow-dark` theme sync, Inkflow docs directory, interactive realism playground); brand emblem `inkflow_logo.jpeg` wired into toolbar, favicon, Apple touch icon, PWA manifest, and About page; toolbar logo is now clickable, plus an **ℹ️ About** toolbar button and sidebar footer links (About / Docs / GitHub)
+- ✅ **PWA**: manifest shortcuts (New Note / Export PDF / About), logo as 512×512 maskable icon; sw.js precaches `about.html`, `about.css`, `inkflow_logo.jpeg`; vite build copies the About page assets verbatim
+- 🐛 **Fixed pre-existing P0**: `dist/index.css` never existed (Vite bundles the stylesheet to a hashed `/assets/` name), so the sw.js `cache.addAll()` always rejected and **the service worker never installed in production** — vite.config.js now copies `index.css` to the dist root so the precache URL resolves
+- ✅ Verified: 216/216 unit tests, 7/7 Playwright E2E, 0 lint errors, version check, production build + live preview (app + About page, light & dark, blue-ink ring)
+- ⚠️ Known dev-mode quirk (pre-existing, out of scope): Vite dev serves `.css` URLs as JS HMR modules, so a SW-controlled dev session renders unstyled; test SW/PWA behavior against `npm run build` + `vite preview`
+
 **2026-09-13 — Pass #8 (Phase 1.2: export-manager.js extraction)**
 
 - ✅ All export pipelines (PNG/JPG/transparent PNG/PDF/SVG/clipboard, `triggerDownload`, `showExportToast`, `announceToScreenReader`) extracted from index.js into `export-manager.js` (280 lines) — top-level-declaration module pattern (globals resolve at call time through the shared classic-script lexical scope), so inline `onclick` handlers and index.js's `showToast` alias work unchanged
