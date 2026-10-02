@@ -4,7 +4,7 @@
 
 # 🚀 Getting Started with InkForge
 
-Welcome to **InkForge v1.6.24** — a single-file Progressive Web App (PWA) that turns plain text into beautiful, handwritten-style notes with built-in AI (OpenRouter, Anthropic, and local Ollama) plus offline helpers like the no-key Smart Arrange. Fully responsive — verified at 390px mobile width.
+Welcome to **InkForge v1.6.26** — a Progressive Web App (PWA) that turns plain text into beautiful, handwritten-style notes with built-in AI (OpenRouter, Anthropic, and local Ollama) plus offline helpers like the no-key Smart Arrange. Fully responsive across desktop, tablet, and mobile devices.
 
 ---
 
@@ -42,12 +42,17 @@ See [Deployment](./deployment.md) for details, including the AI proxy caveat.
 
 ```
 InkForge/
-├── index.html          # App shell + CDN library loads (html2canvas, jsPDF, opentype.js, Font Awesome — SRI-pinned)
-├── index.css           # ~2,800 lines: design tokens, themes, paper styles, mobile media queries, modals
-├── index.js            # ~7,300 lines: the entire application logic
-├── sw.js               # Service worker: PWA offline support (cache-first assets)
+├── index.html          # Studio app shell + CDN library loads (jsPDF, opentype.js, Font Awesome)
+├── index.css           # ~2,900 lines: design tokens, themes, paper styles, mobile media queries, modals
+├── index.js            # ~7,300 lines: the entire handwriting studio application logic
+├── about.html          # Standalone About & Documentation portal with live Realism Engine simulator
+├── about.css           # Glassmorphic stylesheet for the About portal
+├── inkforge_logo.jpeg  # High-resolution brand logo (Minimalist Scribe Flame emblem)
+├── manifest.json       # PWA Web App Manifest & desktop/mobile shortcut links
+├── sw.js               # Service worker: PWA offline support (pre-cached app shell & CDN fonts)
 ├── scripts/
-│   └── check-versions.mjs  # npm run check-versions — enforces version parity across files
+│   ├── check-versions.mjs  # npm run check-versions — enforces version parity across files
+│   └── smoke-test.mjs      # npm test — headless Node VM pure-logic test harness
 ├── eslint.config.mjs   # ESLint flat config (correctness rules) — npm run lint
 ├── docs/               # Full documentation suite (this site)
 │   ├── README.md
@@ -67,11 +72,12 @@ InkForge/
 │   ├── accessibility.md
 │   ├── performance.md
 │   ├── deployment.md
+│   ├── changelog.md
 │   └── contributing.md
 ├── .github/
 │   └── workflows/
 │       └── codeql.yml    # CodeQL static-analysis CI
-└── LICENSE               # MIT
+└── LICENSE               # ISC License
 ```
 
 ---

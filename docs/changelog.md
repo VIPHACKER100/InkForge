@@ -6,6 +6,35 @@
 
 All notable changes to InkForge are documented in this file.
 
+## [1.6.26] — 2026-10-02
+
+### 🖋️ Brand Identity & Minimalist Scribe Flame Logo
+
+- **New Brand Emblem (`inkforge_logo.jpeg`)**: Designed and integrated a bespoke brand mark for InkForge featuring a two-tone copper (`#d36135`) and midnight-indigo fountain pen nib emerging from forge flames with an ink droplet.
+- **Universal Asset Refreshes**: Updated the app toolbar header avatar, favicon, Apple touch icon, PWA manifests, and documentation headers with the new logo.
+
+### 🌐 Standalone About Page (`about.html` & `about.css`)
+
+- **Interactive Realism Engine Playground**: Built an interactive HTML5 Canvas simulator on `about.html` powered by an embedded deterministic `mulberry32` PRNG. Allows users to type text, tweak jitter magnitude, adjust baseline drift (wobble), toggle notebook guidelines, and toggle double-stroke retrace in real time.
+- **Deep-Dive Feature Showcases**: Detailed visual cards exploring the Physics-Based Realism Engine, Artisanal Paper & Multi-Page Layouts, Generative AI Scribe, HandFonted Studio, 2× Lossless Multi-Format Exports, and 100% Offline-First PWA capabilities.
+- **Privacy Guarantee**: Clearly documents the 100% on-device processing guarantee — zero cloud note telemetry, local font synthesis, and private client-side API storage.
+- **Architecture & System Specs**: Outlines Vanilla ES2022 performance, Canvas 2D matrix transforms, dual IndexedDB/LocalStorage persistence, and OpenType.js TTF compilation.
+- **Documentation & Creator Credits**: Comprehensive documentation directory cards plus author bio and links for Aryan Ahirwar (VIPHACKER100).
+- **Synchronized Theme System**: Dark/Light mode toggle directly on the About page synchronizing with `localStorage.getItem('inkforge-dark')`.
+
+### 🧭 App Navigation Overhaul (`index.html`)
+
+- **Interactive Header Logo**: Clickable brand logo in `#toolbar` linking directly to `about.html`.
+- **Dedicated About Button**: Added `ℹ️ About` button in top toolbar with responsive icon/label styling.
+- **Sidebar Drawer Footer**: Added quick-access footer links (`ℹ️ About InkForge`, `📖 Docs`, `⭐ GitHub`) pinned to the bottom of the sidebar drawer.
+
+### 📦 PWA & Offline Support
+
+- **PWA Manifest Shortcut**: Added an "About InkForge" shortcut and repository URL metadata to `manifest.json`.
+- **Service Worker Pre-Caching**: Added `./about.html` and `./about.css` to `SHELL_URLS` in `sw.js` for 100% offline availability.
+
+---
+
 ## [1.6.25] — 2026-10-01
 
 ### ✨ Enhanced Realism Engine

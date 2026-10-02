@@ -181,6 +181,21 @@ Modals render as edge-to-edge sheets on phones (`100vw` × `100dvh`, zero radius
 
 ---
 
+## Navigation & About Portal User Flow
+
+### Studio Navigation
+- **Header Logo Navigation**: Clicking the `InkForge` logo in the top toolbar navigates smoothly to `about.html`.
+- **Top Toolbar About Button**: The `ℹ️ About` button provides clear, high-visibility access to project documentation and specs. On compact screens (≤768px), the text label hides while retaining the `ℹ️` icon.
+- **Sidebar Drawer Footer**: Pinned links at the base of the sidebar offer secondary navigation to `About`, `Docs`, and `GitHub`.
+
+### Interactive About Portal (`about.html`)
+- **Real-Time Jitter Simulation**: Visitors can adjust the **Realism Jitter Magnitude** (0.0 to 1.5) and **Baseline Wobble** (0 to 4px) sliders to watch canvas letters rotate, shear, and drift dynamically.
+- **Micro-Feature Toggles**: Checkboxes for **Retrace Double-Strokes** (human pen stutters) and **Ruled Notebook Guidelines** update the live rendering immediately.
+- **Dual-State Theme Sync**: Dark mode toggled on the About page is stored in `localStorage` under `inkforge-dark` and automatically applies when returning to the studio editor.
+- **Return CTA**: The sticky top navigation and hero section feature prominent `Open Studio` action buttons pointing directly back to `index.html`.
+
+---
+
 ## Keyboard & Accessibility Hooks
 
 - All interactive buttons are real `<button>` elements; export, dark-mode, and hamburger controls carry `aria-label`/`title` attributes.

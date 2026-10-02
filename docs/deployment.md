@@ -13,9 +13,12 @@ InkForge is a fully static, client-side web application. There is no build step,
 - **Runtime**: Any modern browser (Chrome, Edge, Firefox, Safari). No Node.js required.
 - **Web server**: Any static host (GitHub Pages, Netlify, Vercel, Cloudflare Pages, Apache, nginx, S3).
 - **Minimum files**:
-  - `index.html` (app shell)
-  - `index.css` (styles)
+  - `index.html` (main studio app shell)
+  - `index.css` (studio styles)
   - `index.js` (application logic)
+  - `about.html` (standalone about & documentation portal)
+  - `about.css` (about page styling)
+  - `inkforge_logo.jpeg` (brand emblem)
   - `sw.js` (PWA Service Worker for offline caching)
   - `manifest.json` (PWA Web App Manifest for installability)
 

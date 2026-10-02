@@ -6,7 +6,7 @@
 
 Welcome to the **InkForge** documentation hub. This folder contains all technical, design, and operational documentation for the project.
 
-**Current Version**: 1.6.25 — Enhanced Realism Engine (anisotropic `scaleX`/`scaleY` jitter; micro-shear `shearX` via `ctx.transform()` in all draw paths; pressure-correlated ink bleed radius when Rare Imperfections is on; universal retrace double-stroke in all render contexts; Devanagari / Indic shear protection); Blue Ink Pen preset (`🖊️ #000F55` — deep royal-blue ballpoint/gel pen colour); `updateInkPresetActive()` helper centralises `.active-ink` ring management across `setInkPreset()`, color picker, `restoreState()`, and `resetToDefaults()`; CSS `.active-ink` accent-ring with micro-animation; smoke test suite expanded. Previous: 1.6.24 — Mobile Canvas Layout Fix (`getResponsiveCanvasWidth()`, worksheet header in `.canvas-container`, resize handler, media queries); Mobile UX Overhaul (icon-only toolbar ≤768px, sidebar drawer, safe-area insets, `100dvh`, full-screen mobile modals); AI Response Post-Processing (`sanitizeAiResponse()`, `resequenceQA()`); Human Handwriting Realism Engine (seeded `mulberry32` PRNG, per-glyph jitter, baseline drift, retrace double-strokes, `#realism-slider`, `#rare-imperfections-toggle`); PDF Output Size presets; Lossless Page-Editor Sync.
+**Current Version**: 1.6.26 — Brand Identity & Minimalist Scribe Flame Emblem (`inkforge_logo.jpeg`); Standalone About Page (`about.html` & `about.css`) with real-time interactive Realism Engine canvas simulator, feature breakdown, architecture cards, and privacy guarantee; Top toolbar and sidebar navigation enhancements in `index.html` (clickable logo, `ℹ️ About` button, sidebar drawer footer); PWA Manifest shortcut and Service Worker precache updates for complete offline support. Previous: 1.6.25 — Enhanced Realism Engine (anisotropic `scaleX`/`scaleY` jitter; micro-shear `shearX` via `ctx.transform()` in all draw paths; pressure-correlated ink bleed radius when Rare Imperfections is on; universal retrace double-stroke in all render contexts; Devanagari / Indic shear protection); Blue Ink Pen preset (`🖊️ #000F55` — deep royal-blue ballpoint/gel pen colour); `updateInkPresetActive()` helper; CSS `.active-ink` accent-ring with micro-animation.
 
 ---
 
@@ -16,7 +16,7 @@ Welcome to the **InkForge** documentation hub. This folder contains all technica
 
 | Document | Description |
 | :--- | :--- |
-| [System Architecture](./system-architecture.md) | High-level component map, data flow, rendering pipeline |
+| [System Architecture](./system-architecture.md) | High-level component map, data flow, rendering pipeline, and dual-page structure (`index.html` + `about.html`) |
 | [State Management](./state-management.md) | Global config schema, dual input paths, hydration loop, localStorage + IndexedDB |
 | [Handwriting Engine](./handwriting-engine.md) | Unified `layoutText()`, per-character transforms, Indic script support, rich study syntax |
 | [Paper Rendering](./paper-rendering.md) | Background styles, grain texture shader, ruling/grid math, header box |
@@ -34,14 +34,14 @@ Welcome to the **InkForge** documentation hub. This folder contains all technica
 
 | Document | Description |
 | :--- | :--- |
-| [UI Design System](./ui-design-system.md) | CSS custom properties, theme tokens, layout grid structure, theme packs |
-| [UX Interactions](./ux-interactions.md) | Responsive layout, inline editing, collapsible panels, debounced rendering, study tools |
+| [UI Design System](./ui-design-system.md) | CSS custom properties, theme tokens, layout grid structure, theme packs, brand styling |
+| [UX Interactions](./ux-interactions.md) | Responsive layout, inline editing, collapsible panels, debounced rendering, study tools, navigation |
 
 ### 📘 Guides & References
 
 | Document | Description |
 | :--- | :--- |
-| [Getting Started](./getting-started.md) | Setup, prerequisites, running the app locally |
+| [Getting Started](./getting-started.md) | Setup, prerequisites, running the app locally, file structure |
 | [Configuration Guide](./configuration-guide.md) | All user-facing controls, ranges, and defaults explained |
 | [API Reference](./api-reference.md) | Complete public JavaScript function reference |
 | [Deployment Guide](./deployment.md) | Hosting options, CDN setup, production checklist |
@@ -54,9 +54,11 @@ Welcome to the **InkForge** documentation hub. This folder contains all technica
 
 ## 🔗 Quick Links
 
-- **Live App**: Open `index.html` in any modern browser
-- **Source Code**: `index.html` · `index.css` · `index.js`
-- **Creator**: Aryan Ahirwar (VIPHACKER.100)
+- **Live Studio Editor**: Open `index.html` in any modern browser
+- **About & Feature Portal**: Open `about.html` for interactive realism engine playground & specs
+- **GitHub Repository**: [VIPHACKER100/InkForge](https://github.com/VIPHACKER100/InkForge)
+- **Source Code**: `index.html` · `index.css` · `index.js` · `about.html` · `about.css`
+- **Creator**: Aryan Ahirwar (VIPHACKER100)
 
 ---
 

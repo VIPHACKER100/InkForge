@@ -10,7 +10,10 @@ This document outlines the **high-level system architecture**, **component layer
 
 ## Architecture Overview
 
-InkForge is architected as a modular, decoupled, single-file client-side application. It operates entirely within the user's browser, eliminating backend latency and optimizing rendering speeds. All application logic lives in `index.js` (≈7,300 lines), styling in `index.css`, and structure in `index.html`.
+InkForge is architected as a modular, decoupled, client-side application. It operates entirely within the user's browser, eliminating backend latency and optimizing rendering speeds. The app consists of:
+1. **The Studio Editor** (`index.html`, `index.css`, `index.js` ≈7,300 lines) — the primary handwriting generation workspace with interactive canvas, rich study tools, and AI integrations.
+2. **The About & Feature Portal** (`about.html`, `about.css`) — an interactive showcase featuring a live Canvas-based Realism Engine simulator, architectural specifications, documentation index, and creator details.
+3. **PWA Shell & Cache Layer** (`sw.js`, `manifest.json`) — pre-caching both pages for 100% offline availability with shared theme state in `localStorage` (`inkforge-dark`).
 
 ---
 
@@ -22,10 +25,11 @@ The application's structural components are divided into four primary layers:
 graph TD
     subgraph UI_Layer ["User Interface Layer"]
         A["Control Console / Sidebar"]
-        B["Floating Top Toolbar"]
+        B["Floating Top Toolbar & Brand Navigation"]
         C["Canvas Viewport + Page Editors"]
         D["Floating Pagination Controls"]
         T["Modals: HandFonted Studio, Flashcards"]
+        AB["About Portal: Realism Engine Simulator (about.html)"]
     end
 
     subgraph State_Layer ["State Management Layer"]

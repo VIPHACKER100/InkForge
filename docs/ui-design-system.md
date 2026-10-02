@@ -78,7 +78,21 @@ A neutral, spacious preview environment with:
 - Per-page Date / P. No. worksheet header inputs
 
 ### Floating Header (56px fixed)
-Top toolbar on a frosted backdrop (`backdrop-filter: blur(20px)`) containing the hamburger (mobile), `InkForge` logo, Animate and Clear buttons, page indicator, Study Mode toggle, Flashcards button, and the dark-mode toggle.
+Top toolbar on a frosted backdrop (`backdrop-filter: blur(20px)`) containing:
+- Mobile drawer hamburger (`#hamburger`)
+- Clickable brand logo (`.logo` → `about.html`) with circular glassmorphic container (`.logo-img-wrapper`), Minimalist Scribe Flame emblem, and 3D hover tilt (`transform: scale(1.12) rotate(-6deg)`)
+- Quick action controls: Animate and Clear
+- Status badge (autosave cloud indicator)
+- Page indicator (`Page X of Y`)
+- Study Mode toggle (`#btn-study-mode`) & Flashcards launcher (`#btn-open-flashcards`)
+- Dedicated About navigation button (`#btn-about` → `about.html`)
+- Dark mode toggle (`#dark-toggle`)
+
+### Sidebar Drawer Footer
+Pinned to the bottom of the sidebar drawer, a lightweight link row provides instant access to `ℹ️ About InkForge`, `📖 Docs`, and `⭐ GitHub`.
+
+### About Portal Design System (`about.css`)
+The standalone `about.html` page inherits the core color tokens while introducing dedicated glassmorphic presentation cards (`.feature-box`, `.tech-card`, `.metric-card`, `.demo-card`), fluid typography gradients, and an embedded HTML5 Canvas preview for testing realtime handwriting jitter and drift.
 
 ### Floating Pagination
 Bottom pill-style navigation (`◀ Page X of Y ▶`) for multi-page A4 transitions.

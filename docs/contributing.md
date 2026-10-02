@@ -44,16 +44,22 @@ InkForge is a **single-page, zero-dependency-install** application. Contribution
 ## File Structure
 
 ```
-index.html    # Structure and CDN imports only
-index.css     # All styles — design tokens, components, layouts
-index.js      # All logic — engines, state, UI handlers
+index.html    # Studio workspace structure and CDN library loads
+index.css     # Studio styles — design tokens, components, layouts, modals
+index.js      # Core application logic — engines, state, UI handlers, storage
+about.html    # Standalone About & Documentation portal with live Realism Simulator
+about.css     # Dedicated glassmorphic stylesheet for the About portal
+inkforge_logo.jpeg # Official brand emblem (Minimalist Scribe Flame)
+manifest.json # Web App Manifest and PWA shortcut descriptors
+sw.js         # Service worker offline caching
+scripts/      # Version parity and headless logic smoke tests
 docs/         # Documentation (markdown suite — see docs/README.md)
 .github/
   workflows/
     codeql.yml # GitHub CodeQL Advanced static-analysis CI
 ```
 
-Do NOT split JS/CSS into additional files without discussion. The single-file architecture is intentional.
+The core editor architecture follows a clean, decoupled client-side design. Avoid adding bundler build dependencies.
 
 ---
 
