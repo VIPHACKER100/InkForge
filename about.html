@@ -445,27 +445,9 @@
      SCRIPTS & INTERACTIVE DEMO ENGINE
   ════════════════════════════════════════ -->
   <script>
-    /* ── Theme Management ── */
+    /* ── DOM References ── */
     const darkToggle = document.getElementById('dark-toggle');
     const darkIcon = document.getElementById('dark-icon');
-    let isDark = localStorage.getItem('inkforge-dark') === '1';
-
-    function applyDark() {
-      document.documentElement.classList.toggle('dark', isDark);
-      if (darkIcon) darkIcon.textContent = isDark ? '🌙' : '☀️';
-      renderDemo();
-    }
-    applyDark();
-
-    if (darkToggle) {
-      darkToggle.addEventListener('click', () => {
-        isDark = !isDark;
-        localStorage.setItem('inkforge-dark', isDark ? '1' : '0');
-        applyDark();
-      });
-    }
-
-    /* ── Interactive Realism Canvas Demo ── */
     const demoCanvas = document.getElementById('demo-canvas');
     const demoCtx = demoCanvas ? demoCanvas.getContext('2d') : null;
     const demoInput = document.getElementById('demo-text-input');
@@ -476,7 +458,24 @@
     const demoRetrace = document.getElementById('demo-retrace-toggle');
     const demoLines = document.getElementById('demo-lines-toggle');
 
-    // Deterministic PRNG (Mulberry32)
+    /* ── Theme State ── */
+    let isDark = localStorage.getItem('inkforge-dark') === '1';
+
+    function applyDark() {
+      document.documentElement.classList.toggle('dark', isDark);
+      if (darkIcon) darkIcon.textContent = isDark ? '🌙' : '☀️';
+      if (typeof renderDemo === 'function') renderDemo();
+    }
+
+    if (darkToggle) {
+      darkToggle.addEventListener('click', () => {
+        isDark = !isDark;
+        localStorage.setItem('inkforge-dark', isDark ? '1' : '0');
+        applyDark();
+      });
+    }
+
+    /* ── Deterministic PRNG (Mulberry32) ── */
     function mulberry32(seed) {
       return function () {
         let t = seed += 0x6D2B79F5;
@@ -486,79 +485,110 @@
       };
     }
 
+    /* ── Interactive Handwriting Simulator ── */
     function renderDemo() {
       if (!demoCanvas || !demoCtx) return;
 
-      const dpr = window.devicePixelRatio || 1;
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
       const rect = demoCanvas.getBoundingClientRect();
-      const w = rect.width || 440;
-      const h = rect.height || 200;
+      const w = Math.max(rect.width || 440, 320);
+      const h = Math.max(rect.height || 200, 180);
 
-      demoCanvas.width = w * dpr;
-      demoCanvas.height = h * dpr;
-      demoCtx.resetTransform ? demoCtx.resetTransform() : demoCtx.setTransform(1, 0, 0, 1, 0, 0);
-      demoCtx.scale(dpr, dpr);
+      if (demoCanvas.width !== Math.round(w * dpr) || demoCanvas.height !== Math.round(h * dpr)) {
+        demoCanvas.width = Math.round(w * dpr);
+        demoCanvas.height = Math.round(h * dpr);
+      }
 
-      // Background Paper
-      const paperBg = isDark ? '#1a1c2b' : '#faf9f5';
-      const inkColor = isDark ? '#e6dfd1' : '#1c2340';
-      const ruledLineColor = isDark ? 'rgba(255, 255, 255, 0.08)' : 'rgba(192, 98, 42, 0.16)';
+      demoCtx.save();
+      demoCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      demoCtx.clearRect(0, 0, w, h);
 
+      // Colors
+      const isDarkMode = document.documentElement.classList.contains('dark');
+      const paperBg = isDarkMode ? '#171926' : '#faf9f5';
+      const inkColor = isDarkMode ? '#f0ecdf' : '#141e46';
+      const ruledLineColor = isDarkMode ? 'rgba(124, 106, 247, 0.22)' : 'rgba(80, 130, 200, 0.28)';
+      const marginLineColor = isDarkMode ? 'rgba(235, 90, 110, 0.4)' : 'rgba(220, 50, 70, 0.45)';
+
+      // Paper Background
       demoCtx.fillStyle = paperBg;
       demoCtx.fillRect(0, 0, w, h);
 
-      // Draw Ruled Lines
-      const lineH = 46;
+      // Ruled Notebook Lines
+      const lineH = 44;
+      const marginX = 48;
+
       if (demoLines && demoLines.checked) {
+        // Horizontal guidelines
         demoCtx.strokeStyle = ruledLineColor;
         demoCtx.lineWidth = 1;
         for (let y = lineH; y < h; y += lineH) {
           demoCtx.beginPath();
-          demoCtx.moveTo(20, y);
-          demoCtx.lineTo(w - 20, y);
+          demoCtx.moveTo(0, y);
+          demoCtx.lineTo(w, y);
           demoCtx.stroke();
         }
+
+        // Double vertical red margin lines
+        demoCtx.strokeStyle = marginLineColor;
+        demoCtx.lineWidth = 1;
+        demoCtx.beginPath();
+        demoCtx.moveTo(marginX, 0);
+        demoCtx.lineTo(marginX, h);
+        demoCtx.moveTo(marginX - 4, 0);
+        demoCtx.lineTo(marginX - 4, h);
+        demoCtx.stroke();
       }
 
-      // Draw Handwriting
-      const text = (demoInput ? demoInput.value : 'InkForge Realistic Handwriting') || 'InkForge';
+      // Handwriting Rendering
+      const text = (demoInput && demoInput.value.trim()) ? demoInput.value : 'InkForge: Natural handwriting with AI precision.';
       const jitterMag = parseFloat(demoJitter ? demoJitter.value : 0.65);
       const driftMag = parseFloat(demoDrift ? demoDrift.value : 1.2);
       const doRetrace = demoRetrace ? demoRetrace.checked : true;
 
-      const fontSize = 28;
-      demoCtx.font = `${fontSize}px 'Caveat', cursive`;
+      const fontSize = 26;
+      demoCtx.font = `${fontSize}px 'Caveat', 'Indie Flower', 'Segoe Print', 'Comic Sans MS', cursive`;
+      demoCtx.textBaseline = 'alphabetic';
 
-      const startX = 30;
+      const startX = (demoLines && demoLines.checked) ? marginX + 16 : 24;
       let currX = startX;
-      let currY = lineH * 1.5;
+      let lineIdx = 1;
+      let currY = lineH * lineIdx - 4; // text sits on ruled line
 
       const prng = mulberry32(1234567);
 
       for (let i = 0; i < text.length; i++) {
         const char = text[i];
         if (char === ' ') {
-          currX += fontSize * 0.35;
+          currX += fontSize * 0.32;
           continue;
         }
 
-        // Wrap to second line if exceeding canvas width
-        if (currX > w - 40 && currY < lineH * 2.5) {
+        if (char === '\n') {
+          lineIdx++;
+          currY = lineH * lineIdx - 4;
           currX = startX;
-          currY += lineH;
+          continue;
         }
 
         const metrics = demoCtx.measureText(char);
         const charW = metrics.width;
 
-        // Calculate organic variations
-        const tilt = (prng() - 0.5) * 6 * jitterMag;
+        // Wrap to next line if approaching canvas boundary
+        if (currX + charW > w - 24 && lineIdx < 4) {
+          lineIdx++;
+          currY = lineH * lineIdx - 4;
+          currX = startX;
+        }
+
+        // Jitter & Micro-Physics
+        const tilt = (prng() - 0.5) * 8 * jitterMag;
         const tiltRad = (tilt * Math.PI) / 180;
-        const shear = (prng() - 0.5) * 0.12 * jitterMag;
+        const shear = (prng() - 0.5) * 0.16 * jitterMag;
         const scaleX = 1 + (prng() - 0.5) * 0.18 * jitterMag;
         const scaleY = 1 + (prng() - 0.5) * 0.18 * jitterMag;
         const yDrift = (prng() - 0.5) * driftMag * 2;
-        const opacity = 0.85 + prng() * 0.15;
+        const opacity = 0.88 + prng() * 0.12;
 
         demoCtx.save();
         demoCtx.translate(currX + charW / 2, currY + yDrift);
@@ -568,9 +598,9 @@
         demoCtx.globalAlpha = opacity;
         demoCtx.fillText(char, -charW / 2, 0);
 
-        // Retrace double stroke simulation on occasional letters
-        if (doRetrace && prng() < 0.22 * jitterMag) {
-          demoCtx.globalAlpha = 0.35;
+        // Retrace double stroke simulation
+        if (doRetrace && prng() < 0.25 * jitterMag) {
+          demoCtx.globalAlpha = 0.28;
           demoCtx.fillText(char, -charW / 2 + 0.6, 0.4);
         }
 
@@ -578,9 +608,11 @@
 
         currX += charW + (prng() - 0.5) * 2 * jitterMag;
       }
+
+      demoCtx.restore();
     }
 
-    // Attach listeners
+    // Attach Interactive Event Listeners
     if (demoInput) demoInput.addEventListener('input', renderDemo);
     if (demoJitter) {
       demoJitter.addEventListener('input', (e) => {
@@ -596,14 +628,17 @@
     }
     if (demoRetrace) demoRetrace.addEventListener('change', renderDemo);
     if (demoLines) demoLines.addEventListener('change', renderDemo);
+    window.addEventListener('resize', renderDemo);
 
-    // Initial render when font is ready
+    // Initial Bootstrap
+    applyDark();
+    renderDemo();
+
     if (document.fonts) {
       document.fonts.ready.then(renderDemo);
-    } else {
-      setTimeout(renderDemo, 300);
     }
-    window.addEventListener('resize', renderDemo);
+    setTimeout(renderDemo, 150);
+    setTimeout(renderDemo, 500);
   </script>
 </body>
 
