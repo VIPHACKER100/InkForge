@@ -1,16 +1,16 @@
 <p align="center">
-  <img src="../inkflow_logo.jpeg" alt="Inkflow Logo" width="80" style="border-radius: 50%; box-shadow: 0 4px 12px rgba(0,0,0,0.15);" />
+  <img src="../inkforge_logo.jpeg" alt="InkForge Logo" width="80" style="border-radius: 50%; box-shadow: 0 4px 12px rgba(0,0,0,0.15);" />
 </p>
 
 # 🏛️ System Architecture
 
-This document outlines the **high-level system architecture**, **component layers**, and **data flow** of the Inkflow Handwritten Notes Generator.
+This document outlines the **high-level system architecture**, **component layers**, and **data flow** of the InkForge Handwritten Notes Generator.
 
 ---
 
 ## Architecture Overview
 
-Inkflow is architected as a modular, decoupled, single-file client-side application. It operates entirely within the user's browser, eliminating backend latency and optimizing rendering speeds. All application logic lives in `index.js` (≈7,300 lines), styling in `index.css`, and structure in `index.html`.
+InkForge is architected as a modular, decoupled, single-file client-side application. It operates entirely within the user's browser, eliminating backend latency and optimizing rendering speeds. All application logic lives in `index.js` (≈7,300 lines), styling in `index.css`, and structure in `index.html`.
 
 ---
 
@@ -97,7 +97,7 @@ The visible DOM elements the user interacts with directly: the sidebar control c
 Page canvases are created at a CSS display width computed by `getResponsiveCanvasWidth()` (v1.6.24): phones ≤480px receive `vw − 24px`, tablets ≤768px receive `vw − 32px`, and desktop stays at 720px. The `window.resize` listener keeps all canvases' CSS dimensions live. The `.worksheet-header` (Date / P. No. overlay) is positioned inside `.canvas-container` so it always anchors to the actual canvas top-right corner regardless of viewport width.
 
 ### 2. State Management Layer
-A centralized global configuration object `S` acts as the single source of truth. Changes to any UI control update `S`, which triggers a debounced re-render. A debounced autosave module serializes settings to `localStorage` after a 1000ms idle delay and mirrors them into the active notebook. Custom handwriting glyphs live in **IndexedDB** (`InkflowDB` → `draftedGlyphs`), and notebooks live in **IndexedDB** (`InkflowDB` → `notebooks`), bypassing the 5MB `localStorage` quota.
+A centralized global configuration object `S` acts as the single source of truth. Changes to any UI control update `S`, which triggers a debounced re-render. A debounced autosave module serializes settings to `localStorage` after a 1000ms idle delay and mirrors them into the active notebook. Custom handwriting glyphs live in **IndexedDB** (`InkForgeDB` → `draftedGlyphs`), and notebooks live in **IndexedDB** (`InkForgeDB` → `notebooks`), bypassing the 5MB `localStorage` quota.
 
 ### 3. Core Execution Engines
 The rendering pipeline that transforms state into visual canvas output. The key innovation since v1.2.0 is the **unified `layoutText()` engine**, which performs all word-wrap, page-break, and character-queue computation in a single pass. It routes to three specialist engines — `layoutTextTwoColumn`, `layoutTextCornell`, and `layoutTextCleanStandard` — while the standard flowing engine handles the default case. Static rendering (`renderText`) and animation (`startAnimation`) consume the identical layout output.

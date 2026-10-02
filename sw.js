@@ -1,9 +1,9 @@
 /* ═══════════════════════════════════════════════════════════
-   INKFLOW — Service Worker  (Phase 1 PWA Offline Support)
+   INKFORGE — Service Worker  (Phase 1 PWA Offline Support)
    v1.5.0 | Cache-First for assets, Network-First for shell
 ═══════════════════════════════════════════════════════════ */
 
-const CACHE_VERSION = 'inkflow-v1.6.24';
+const CACHE_VERSION = 'inkforge-v1.6.24';
 const SHELL_CACHE   = `${CACHE_VERSION}-shell`;
 const ASSET_CACHE   = `${CACHE_VERSION}-assets`;
 
@@ -13,7 +13,7 @@ const SHELL_URLS = [
   './index.html',
   './index.css',
   './index.js',
-  './inkflow_logo.jpeg',
+  './inkforge_logo.jpeg',
 ];
 
 /* ── CDN Assets to pre-cache ── */
@@ -64,7 +64,9 @@ self.addEventListener('activate', (event) => {
       Promise.all(
         keys
           .filter(
-            (key) => key.startsWith('inkflow-') && key !== SHELL_CACHE && key !== ASSET_CACHE
+            // 'inkflow-' also matches caches left by the pre-rename
+            // v1.6.x service worker, so returning users don't keep them.
+            (key) => (key.startsWith('inkforge-') || key.startsWith('inkflow-')) && key !== SHELL_CACHE && key !== ASSET_CACHE
           )
           .map((key) => {
             console.log('[SW] Deleting old cache:', key);
@@ -163,9 +165,9 @@ async function networkFirst(request, cacheName) {
 
     return new Response(
       `<!DOCTYPE html><html><body style="font-family:sans-serif;text-align:center;padding:60px">
-        <img src="./inkflow_logo.jpeg" alt="Inkflow Logo" style="width:64px;height:64px;border-radius:50%;margin-bottom:12px;box-shadow:0 4px 12px rgba(0,0,0,0.15)">
-        <h1 style="margin:0 0 10px 0;color:#7c6af7">Inkflow</h1>
-        <p>You're offline. Open Inkflow while connected at least once to cache the app.</p>
+        <img src="./inkforge_logo.jpeg" alt="InkForge Logo" style="width:64px;height:64px;border-radius:50%;margin-bottom:12px;box-shadow:0 4px 12px rgba(0,0,0,0.15)">
+        <h1 style="margin:0 0 10px 0;color:#7c6af7">InkForge</h1>
+        <p>You're offline. Open InkForge while connected at least once to cache the app.</p>
       </body></html>`,
       { headers: { 'Content-Type': 'text/html' } }
     );
@@ -178,7 +180,7 @@ async function networkFirst(request, cacheName) {
    the app attempted an IndexedDB autosave offline.
 ═══════════════════════════════════════════════════ */
 self.addEventListener('sync', (event) => {
-  if (event.tag === 'inkflow-autosave-sync') {
+  if (event.tag === 'inkforge-autosave-sync') {
     // The page handles IndexedDB directly; this event is a signal
     // to notify open clients that they should re-run their save queue.
     event.waitUntil(

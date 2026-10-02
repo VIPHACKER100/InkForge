@@ -1,16 +1,16 @@
 <p align="center">
-  <img src="../inkflow_logo.jpeg" alt="Inkflow Logo" width="80" style="border-radius: 50%; box-shadow: 0 4px 12px rgba(0,0,0,0.15);" />
+  <img src="../inkforge_logo.jpeg" alt="InkForge Logo" width="80" style="border-radius: 50%; box-shadow: 0 4px 12px rgba(0,0,0,0.15);" />
 </p>
 
 # 🤖 AI Integration
 
-This document describes Inkflow's multi-provider AI integration (OpenRouter, Anthropic, and local Ollama) with SSE streaming support.
+This document describes InkForge's multi-provider AI integration (OpenRouter, Anthropic, and local Ollama) with SSE streaming support.
 
 ---
 
 ## Connection Details
 
-Inkflow supports three AI backends (OpenRouter, Anthropic Claude, and local private Ollama). Users select their provider and model from the UI dropdowns.
+InkForge supports three AI backends (OpenRouter, Anthropic Claude, and local private Ollama). Users select their provider and model from the UI dropdowns.
 
 ### 🌐 OpenRouter (Primary)
 - **URL**: `https://openrouter.ai/api/v1/chat/completions`
@@ -20,7 +20,7 @@ Inkflow supports three AI backends (OpenRouter, Anthropic Claude, and local priv
   Content-Type: application/json
   Authorization: Bearer USER_API_KEY
   HTTP-Referer: [Window Location]
-  X-Title: Inkflow Notes Generator
+  X-Title: InkForge Notes Generator
   ```
 
 ### 🔑 Anthropic (Direct)
@@ -84,13 +84,13 @@ This ensures all four AI actions (Summarize, Grammar, Lecture, Assignment) work 
 
 ## Prompts & AI Workflows
 
-All AI actions utilize an upgraded master system prompt (`AI_SYSTEM_BASE_PROMPT`) tailored specifically for Inkflow's native handwritten notebook rendering engine.
+All AI actions utilize an upgraded master system prompt (`AI_SYSTEM_BASE_PROMPT`) tailored specifically for InkForge's native handwritten notebook rendering engine.
 
 ### Master System Prompt (`AI_SYSTEM_BASE_PROMPT`)
 ```
-You are an expert AI notebook assistant for Inkflow, a high-fidelity handwritten notes app.
+You are an expert AI notebook assistant for InkForge, a high-fidelity handwritten notes app.
 
-Format your output using Inkflow's native structured syntax so notes render beautifully on paper:
+Format your output using InkForge's native structured syntax so notes render beautifully on paper:
 1. HEADINGS: Use '# Title' for the main note title and '## Subtitle' for section headers.
 2. LISTS: Use '- Item' for bullet lists and '1. Item' for step-by-step numbered points.
 3. HIGHLIGHTS: Wrap core concepts or keywords in '==key term==' to highlight them.
@@ -99,7 +99,7 @@ Format your output using Inkflow's native structured syntax so notes render beau
 6. FLASHCARDS: Include study questions using 'Q: Question' followed by 'A: Answer' on the next line.
 
 GUIDELINES:
-- Output clean text with Inkflow syntax tags only. Do NOT use markdown code fences (```), HTML tags, or raw bold asterisks (**).
+- Output clean text with InkForge syntax tags only. Do NOT use markdown code fences (```), HTML tags, or raw bold asterisks (**).
 - Write naturally, like a thoughtful human—not a generic AI, essay, brochure, or corporate press release. Be direct, specific, clear, and useful. Use simple words and ordinary verbs.
 - Avoid AI-style filler such as "delve", "pivotal", "crucial", "robust", "vibrant", "meticulous", "enduring", "showcase", "foster", "garner", "bolster", "landscape", "tapestry", "testament", "underscore", "serves as", and "boasts".
 - State facts plainly. Never inflate ordinary facts into grand significance, legacy, impact, cultural importance, broader trends, debates, or future prospects. Avoid empty "highlighting", "underscoring", "reflecting", and "showcasing" clauses.
@@ -119,7 +119,7 @@ GUIDELINES:
 Smart Arrange does NOT call any AI provider. It applies the deterministic
 smartArrangeLocal() tidy-up directly in the browser:
 - normalize headers (#Title → # Title, ##   Heading → ## Heading)
-- normalize Inkflow study tags ([sticky : yellow] → [sticky:yellow], [callout : info] → [callout:info])
+- normalize InkForge study tags ([sticky : yellow] → [sticky:yellow], [callout : info] → [callout:info])
 - normalize highlight spacing (== key == → ==key==)
 - normalize bullet markers (*, •, ‣, +, ⁃, ◦, ▪, ▫, –, — → "- ") & capitalize first character while preserving indentation
 - reformat Q&A flashcards (q1: / Q 1 : / question 1: → Q1:, a 1 : / ans 1: → A1:, a: → A:)
@@ -182,7 +182,7 @@ To ensure raw model outputs render seamlessly as natural handwriting without bre
        │   - Strips `inline backticks`                           │
        │   - Strips **bold**, __bold__, *italic*, _italic_      │
        │   - Strips raw HTML tags (<b>, <code>, <p>, etc.)      │
-       │   - Preserves Inkflow syntax ([sticky], ==hl==, etc.)  │
+       │   - Preserves InkForge syntax ([sticky], ==hl==, etc.)  │
        └───────────────────────────┬────────────────────────────┘
                                    │
                                    ▼
@@ -201,12 +201,12 @@ To ensure raw model outputs render seamlessly as natural handwriting without bre
 ```
 
 ### 1. Markdown Leakage Stripping (`sanitizeAiResponse`)
-Raw markdown symbols (like code fences or backticks) break the aesthetic of "handwritten" notes. `sanitizeAiResponse()` runs a single-pass regex conversion that cleans unwanted syntax while protecting Inkflow study markup:
+Raw markdown symbols (like code fences or backticks) break the aesthetic of "handwritten" notes. `sanitizeAiResponse()` runs a single-pass regex conversion that cleans unwanted syntax while protecting InkForge study markup:
 - **Code Fences**: Removes triple-backtick markers (` ```python ... ``` `) while preserving the code text inside.
 - **Inline Backticks**: Removes single backticks around inline words (`` `class` `` → `class`).
 - **Bold & Italic**: Strips double and single asterisks/underscores (`**bold**` → `bold`).
 - **HTML Markup**: Strips raw HTML tags (`<span>`, `<code>`, `<p>`).
-- **Syntax Preservation**: Leaves Inkflow tags intact (`[sticky:color]`, `[callout:type]`, `==highlight==`, `---`, `***`, `#`, `##`).
+- **Syntax Preservation**: Leaves InkForge tags intact (`[sticky:color]`, `[callout:type]`, `==highlight==`, `---`, `***`, `#`, `##`).
 
 ### 2. Q&A Resequencer & Deduplicator (`resequenceQA`)
 AI models occasionally misnumber flashcard questions (skipping numbers) or repeat duplicate questions within a single session. `resequenceQA()` fixes both issues deterministically:

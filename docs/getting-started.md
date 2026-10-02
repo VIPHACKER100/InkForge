@@ -1,34 +1,34 @@
 <p align="center">
-  <img src="../inkflow_logo.jpeg" alt="Inkflow Logo" width="80" style="border-radius: 50%; box-shadow: 0 4px 12px rgba(0,0,0,0.15);" />
+  <img src="../inkforge_logo.jpeg" alt="InkForge Logo" width="80" style="border-radius: 50%; box-shadow: 0 4px 12px rgba(0,0,0,0.15);" />
 </p>
 
-# 🚀 Getting Started with Inkflow
+# 🚀 Getting Started with InkForge
 
-Welcome to **Inkflow v1.6.24** — a single-file Progressive Web App (PWA) that turns plain text into beautiful, handwritten-style notes with built-in AI (OpenRouter, Anthropic, and local Ollama) plus offline helpers like the no-key Smart Arrange. Fully responsive — verified at 390px mobile width.
+Welcome to **InkForge v1.6.24** — a single-file Progressive Web App (PWA) that turns plain text into beautiful, handwritten-style notes with built-in AI (OpenRouter, Anthropic, and local Ollama) plus offline helpers like the no-key Smart Arrange. Fully responsive — verified at 390px mobile width.
 
 ---
 
-## What Is Inkflow?
+## What Is InkForge?
 
-Inkflow converts typed text into realistic handwriting on virtual A4 paper using your browser. It works fully client-side: no server required, 100% offline-ready via PWA service worker, no sign-up, no telemetry. Everything runs in your browser tab or installed app window.
+InkForge converts typed text into realistic handwriting on virtual A4 paper using your browser. It works fully client-side: no server required, 100% offline-ready via PWA service worker, no sign-up, no telemetry. Everything runs in your browser tab or installed app window.
 
 ---
 
 ## Quick Start
 
-1. **Open or Install the app** — load `index.html` in any browser or click the browser address bar icon to **Install Inkflow** as a PWA app.
+1. **Open or Install the app** — load `index.html` in any browser or click the browser address bar icon to **Install InkForge** as a PWA app.
 2. **Type or paste text** in the sidebar text area (or drag in a `.txt` / `.md` / `.pdf` file).
 3. Press **Animate** to watch the handwriting animation, or press **✦ Render** for instant output.
 4. Use the floating **page indicator** at the bottom to move between pages.
 5. Export via the **Export** section — PNG, JPG, PDF (lossless), SVG, Copy, or Print.
 
-That's it. Inkflow functions 100% offline once opened once.
+That's it. InkForge functions 100% offline once opened once.
 
 ---
 
 ## Hosting Options
 
-Because Inkflow is a static single-page app, it runs anywhere static files are served:
+Because InkForge is a static single-page app, it runs anywhere static files are served:
 
 - **Local**: double-click `index.html` (all libraries load from CDN)
 - **GitHub Pages** / Netlify / Vercel / Cloudflare Pages: push the repo, done
@@ -41,7 +41,7 @@ See [Deployment](./deployment.md) for details, including the AI proxy caveat.
 ## Project Structure
 
 ```
-Inkflow/
+InkForge/
 ├── index.html          # App shell + CDN library loads (html2canvas, jsPDF, opentype.js, Font Awesome — SRI-pinned)
 ├── index.css           # ~2,800 lines: design tokens, themes, paper styles, mobile media queries, modals
 ├── index.js            # ~7,300 lines: the entire application logic
@@ -80,7 +80,7 @@ Inkflow/
 
 ```
 1. Click the text area
-2. Paste: "Hello! This is Inkflow. I make your notes look handwritten."
+2. Paste: "Hello! This is InkForge. I make your notes look handwritten."
 3. Click ▶ Animate
 4. Watch it draw itself
 5. Click Export → PNG

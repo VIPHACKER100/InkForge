@@ -1,10 +1,10 @@
 <p align="center">
-  <img src="../inkflow_logo.jpeg" alt="Inkflow Logo" width="80" style="border-radius: 50%; box-shadow: 0 4px 12px rgba(0,0,0,0.15);" />
+  <img src="../inkforge_logo.jpeg" alt="InkForge Logo" width="80" style="border-radius: 50%; box-shadow: 0 4px 12px rgba(0,0,0,0.15);" />
 </p>
 
 # 🎨 UI Design System
 
-This document describes Inkflow's CSS design token architecture, theme system, layout grid structure, and theme packs.
+This document describes InkForge's CSS design token architecture, theme system, layout grid structure, and theme packs.
 
 ---
 
@@ -38,7 +38,7 @@ The visual foundations are centralized in a CSS Custom Property system, enabling
 
 ## CSS Architecture & Utility Classes
 
-Inkflow avoids inline styles. Layout, spacing, and component styling are abstracted into utility and component classes inside `index.css`.
+InkForge avoids inline styles. Layout, spacing, and component styling are abstracted into utility and component classes inside `index.css`.
 
 Key categories include:
 - **Component Modules**: `.toolbar-group`, `.sb-section`, `.paper-grid`, `.paper-btn`, `.ai-btn-group`, `.export-grid`, `.animation-buttons-row`, `.file-upload-wrapper`, `.action-buttons-row`, `.notebook-actions-row`, `.template-actions-row`
@@ -78,7 +78,7 @@ A neutral, spacious preview environment with:
 - Per-page Date / P. No. worksheet header inputs
 
 ### Floating Header (56px fixed)
-Top toolbar on a frosted backdrop (`backdrop-filter: blur(20px)`) containing the hamburger (mobile), `Inkflow` logo, Animate and Clear buttons, page indicator, Study Mode toggle, Flashcards button, and the dark-mode toggle.
+Top toolbar on a frosted backdrop (`backdrop-filter: blur(20px)`) containing the hamburger (mobile), `InkForge` logo, Animate and Clear buttons, page indicator, Study Mode toggle, Flashcards button, and the dark-mode toggle.
 
 ### Floating Pagination
 Bottom pill-style navigation (`◀ Page X of Y ▶`) for multi-page A4 transitions.

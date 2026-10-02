@@ -1,6 +1,6 @@
 {
-  "name": "Inkflow — AI Handwritten Notes",
-  "short_name": "Inkflow",
+  "name": "InkForge — AI Handwritten Notes",
+  "short_name": "InkForge",
   "description": "Turn plain text into beautiful handwritten-style notes with an AI assistant, custom fonts, study tools, and multi-format exports.",
   "start_url": "./index.html",
   "scope": "./",
@@ -12,7 +12,7 @@
   "categories": ["productivity", "education", "utilities"],
   "icons": [
     {
-      "src": "./inkflow_logo.jpeg",
+      "src": "./inkforge_logo.jpeg",
       "sizes": "512x512",
       "type": "image/jpeg",
       "purpose": "any maskable"
@@ -58,5 +58,6 @@
     }
   ],
   "related_applications": [],
-  "prefer_related_applications": false
+  "prefer_related_applications": false,
+  "repository": "https://github.com/VIPHACKER100/InkForge.git"
 }

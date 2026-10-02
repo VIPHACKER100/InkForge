@@ -1,10 +1,10 @@
 <p align="center">
-  <img src="../inkflow_logo.jpeg" alt="Inkflow Logo" width="80" style="border-radius: 50%; box-shadow: 0 4px 12px rgba(0,0,0,0.15);" />
+  <img src="../inkforge_logo.jpeg" alt="InkForge Logo" width="80" style="border-radius: 50%; box-shadow: 0 4px 12px rgba(0,0,0,0.15);" />
 </p>
 
 # 📤 Export Pipelines
 
-This document describes Inkflow's multi-format export system — 2×-upscaled PNG/JPG image export, SVG vector wrapper, multi-page PDF with selectable output size, clipboard copy, and native print support.
+This document describes InkForge's multi-format export system — 2×-upscaled PNG/JPG image export, SVG vector wrapper, multi-page PDF with selectable output size, clipboard copy, and native print support.
 
 ---
 
@@ -63,7 +63,7 @@ Reads from `pages[]` canvas elements and upsamples 2× before encoding via `canv
 | PNG | `image/png` | 1.0 | Lossless, full alpha |
 | JPG | `image/jpeg` | 0.97 | Near-lossless, smaller file |
 
-Single-page documents export one file (`inkflow-notes.png`); multi-page documents export one file per page (`inkflow-notes-page1.png`, …).
+Single-page documents export one file (`inkforge-notes.png`); multi-page documents export one file per page (`inkforge-notes-page1.png`, …).
 
 > **v1.2.0 Change**: Replaced `html2canvas` screenshot capture with native `canvas.toBlob()`. The `html2canvas` CDN script remains loaded in `index.html` but is no longer referenced by any export path.
 
@@ -80,10 +80,10 @@ const svgContent = `<?xml version="1.0" encoding="UTF-8"?>
   <image href="${imgData}" x="0" y="0" width="${PAGE_W}" height="${PAGE_H}"/>
 </svg>`;
 const blob = new Blob([svgContent], { type: 'image/svg+xml' });
-triggerDownload(URL.createObjectURL(blob), 'inkflow-notes.svg');
+triggerDownload(URL.createObjectURL(blob), 'inkforge-notes.svg');
 ```
 
-For multi-page documents: `inkflow-notes-page1.svg`, `inkflow-notes-page2.svg`, etc.
+For multi-page documents: `inkforge-notes-page1.svg`, `inkforge-notes-page2.svg`, etc.
 
 ---
 
@@ -112,7 +112,7 @@ for (let i = 0; i < pages.length; i++) {
   const mime = preset.format === 'PNG' ? 'image/png' : 'image/jpeg';
   doc.addImage(hq.toDataURL(mime, preset.quality), preset.format, 0, 0, 210, 297, undefined, preset.tag);
 }
-doc.save('inkflow-notes.pdf');
+doc.save('inkforge-notes.pdf');
 ```
 
 > **v1.4.0**: switched to lossless PNG with `NONE` compression for pixel-perfect print quality. **v1.6.20**: made it selectable — the default became **Standard** (2× JPEG 92%, ~4× smaller), with `high` preserving the old lossless behavior.

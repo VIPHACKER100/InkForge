@@ -1,10 +1,10 @@
 <p align="center">
-  <img src="../inkflow_logo.jpeg" alt="Inkflow Logo" width="80" style="border-radius: 50%; box-shadow: 0 4px 12px rgba(0,0,0,0.15);" />
+  <img src="../inkforge_logo.jpeg" alt="InkForge Logo" width="80" style="border-radius: 50%; box-shadow: 0 4px 12px rgba(0,0,0,0.15);" />
 </p>
 
 # ⚙️ Configuration Guide
 
-Complete reference for all user-configurable controls in Inkflow.
+Complete reference for all user-configurable controls in InkForge.
 
 ---
 
@@ -18,7 +18,7 @@ Complete reference for all user-configurable controls in Inkflow.
 | **Word Spacing** | -2px – 14px | 1px | Horizontal gap between words |
 | **Auto-Fit** | — | — | Binary-searches a font size that fits the current text on one page |
 | **Text Alignment** | Upper / Middle / Lower | Middle | Vertical position of handwriting relative to the grid lines |
-| **Custom Font Upload** | `.ttf` / `.otf` | — | Loads a local font; remembered via `localStorage` (`inkflow-fonts`) |
+| **Custom Font Upload** | `.ttf` / `.otf` | — | Loads a local font; remembered via `localStorage` (`inkforge-fonts`) |
 
 > Devanagari content automatically falls back to `Noto Sans Devanagari` / `Hind` when the selected font lacks Indic glyphs.
 

@@ -1,10 +1,10 @@
 <p align="center">
-  <img src="../inkflow_logo.jpeg" alt="Inkflow Logo" width="90" style="border-radius: 50%; box-shadow: 0 4px 12px rgba(0,0,0,0.15);" />
+  <img src="../inkforge_logo.jpeg" alt="InkForge Logo" width="90" style="border-radius: 50%; box-shadow: 0 4px 12px rgba(0,0,0,0.15);" />
 </p>
 
-# 📖 Inkflow Documentation
+# 📖 InkForge Documentation
 
-Welcome to the **Inkflow** documentation hub. This folder contains all technical, design, and operational documentation for the project.
+Welcome to the **InkForge** documentation hub. This folder contains all technical, design, and operational documentation for the project.
 
 **Current Version**: 1.6.25 — Enhanced Realism Engine (anisotropic `scaleX`/`scaleY` jitter; micro-shear `shearX` via `ctx.transform()` in all draw paths; pressure-correlated ink bleed radius when Rare Imperfections is on; universal retrace double-stroke in all render contexts; Devanagari / Indic shear protection); Blue Ink Pen preset (`🖊️ #000F55` — deep royal-blue ballpoint/gel pen colour); `updateInkPresetActive()` helper centralises `.active-ink` ring management across `setInkPreset()`, color picker, `restoreState()`, and `resetToDefaults()`; CSS `.active-ink` accent-ring with micro-animation; smoke test suite expanded. Previous: 1.6.24 — Mobile Canvas Layout Fix (`getResponsiveCanvasWidth()`, worksheet header in `.canvas-container`, resize handler, media queries); Mobile UX Overhaul (icon-only toolbar ≤768px, sidebar drawer, safe-area insets, `100dvh`, full-screen mobile modals); AI Response Post-Processing (`sanitizeAiResponse()`, `resequenceQA()`); Human Handwriting Realism Engine (seeded `mulberry32` PRNG, per-glyph jitter, baseline drift, retrace double-strokes, `#realism-slider`, `#rare-imperfections-toggle`); PDF Output Size presets; Lossless Page-Editor Sync.
 

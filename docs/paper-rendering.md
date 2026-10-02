@@ -1,16 +1,16 @@
 <p align="center">
-  <img src="../inkflow_logo.jpeg" alt="Inkflow Logo" width="80" style="border-radius: 50%; box-shadow: 0 4px 12px rgba(0,0,0,0.15);" />
+  <img src="../inkforge_logo.jpeg" alt="InkForge Logo" width="80" style="border-radius: 50%; box-shadow: 0 4px 12px rgba(0,0,0,0.15);" />
 </p>
 
 # 📄 Paper Rendering Engine
 
-This document describes Inkflow's paper background rendering system — the supported styles, grain texture shader, ruling/grid mathematics, and the printed Date / Page No. header box.
+This document describes InkForge's paper background rendering system — the supported styles, grain texture shader, ruling/grid mathematics, and the printed Date / Page No. header box.
 
 ---
 
 ## Overview
 
-Inkflow features A4 aspect ratio rendering (794px × 1123px) inside standard `<canvas>` blocks. The background generator dynamically paints complex background styles based on the selected notebook options via `drawPaperBackground(ctx, style, pageNum)`.
+InkForge features A4 aspect ratio rendering (794px × 1123px) inside standard `<canvas>` blocks. The background generator dynamically paints complex background styles based on the selected notebook options via `drawPaperBackground(ctx, style, pageNum)`.
 
 ---
 

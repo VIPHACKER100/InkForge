@@ -1,4 +1,4 @@
-/* Smoke tests for Inkflow's regression-prone pure logic:
+/* Smoke tests for InkForge's regression-prone pure logic:
  *   1. layoutText() pagination — word wrap, page breaks, text reconstruction
  *   2. Editor sync round-trip — [sticky]/[callout] markers must survive the
  *      page-editor → global-text sync (regressed in v1.6.19 and v1.6.21)
@@ -116,7 +116,7 @@ source = source.replace('\ninitApp();', '\n');
 // context-scoped and invisible from outside; this snippet runs in the same
 // scope so it can hand the tested symbols to the harness.
 source += `
-;globalThis.__inkflow = {
+;globalThis.__inkforge = {
   S,
   layoutText,
   parseRichSyntax,
@@ -183,7 +183,7 @@ const {
   collectAnswerLineItems, drawMarginQuestionLabels, getAnswerPrefixInfo,
   clusterQueueLines, pages,
   PAGE_W, PAGE_H, setInkPreset, assignState,
-} = sandbox.__inkflow;
+} = sandbox.__inkforge;
 
 /* ── Harness ──────────────────────────────────────────────────── */
 
@@ -200,7 +200,7 @@ function test(name, fn) {
   }
 }
 
-console.log('\nInkflow smoke tests\n');
+console.log('\nInkForge smoke tests\n');
 
 /* ── 1. layoutText pagination ─────────────────────────────────── */
 
@@ -331,7 +331,7 @@ test('multi-page editors join with a newline separator', () => {
 console.log('Seeded PRNG & Realism Engine');
 
 test('mulberry32 PRNG produces 100% deterministic sequence', () => {
-  const seed = hashString('Inkflow handwritten sample note text 123');
+  const seed = hashString('InkForge handwritten sample note text 123');
   const prng1 = createPRNG(seed);
   const prng2 = createPRNG(seed);
   const seq1 = Array.from({ length: 10 }, () => prng1());
@@ -421,7 +421,7 @@ test('sanitizeAiResponse strips inline backtick spans', () => {
   assert.equal(out, 'Use the print() function and input() together.');
 });
 
-test('sanitizeAiResponse strips bold and italic markers but preserves Inkflow ==highlights==', () => {
+test('sanitizeAiResponse strips bold and italic markers but preserves InkForge ==highlights==', () => {
   const raw = '**Bold term** and _italic_ and ==highlighted== and __also bold__.';
   const out = sanitizeAiResponse(raw);
   assert.ok(!out.includes('**'), 'bold ** should be stripped');

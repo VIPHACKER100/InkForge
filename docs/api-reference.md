@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="../inkflow_logo.jpeg" alt="Inkflow Logo" width="80" style="border-radius: 50%; box-shadow: 0 4px 12px rgba(0,0,0,0.15);" />
+  <img src="../inkforge_logo.jpeg" alt="InkForge Logo" width="80" style="border-radius: 50%; box-shadow: 0 4px 12px rgba(0,0,0,0.15);" />
 </p>
 
 # 📚 API Reference
@@ -19,7 +19,7 @@ Single source of truth for the app. Fields: `text`, `font`, `fontSize`, `lineHei
 - `ALL_TEMPLATE_CHARS` — 84-character union of both sheets
 - `AI_MODELS` — static fallback model lists for `openrouter` / `anthropic`
 - `THEMES` — theme pack presets (`default`, `vintage`, `cute`, `science`, `minimal`, `scrapbook`)
-- `DB_NAME` (`InkflowDB`), `STORE_NAME` (`draftedGlyphs`), `NOTEBOOKS_STORE` (`notebooks`)
+- `DB_NAME` (`InkForgeDB`), `STORE_NAME` (`draftedGlyphs`), `NOTEBOOKS_STORE` (`notebooks`)
 
 ---
 
@@ -222,7 +222,7 @@ Sends a streaming request to a local Ollama server (default `http://localhost:11
 - **Privacy**: 100% private client-side REST call; requires no API key.
 
 ### `initApiKeyPersistence()`
-Wires `input` and `change` event listeners to `#api-key` and `#remember-api-key`. Saves `inkflow-api-key-{provider}` to `localStorage` when checked and restores it on page boot or provider change.
+Wires `input` and `change` event listeners to `#api-key` and `#remember-api-key`. Saves `inkforge-api-key-{provider}` to `localStorage` when checked and restores it on page boot or provider change.
 
 ### `aiAction(type)`
 Dispatches an AI workflow and streams the result onto the canvas.
@@ -230,7 +230,7 @@ Dispatches an AI workflow and streams the result onto the canvas.
 - **Note (v1.6.7+)**: `arrange` does **not** call any AI provider — it runs the offline `smartArrangeLocal()` tidy-up and reports the number of fixes via toast and `#ai-status`.
 
 ### `smartArrangeLocal(text)`
-Offline deterministic text tidy-up engine used by Smart Arrange. Normalizes markdown headers (`#Title` → `# Title`, `##   Heading` → `## Heading`), Inkflow study tags (`[sticky : color]` → `[sticky:color]`), highlight markers (`== key ==` → `==key==`), bullet points (`*`/`•`/`‣`/`+`/`⁃`/`◦`/`▪`/`▫`/`–`/`—` → `- ` with preserved indentation and capitalized first char), Q&A flashcards (`q 1 :` / `question 1:` → `Q1:`, `a 1 :` / `ans 1:` → `A1:`), punctuation spacing (removes space before `,.;:!?` and adds space after `,;!?`), double space collapsing (preserving leading line indentation and fill-in underscores), structural line breaks before headers/questions, 3+ blank line collapse, and trailing single newline.
+Offline deterministic text tidy-up engine used by Smart Arrange. Normalizes markdown headers (`#Title` → `# Title`, `##   Heading` → `## Heading`), InkForge study tags (`[sticky : color]` → `[sticky:color]`), highlight markers (`== key ==` → `==key==`), bullet points (`*`/`•`/`‣`/`+`/`⁃`/`◦`/`▪`/`▫`/`–`/`—` → `- ` with preserved indentation and capitalized first char), Q&A flashcards (`q 1 :` / `question 1:` → `Q1:`, `a 1 :` / `ans 1:` → `A1:`), punctuation spacing (removes space before `,.;:!?` and adds space after `,;!?`), double space collapsing (preserving leading line indentation and fill-in underscores), structural line breaks before headers/questions, 3+ blank line collapse, and trailing single newline.
 - **Parameters**: `text` (String)
 - **Returns**: `{ text, fixes }`
 
@@ -247,7 +247,7 @@ Rebuilds the model dropdown and API-key label for the selected provider (`openro
 Writes a status message into `#ai-status`.
 
 ### `sanitizeAiResponse(text)`
-Post-processes raw AI provider response text before it reaches the canvas renderer or state. Strips markdown triple-backtick code fences (` ```python … ``` `, preserving code body), inline backtick spans (`` `term` `` → `term`), bold/italic markers (`**`, `__`, `*`, `_`), and raw HTML tags (`<p>`, `<code>`, etc.), while preserving Inkflow's native syntax tags (`[Q: ...]`, `[sticky:...]`, `[callout:...]`, `==highlight==`, `---`, `***`, `#`, etc.).
+Post-processes raw AI provider response text before it reaches the canvas renderer or state. Strips markdown triple-backtick code fences (` ```python … ``` `, preserving code body), inline backtick spans (`` `term` `` → `term`), bold/italic markers (`**`, `__`, `*`, `_`), and raw HTML tags (`<p>`, `<code>`, etc.), while preserving InkForge's native syntax tags (`[Q: ...]`, `[sticky:...]`, `[callout:...]`, `==highlight==`, `---`, `***`, `#`, etc.).
 - **Parameters**: `text` (String)
 - **Returns**: Cleaned plain text (String)
 
@@ -282,7 +282,7 @@ Compiles all pages into a multi-page A4 PDF via `PDF_SIZE_PRESETS`, selected by 
 - **Standard** (default) — 2× render, JPEG 92%, `FAST` — balanced
 - **High** — 2× render, lossless PNG, `NONE` — print/archive
 
-Output: `inkflow-notes.pdf`; progress and the chosen preset are shown in toasts.
+Output: `inkforge-notes.pdf`; progress and the chosen preset are shown in toasts.
 
 ### `exportSVG()`
 Generates SVG files wrapping full-resolution PNG images, one file per page.
@@ -301,7 +301,7 @@ Shows a non-blocking toast (`info | success | warn | error`) with auto-dismiss f
 ## Persistence
 
 ### `autosave()`
-Debounced (1000ms) serializer that writes settings to `localStorage` (`inkflow-state`) and mirrors the current note into the active notebook in IndexedDB.
+Debounced (1000ms) serializer that writes settings to `localStorage` (`inkforge-state`) and mirrors the current note into the active notebook in IndexedDB.
 
 ### `async restoreState()`
 Hydrates `S` from `localStorage`, syncs DOM controls, loads glyphs from IndexedDB, migrates legacy glyphs, and prunes blank glyphs.
@@ -310,7 +310,7 @@ Hydrates `S` from `localStorage`, syncs DOM controls, loads glyphs from IndexedD
 Resets all settings to factory defaults and updates every relevant DOM control.
 
 ### `getDB()`
-Resolves a Promise with the `InkflowDB` connection, creating the `draftedGlyphs` store if needed.
+Resolves a Promise with the `InkForgeDB` connection, creating the `draftedGlyphs` store if needed.
 
 ### `saveGlyphDB(char, dataUrl)`
 Writes a drafted glyph data URL to IndexedDB. Returns a Promise.
@@ -329,7 +329,7 @@ Removes blank/corrupt glyphs from memory and IndexedDB, updates the char-grid UI
 ## Notebooks & Folders
 
 ### `getNotebooksDB()`
-Resolves a Promise with the `InkflowDB` connection, creating the `notebooks` store (keyPath `id`) if needed.
+Resolves a Promise with the `InkForgeDB` connection, creating the `notebooks` store (keyPath `id`) if needed.
 
 ### `saveNotebook(notebook)`
 Puts a notebook record into the `notebooks` store. Returns a Promise.

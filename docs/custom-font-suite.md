@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="../inkflow_logo.jpeg" alt="Inkflow Logo" width="80" style="border-radius: 50%; box-shadow: 0 4px 12px rgba(0,0,0,0.15);" />
+  <img src="../inkforge_logo.jpeg" alt="InkForge Logo" width="80" style="border-radius: 50%; box-shadow: 0 4px 12px rgba(0,0,0,0.15);" />
 </p>
 
 # 🔤 Custom Font Suite (HandFonted Studio)
@@ -105,6 +105,6 @@ An interactive 256×256 canvas with:
 
 ## Persistence
 
-- Glyphs persist in **IndexedDB** (`InkflowDB` → `draftedGlyphs` store), bypassing the 5MB `localStorage` limit.
+- Glyphs persist in **IndexedDB** (`InkForgeDB` → `draftedGlyphs` store), bypassing the 5MB `localStorage` limit.
 - Boot migration moves any legacy `localStorage` glyphs into IndexedDB and clears the old keys.
-- Uploaded fonts register via `FontFace` at runtime and their names are remembered in `localStorage` (`inkflow-fonts`).
+- Uploaded fonts register via `FontFace` at runtime and their names are remembered in `localStorage` (`inkforge-fonts`).

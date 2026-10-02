@@ -1,16 +1,16 @@
 <p align="center">
-  <img src="../inkflow_logo.jpeg" alt="Inkflow Logo" width="80" style="border-radius: 50%; box-shadow: 0 4px 12px rgba(0,0,0,0.15);" />
+  <img src="../inkforge_logo.jpeg" alt="InkForge Logo" width="80" style="border-radius: 50%; box-shadow: 0 4px 12px rgba(0,0,0,0.15);" />
 </p>
 
 # ✒️ Handwriting Synthesis Engine
 
-This document details Inkflow's core handwriting rendering algorithm — the unified layout engine, per-character transformation loop, glyph variation system, ink bleed simulation, Indic script support, rich study syntax, and word-wrap calculations.
+This document details InkForge's core handwriting rendering algorithm — the unified layout engine, per-character transformation loop, glyph variation system, ink bleed simulation, Indic script support, rich study syntax, and word-wrap calculations.
 
 ---
 
 ## Overview
 
-Inkflow uses a character-by-character render loop on standard 2D canvas contexts rather than rendering unified, static text lines. Each letter has custom variations applied, introducing the minor imperfections that make real handwriting look authentic.
+InkForge uses a character-by-character render loop on standard 2D canvas contexts rather than rendering unified, static text lines. Each letter has custom variations applied, introducing the minor imperfections that make real handwriting look authentic.
 
 The entire layout computation is centralized in the **`layoutText(text)`** function, which is shared by both static rendering and animation playback, and dispatches to four layout engines:
 
@@ -93,7 +93,7 @@ Used by the Clean layout engine. Splits text into blocks: `#` headings, `##` sub
 The mathematical core of character rendering computes seeded, randomized transforms, baselines, and stroke properties for every individual glyph. All offsets scale proportionally with `fontSize` and `S.realism` so the handwriting looks natural at any size and setting.
 
 ### Seeded PRNG (`mulberry32`)
-To guarantee 100% deterministic layout and rendering across re-renders, page navigations, and PDF exports, Inkflow uses a fast `mulberry32` PRNG initialized with an FNV-1a hash of the active note ID and text content:
+To guarantee 100% deterministic layout and rendering across re-renders, page navigations, and PDF exports, InkForge uses a fast `mulberry32` PRNG initialized with an FNV-1a hash of the active note ID and text content:
 
 ```javascript
 const seedText = (activeNotebookId || '') + cleanText;
@@ -158,7 +158,7 @@ if (glyphImg) {
 ## Pen Pressure & Ink Bleed Simulation
 
 ### Pressure Modulation
-True pen handwriting shows varied thickness depending on velocity and pressure. Inkflow models this by scaling the active font-size for each character by a dynamic `pressureMod`:
+True pen handwriting shows varied thickness depending on velocity and pressure. InkForge models this by scaling the active font-size for each character by a dynamic `pressureMod`:
 
 $$\text{Size}_{\text{px}} = \text{FontSize} \times \left(1 - \text{random}(0, \text{Pressure} \times 1.4)\right)$$
 

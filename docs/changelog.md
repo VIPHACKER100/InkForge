@@ -1,10 +1,10 @@
 <p align="center">
-  <img src="../inkflow_logo.jpeg" alt="Inkflow Logo" width="80" style="border-radius: 50%; box-shadow: 0 4px 12px rgba(0,0,0,0.15);" />
+  <img src="../inkforge_logo.jpeg" alt="InkForge Logo" width="80" style="border-radius: 50%; box-shadow: 0 4px 12px rgba(0,0,0,0.15);" />
 </p>
 
 # 📋 Changelog
 
-All notable changes to Inkflow are documented in this file.
+All notable changes to InkForge are documented in this file.
 
 ## [1.6.25] — 2026-10-01
 
@@ -71,15 +71,15 @@ All notable changes to Inkflow are documented in this file.
 
 ### 🐛 Fixed
 
-- **Markdown Leakage on Canvas** (`sanitizeAiResponse`): AI provider responses containing triple-backtick code fences (` ```python … ``` `), inline backtick spans (`` `term` ``), bold/italic markers (`**bold**`, `_italic_`, `__bold__`), and raw HTML tags (`<br>`, `<strong>`) were passed directly to the canvas renderer and appeared as literal handwritten characters. A `sanitizeAiResponse()` post-processing pass now runs on every AI result before it reaches the textarea or renderer. Code-fence body content is preserved (only the fence markers are stripped); Inkflow's own markup (`==highlights==`, `[sticky:…]`, `[callout:…]`, `# headings`) is left completely intact.
+- **Markdown Leakage on Canvas** (`sanitizeAiResponse`): AI provider responses containing triple-backtick code fences (` ```python … ``` `), inline backtick spans (`` `term` ``), bold/italic markers (`**bold**`, `_italic_`, `__bold__`), and raw HTML tags (`<br>`, `<strong>`) were passed directly to the canvas renderer and appeared as literal handwritten characters. A `sanitizeAiResponse()` post-processing pass now runs on every AI result before it reaches the textarea or renderer. Code-fence body content is preserved (only the fence markers are stripped); InkForge's own markup (`==highlights==`, `[sticky:…]`, `[callout:…]`, `# headings`) is left completely intact.
 
-- **Q&A Numbering Skips and Near-Duplicate Questions** (`resequenceQA`): AI-generated flashcard pairs were numbered by the model itself (e.g. `Q3:`, `Q7:`) rather than by Inkflow, so skipped or duplicated model numbers produced gaps and merged content in the margin label system. Additionally, the same concept was occasionally generated twice with near-identical wording. `resequenceQA()` now runs after `sanitizeAiResponse()` and (a) renumbers every `Q:/A:` pair sequentially from `Q1` using a local counter, completely ignoring the model's own numbering, and (b) drops any question whose trigram Jaccard similarity to any previously accepted question meets or exceeds 0.72, also dropping the paired `A:` so the note is never left with a dangling answer.
+- **Q&A Numbering Skips and Near-Duplicate Questions** (`resequenceQA`): AI-generated flashcard pairs were numbered by the model itself (e.g. `Q3:`, `Q7:`) rather than by InkForge, so skipped or duplicated model numbers produced gaps and merged content in the margin label system. Additionally, the same concept was occasionally generated twice with near-identical wording. `resequenceQA()` now runs after `sanitizeAiResponse()` and (a) renumbers every `Q:/A:` pair sequentially from `Q1` using a local counter, completely ignoring the model's own numbering, and (b) drops any question whose trigram Jaccard similarity to any previously accepted question meets or exceeds 0.72, also dropping the paired `A:` so the note is never left with a dangling answer.
 
 ### ✨ Enhanced
 
 - **Offline Smart Arrange Upgrade** (`smartArrangeLocal`): Major upgrade to the offline, deterministic text formatting engine. In addition to bullet normalization and spacing cleanup, it now automatically formats:
   - Markdown headers (`#Title` → `# Title`, `##   Heading` → `## Heading`)
-  - Inkflow study tags (`[sticky : yellow]` → `[sticky:yellow]`, `[callout : info]` → `[callout:info]`)
+  - InkForge study tags (`[sticky : yellow]` → `[sticky:yellow]`, `[callout : info]` → `[callout:info]`)
   - Highlight spacing (`== key ==` → `==key==`)
   - Bullet capitalization & expanded markers (`*`, `•`, `‣`, `+`, `⁃`, `◦`, `▪`, `▫`, `–`, `—` → `- `, with preserved indentation)
   - Q&A flashcard labels (`q 1 :` / `question 1:` → `Q1:`, `a 1 :` / `ans 1:` → `A1:`)
@@ -256,18 +256,18 @@ All notable changes to Inkflow are documented in this file.
 ### 🐛 Fixed
 - **Clean Notes Ruled Grid Line Alignment**: Fixed line drift in `layoutTextCleanStandard` by locking all block transitions, word wraps, and heading heights to the exact notebook paper grid line height (`fontSize × lineHeight`), ensuring text lines never cross or drift away from the blue ruled notebook lines.
 - **Clean Handwriting & Glyph Connection Fix**: Removed synthetic Bézier curve ligature drawing post-pass that generated unwanted drooping ink drop artifacts and sagging loops underneath cursive characters (e.g. *Caveat*, *Kalam*, *Nanum Pen Script*). Relying on native font vector outlines and OpenType cursive joins for crisp, realistic handwriting without artifacts.
-- **Service Worker Cache Eviction**: Upgraded `CACHE_VERSION` to `inkflow-v1.5.2` in `sw.js` and added cache-busting query parameter `?v=1.5.2` to `index.js` in `index.html` to ensure immediate asset updates.
+- **Service Worker Cache Eviction**: Upgraded `CACHE_VERSION` to `inkforge-v1.5.2` in `sw.js` and added cache-busting query parameter `?v=1.5.2` to `index.js` in `index.html` to ensure immediate asset updates.
 
 ---
 
 ## [1.6.0] — 2026-08-27
 
 ### ✨ Added
-- **Enhanced Inkflow Brand Logo Integration**: Added high-resolution `inkflow_logo.jpeg` brand icon to the top navigation bar with circular glassmorphism container, hover scaling animation, PWA manifest icons, browser tab favicons, and service worker shell pre-caching.
+- **Enhanced InkForge Brand Logo Integration**: Added high-resolution `inkforge_logo.jpeg` brand icon to the top navigation bar with circular glassmorphism container, hover scaling animation, PWA manifest icons, browser tab favicons, and service worker shell pre-caching.
 - **Updated OpenRouter AI Model Catalog**: Modernized the `AI_MODELS.openrouter` static fallback array in `index.js` and upgraded `fetchOpenRouterModels()` parser to support free model auto-routing (`openrouter/free`), Google Gemini (3.7 Flash, 3.6 Flash), Anthropic Claude (Sonnet 5, Opus 5), OpenAI GPT (GPT-5.6 Luna, GPT-4o), DeepSeek (V4 Flash, V4 Pro, R1), Meta Llama (Llama 4 Maverick), Mistral, Qwen, and xAI Grok.
 - **HandFonted Studio Standalone TTF Font Exporter**: Added `exportCustomFontTTF()` and `📥 Download TTF Font` button. Users can now compile their custom sketched or template-scanned vector handwriting font into a standalone `.ttf` TrueType Font binary file to install on Windows, macOS, iOS, Microsoft Word, or Photoshop.
-- **Upgraded AI Workflow System Prompts**: Introduced `AI_SYSTEM_BASE_PROMPT` in `index.js`, instructing OpenRouter, Anthropic, and Ollama AI engines to output Inkflow's native rich study syntax (`#` H1 headers, `##` H2 subheaders, `-` bullet lists, `==highlights==`, `[sticky]` margin notes, `[callout]` inset boxes, and `Q: / A:` flashcards).
-- **API Key Storage Persistence**: Implemented `initApiKeyPersistence()`, persisting API keys per provider (`inkflow-api-key-openrouter`, `inkflow-api-key-anthropic`) in `localStorage` when *"Remember API key on this device"* is checked, restoring them seamlessly on page load.
+- **Upgraded AI Workflow System Prompts**: Introduced `AI_SYSTEM_BASE_PROMPT` in `index.js`, instructing OpenRouter, Anthropic, and Ollama AI engines to output InkForge's native rich study syntax (`#` H1 headers, `##` H2 subheaders, `-` bullet lists, `==highlights==`, `[sticky]` margin notes, `[callout]` inset boxes, and `Q: / A:` flashcards).
+- **API Key Storage Persistence**: Implemented `initApiKeyPersistence()`, persisting API keys per provider (`inkforge-api-key-openrouter`, `inkforge-api-key-anthropic`) in `localStorage` when *"Remember API key on this device"* is checked, restoring them seamlessly on page load.
 - **WCAG 2.1 Modal Focus Trapping**: Added `trapFocusModal()`, enforcing keyboard focus cycling (`Tab` / `Shift+Tab`) and `Escape` key dismissal across `HandFonted Studio` and `Flashcards Review` modals.
 
 ---
@@ -275,7 +275,7 @@ All notable changes to Inkflow are documented in this file.
 ## [1.5.0] — 2026-08-27
 
 ### ✨ Added
-- **Progressive Web App (PWA) Offline Support**: Added `sw.js` (Service Worker) and `manifest.json` (Web App Manifest). Inkflow can now be installed directly to desktop or mobile home screens and works 100% offline with a Cache-First strategy for CDN assets (Google Fonts, FontAwesome, jsPDF) and Network-First for app shell files.
+- **Progressive Web App (PWA) Offline Support**: Added `sw.js` (Service Worker) and `manifest.json` (Web App Manifest). InkForge can now be installed directly to desktop or mobile home screens and works 100% offline with a Cache-First strategy for CDN assets (Google Fonts, FontAwesome, jsPDF) and Network-First for app shell files.
 - **Ollama Local AI Provider Integration**: Added `ollama` option to the AI Provider selector with support for local models (`Llama 3.2`, `Mistral`, `Phi-4`, `Gemma 2`, `Qwen 2.5`, `DeepSeek R1`, `CodeLlama`). Integrates with Ollama's local REST API (`http://localhost:11434/api/chat`) for 100% private, offline AI notes summarization, smart arranging, and assignment generation without API keys.
 - **Connected Cursive Ligature Engine**: Added `CURSIVE_FONTS` set (`Caveat`, `Homemade Apple`, `Shadows Into Light`, `Nanum Pen Script`, `Reey`, `Amita`, `Kalam`) and `drawCursiveConnector()` quadratic Bezier stroke rendering pipeline that dynamically draws entry/exit ligature connectors between adjacent glyphs for realistic cursive writing.
 
@@ -307,7 +307,7 @@ All notable changes to Inkflow are documented in this file.
 - **Study Mode**: New toolbar toggle that dims editing chrome for review, with a floating "Exit Study Mode" button.
 - **Flashcard Review Deck**: `Q:`/`A:` pairs are collected into a flashcard deck. A toolbar button opens the flip-card review modal with prev/next navigation and a progress counter.
 - **Voice to Notes**: Speech-to-text input (Web Speech API) appends transcribed notes to the text area. Automatically disabled in browsers without `SpeechRecognition` support.
-- **Notebooks & Folders Explorer**: New sidebar section with persistent notebooks stored in IndexedDB (`InkflowDB` → `notebooks` store). Supports creating notes/folders, loading, and deleting notes. A "Welcome to Inkflow" note is auto-created on first boot, and the active notebook is autosaved on every change.
+- **Notebooks & Folders Explorer**: New sidebar section with persistent notebooks stored in IndexedDB (`InkForgeDB` → `notebooks` store). Supports creating notes/folders, loading, and deleting notes. A "Welcome to InkForge" note is auto-created on first boot, and the active notebook is autosaved on every change.
 - **Theme Packs**: Six one-click themes (Default, Vintage Diary, Cute Pastel, Science Lab, Minimal Noir, Scrapbook) that apply paper style, ink color, rotation, bleed, pressure, and font size presets together.
 - **Text Vertical Alignment**: New Upper / Middle / Lower alignment control (`setTextAlignment`) that shifts handwriting relative to the ruled grid lines via `getAlignmentOffset()`.
 - **Auto-Fit Font Size**: `autoFitFontSize()` binary-searches the font size (14–52px) that fits the current text within one page and applies it.
@@ -330,7 +330,7 @@ All notable changes to Inkflow are documented in this file.
 ### ✨ Added
 - **Multi-Sheet HandFonting Templates**: Extended custom handwriting font coverage by dividing templates into two sheets: `Letters` (52 upper/lowercase letters) and `Numbers & Symbols` (32 standard numbers, symbols, and punctuation marks: `0–9` and standard symbols/punctuation: `. , ? ! @ # $ % ^ & * ( ) - _ + = / : ; ' "`).
 - **Tabbed HandFonted Studio UI**: Interactive sheet tabs inside the Live Sketchpad modal and a dropdown selector inside the Scan Template upload tab to switch sheets. Each sheet retains separate grid alignment offsets (`X, Y, W, H`) and uploaded alignment image states.
-- **IndexedDB Glyph Storage**: Migrated custom character drafts from `localStorage` to `IndexedDB` (`InkflowDB` → `draftedGlyphs` store), bypassing the 5MB browser quota limit and preventing browser data crashes.
+- **IndexedDB Glyph Storage**: Migrated custom character drafts from `localStorage` to `IndexedDB` (`InkForgeDB` → `draftedGlyphs` store), bypassing the 5MB browser quota limit and preventing browser data crashes.
 - **IndexedDB Auto-Migration**: Included a transparent boot migration script in `restoreState()` that transfers any pre-existing custom glyphs from `localStorage` into the IndexedDB store, clearing the old keys automatically.
 - **Dotted Paper Grid**: New "Dot Grid" paper style rendering dots on a beige background (`#f6f2ec`).
 - **Engineering Paper Style**: New "Engineering" paper style on pale green background (`#eef6ed`) with minor/major grid lines and reddish-brown margins.

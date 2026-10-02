@@ -1,10 +1,10 @@
 <p align="center">
-  <img src="../inkflow_logo.jpeg" alt="Inkflow Logo" width="80" style="border-radius: 50%; box-shadow: 0 4px 12px rgba(0,0,0,0.15);" />
+  <img src="../inkforge_logo.jpeg" alt="InkForge Logo" width="80" style="border-radius: 50%; box-shadow: 0 4px 12px rgba(0,0,0,0.15);" />
 </p>
 
 # 🖱️ UX Interactions & User Flows
 
-This document maps the user-facing interactions in Inkflow to the functions and flows behind them.
+This document maps the user-facing interactions in InkForge to the functions and flows behind them.
 
 ---
 
@@ -124,10 +124,10 @@ When **Question & answer numbers in left margin** is checked (Page Layout sectio
 
 | Action | Button | Result |
 | :--- | :--- | :--- |
-| PNG | 🖼 | 2×-upscaled PNGs — `inkflow-notes.png` (single page) or `inkflow-notes-pageN.png` (multi-page) |
+| PNG | 🖼 | 2×-upscaled PNGs — `inkforge-notes.png` (single page) or `inkforge-notes-pageN.png` (multi-page) |
 | JPG | 📷 | Same naming, 2× JPEGs (quality 0.97) |
-| PDF | 📄 | Single lossless multi-page PDF (`inkflow-notes.pdf`) |
-| SVG | 🎨 | `inkflow-notes.svg` / `inkflow-notes-pageN.svg`, wrapping the PNG |
+| PDF | 📄 | Single lossless multi-page PDF (`inkforge-notes.pdf`) |
+| SVG | 🎨 | `inkforge-notes.svg` / `inkforge-notes-pageN.svg`, wrapping the PNG |
 | Copy | 📋 | Current page copied to the clipboard as PNG |
 | Print | 🖨 | `window.print()` with print CSS |
 
@@ -150,7 +150,7 @@ See [Custom Font Suite](./custom-font-suite.md).
 
 ## Mobile & Touch Experience (≤768px)
 
-Inkflow's mobile layout is a first-class target — verified at a 390×844 viewport.
+InkForge's mobile layout is a first-class target — verified at a 390×844 viewport.
 
 ### Responsive Canvas Sizing (v1.6.24)
 Canvas pages are created with a CSS display width computed by `getResponsiveCanvasWidth()`:

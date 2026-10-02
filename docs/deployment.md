@@ -1,10 +1,10 @@
 <p align="center">
-  <img src="../inkflow_logo.jpeg" alt="Inkflow Logo" width="80" style="border-radius: 50%; box-shadow: 0 4px 12px rgba(0,0,0,0.15);" />
+  <img src="../inkforge_logo.jpeg" alt="InkForge Logo" width="80" style="border-radius: 50%; box-shadow: 0 4px 12px rgba(0,0,0,0.15);" />
 </p>
 
 # 🌐 Deployment Guide
 
-Inkflow is a fully static, client-side web application. There is no build step, no server, and no backend — deployment is just serving the static app files.
+InkForge is a fully static, client-side web application. There is no build step, no server, and no backend — deployment is just serving the static app files.
 
 ---
 
@@ -23,7 +23,7 @@ Inkflow is a fully static, client-side web application. There is no build step, 
 
 ## Versioning & Cache-Busting
 
-Inkflow pins its version in three places that must agree: `package.json` (`version`), `sw.js` (`CACHE_VERSION`), and the `index.html` script tag (`index.js?v=…`, which busts the service worker's cache-first asset cache).
+InkForge pins its version in three places that must agree: `package.json` (`version`), `sw.js` (`CACHE_VERSION`), and the `index.html` script tag (`index.js?v=…`, which busts the service worker's cache-first asset cache).
 
 - Run `npm run check-versions` to verify parity (exit code 1 on drift).
 - When you change `index.js` or `index.css`, bump **all three** and add a `docs/changelog.md` entry — skipping the bump risks clients being served stale code from the service worker's cache.
@@ -60,7 +60,7 @@ npx serve .
 Open `http://localhost:8000`.
 
 ### 2. GitHub Pages
-Push the repo, then in **Settings → Pages** set the source to the `main` branch root. The site appears at `https://<user>.github.io/Inkflow/`.
+Push the repo, then in **Settings → Pages** set the source to the `main` branch root. The site appears at `https://<user>.github.io/InkForge/`.
 
 ### 3. Netlify / Vercel / Cloudflare Pages
 Connect the repository — each detects a static site with no build step. Deploy command: `none`. Publish directory: repository root.

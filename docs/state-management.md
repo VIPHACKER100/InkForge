@@ -1,10 +1,10 @@
 <p align="center">
-  <img src="../inkflow_logo.jpeg" alt="Inkflow Logo" width="80" style="border-radius: 50%; box-shadow: 0 4px 12px rgba(0,0,0,0.15);" />
+  <img src="../inkforge_logo.jpeg" alt="InkForge Logo" width="80" style="border-radius: 50%; box-shadow: 0 4px 12px rgba(0,0,0,0.15);" />
 </p>
 
 # 💾 State Management & Hydration
 
-This document describes Inkflow's global state schema, the hydration/persistence lifecycle, the debounced autosave mechanism, and the dual persistence stores (`localStorage` + IndexedDB).
+This document describes InkForge's global state schema, the hydration/persistence lifecycle, the debounced autosave mechanism, and the dual persistence stores (`localStorage` + IndexedDB).
 
 ---
 
@@ -42,16 +42,16 @@ Additional **runtime-only** (non-persisted) fields are set on `S`: `activeTheme`
 
 ## Persistence Architecture
 
-Inkflow uses two browser storage backends:
+InkForge uses two browser storage backends:
 
 | Store | Key / DB | Contents |
 | :--- | :--- | :--- |
-| `localStorage` | `inkflow-state` | Serialized settings object `S` (minus runtime fields). |
-| `localStorage` | `inkflow-dark` | `"1"` / `"0"` dark-mode flag. |
-| `localStorage` | `inkflow-fonts` | Array of uploaded custom font family names. |
-| `localStorage` | `inkflow-pdf-size` | Selected PDF Output Size preset (`compact` / `standard` / `high`, v1.6.20+). |
-| IndexedDB | `InkflowDB` → `draftedGlyphs` | Per-character data-URL images for the custom font (keys are characters). |
-| IndexedDB | `InkflowDB` → `notebooks` | Notebook records keyed by `id` (title, content, folder, tags, timestamps, per-note settings). |
+| `localStorage` | `inkforge-state` | Serialized settings object `S` (minus runtime fields). |
+| `localStorage` | `inkforge-dark` | `"1"` / `"0"` dark-mode flag. |
+| `localStorage` | `inkforge-fonts` | Array of uploaded custom font family names. |
+| `localStorage` | `inkforge-pdf-size` | Selected PDF Output Size preset (`compact` / `standard` / `high`, v1.6.20+). |
+| IndexedDB | `InkForgeDB` → `draftedGlyphs` | Per-character data-URL images for the custom font (keys are characters). |
+| IndexedDB | `InkForgeDB` → `notebooks` | Notebook records keyed by `id` (title, content, folder, tags, timestamps, per-note settings). |
 
 ---
 
@@ -60,16 +60,16 @@ Inkflow uses two browser storage backends:
 ```mermaid
 sequenceDiagram
     participant Boot as "App Boot (initApp)"
-    participant DB as "IndexedDB (InkflowDB)"
+    participant DB as "IndexedDB (InkForgeDB)"
     participant LS as "localStorage"
     participant State as "Global State S"
     participant UI as "DOM Controls"
     participant Canvas as "Canvas Renderer"
     participant Editors as "Page Editors"
 
-    Boot->>DB: Open 'InkflowDB' -> load all draftedGlyphs
+    Boot->>DB: Open 'InkForgeDB' -> load all draftedGlyphs
     DB->>State: Hydrate custom glyphs dict
-    Boot->>LS: Read 'inkflow-state'
+    Boot->>LS: Read 'inkforge-state'
     alt State exists
         LS->>State: Parse JSON -> Hydrate settings in S
         State->>UI: Sync sliders, dropdowns, textareas, selects
@@ -105,8 +105,8 @@ sequenceDiagram
 ### Step-by-Step Lifecycle
 
 1. **App Boot (`initApp`)**:
-   - Opens **IndexedDB** `InkflowDB` and reads all custom handwriting glyphs into memory.
-   - Reads settings from `localStorage` under key `inkflow-state`.
+   - Opens **IndexedDB** `InkForgeDB` and reads all custom handwriting glyphs into memory.
+   - Reads settings from `localStorage` under key `inkforge-state`.
    - Calls `restoreState()` (hydrates `S`, syncs UI, migrates legacy glyphs, prunes blanks).
    - Sets up file upload and HandFonted Studio, then loads the notebooks store (creating the welcome note on first run) and renders the active notebook.
 2. **Deserialization & Migration**: Hydrates `S` from the stored settings. If legacy custom glyphs exist in `localStorage`, they are written to IndexedDB and cleared from `localStorage`.
@@ -119,7 +119,7 @@ sequenceDiagram
 
 ## Dual Input Paths
 
-Inkflow accepts text input from two synchronized sources:
+InkForge accepts text input from two synchronized sources:
 
 ### Sidebar Textarea (`#text-input`)
 Traditional textarea input on the left panel. Changes are debounced and trigger `renderText()`.
@@ -152,7 +152,7 @@ function autosave() {
       showHeaderBox: S.showHeaderBox,
       showMarginLabels: S.showMarginLabels,
     };
-    localStorage.setItem('inkflow-state', JSON.stringify(state));
+    localStorage.setItem('inkforge-state', JSON.stringify(state));
 
     if (activeNotebookId) {
       // Build notebook record and write it to the 'notebooks' IndexedDB store

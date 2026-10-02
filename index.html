@@ -14,17 +14,17 @@
     ever needed.
   -->
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com; font-src 'self' data: https://fonts.gstatic.com https://cdnjs.cloudflare.com; img-src 'self' data: blob:; connect-src 'self' https://openrouter.ai https://api.anthropic.com http://localhost:* http://127.0.0.1:* https://va.vercel-insights.com; object-src 'none'; base-uri 'self'; form-action 'none'" />
-  <title>Inkflow — AI Handwritten Notes Generator</title>
+  <title>InkForge — AI Handwritten Notes Generator</title>
 
   <!-- Favicon & PWA Manifest & Theme -->
-  <link rel="icon" type="image/jpeg" href="./inkflow_logo.jpeg" />
-  <link rel="apple-touch-icon" href="./inkflow_logo.jpeg" />
+  <link rel="icon" type="image/jpeg" href="./inkforge_logo.jpeg" />
+  <link rel="apple-touch-icon" href="./inkforge_logo.jpeg" />
   <link rel="manifest" href="./manifest.json" />
   <meta name="theme-color" content="#7c6af7" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-  <meta name="apple-mobile-web-app-title" content="Inkflow" />
-  <meta property="og:image" content="./inkflow_logo.jpeg" />
+  <meta name="apple-mobile-web-app-title" content="InkForge" />
+  <meta property="og:image" content="./inkforge_logo.jpeg" />
 
   <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -67,9 +67,9 @@
     <button id="hamburger" class="btn icon-btn" aria-label="Toggle sidebar" aria-expanded="false" aria-controls="sidebar">☰</button>
     <div class="logo">
       <div class="logo-img-wrapper">
-        <img src="./inkflow_logo.jpeg" alt="Inkflow Logo" class="logo-img" />
+        <img src="./inkforge_logo.jpeg" alt="InkForge Logo" class="logo-img" />
       </div>
-      <span class="logo-text">Ink<span>flow</span></span>
+      <span class="logo-text">Ink<span>Forge</span></span>
     </div>
 
     <div class="toolbar-group">
@@ -754,10 +754,10 @@ Try pasting a paragraph of lecture notes!"></textarea>
       window.addEventListener('load', () => {
         navigator.serviceWorker.register('./sw.js')
           .then((reg) => {
-            console.log('[Inkflow] Service Worker registered, scope:', reg.scope);
+            console.log('[InkForge] Service Worker registered, scope:', reg.scope);
           })
           .catch((err) => {
-            console.warn('[Inkflow] Service Worker registration failed:', err);
+            console.warn('[InkForge] Service Worker registration failed:', err);
           });
 
         // Listen for autosave sync messages from SW

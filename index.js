@@ -1,4 +1,33 @@
 /* ───────────────────────────────────────────
+   ONE-TIME MIGRATION — legacy "inkflow-*" localStorage keys
+   v1.6.x stored user data under "inkflow-*" keys. Copy each key to its
+   "inkforge-*" successor on first load, then remove the old one, so
+   returning users keep their settings and API keys. Must run before
+   any storage read below.
+─────────────────────────────────────────── */
+(function migrateLegacyStorageKeys() {
+  const MIGRATION_FLAG = 'inkforge-migrated-legacy-v1';
+  try {
+    if (localStorage.getItem(MIGRATION_FLAG)) return;
+    const legacyKeys = [];
+    for (let i = 0; i < localStorage.length; i++) {
+      const key = localStorage.key(i);
+      if (key && key.lastIndexOf('inkflow-', 0) === 0) legacyKeys.push(key);
+    }
+    legacyKeys.forEach(function (key) {
+      const newKey = 'inkforge-' + key.slice('inkflow-'.length);
+      if (localStorage.getItem(newKey) === null) {
+        localStorage.setItem(newKey, localStorage.getItem(key));
+      }
+      localStorage.removeItem(key);
+    });
+    localStorage.setItem(MIGRATION_FLAG, '1');
+  } catch (err) {
+    console.warn('[InkForge] Legacy localStorage migration skipped:', err);
+  }
+})();
+
+/* ───────────────────────────────────────────
    STATE — Global settings object
 ─────────────────────────────────────────── */
 const S = {
@@ -80,12 +109,12 @@ const PAGE_H = 1123;
 ─────────────────────────────────────────── */
 const darkToggle = document.getElementById('dark-toggle');
 const darkIcon = document.getElementById('dark-icon');
-let isDark = localStorage.getItem('inkflow-dark') === '1';
+let isDark = localStorage.getItem('inkforge-dark') === '1';
 applyDark();
 
 darkToggle.addEventListener('click', () => {
   isDark = !isDark;
-  localStorage.setItem('inkflow-dark', isDark ? '1' : '0');
+  localStorage.setItem('inkforge-dark', isDark ? '1' : '0');
   applyDark();
 });
 
@@ -192,9 +221,9 @@ document.getElementById('font-upload').addEventListener('change', async function
     fontSelect.style.fontFamily = name;
     S.font = name;
     /* Phase 3.4 — Store font name in localStorage */
-    const stored = JSON.parse(localStorage.getItem('inkflow-fonts') || '[]');
+    const stored = JSON.parse(localStorage.getItem('inkforge-fonts') || '[]');
     if (!stored.includes(name)) stored.push(name);
-    localStorage.setItem('inkflow-fonts', JSON.stringify(stored));
+    localStorage.setItem('inkforge-fonts', JSON.stringify(stored));
     debounceRender();
   } catch (e) {
     alert('Could not load font: ' + e.message);
@@ -3580,7 +3609,7 @@ let isFetchingOpenRouterModels = false;
 // 1. Load cached OpenRouter models instantly from localStorage on startup
 function loadCachedOpenRouterModels() {
   try {
-    const raw = localStorage.getItem('inkflow-cached-openrouter-models');
+    const raw = localStorage.getItem('inkforge-cached-openrouter-models');
     if (raw) {
       const cached = JSON.parse(raw);
       if (Array.isArray(cached) && cached.length > 0) {
@@ -3590,7 +3619,7 @@ function loadCachedOpenRouterModels() {
       }
     }
   } catch (e) {
-    console.warn('[Inkflow] Failed to load cached OpenRouter models:', e);
+    console.warn('[InkForge] Failed to load cached OpenRouter models:', e);
   }
 }
 
@@ -3667,8 +3696,8 @@ async function fetchOpenRouterModels(force = false) {
         
         // Cache in localStorage
         try {
-          localStorage.setItem('inkflow-cached-openrouter-models', JSON.stringify(fetched));
-          localStorage.setItem('inkflow-cached-openrouter-time', Date.now().toString());
+          localStorage.setItem('inkforge-cached-openrouter-models', JSON.stringify(fetched));
+          localStorage.setItem('inkforge-cached-openrouter-time', Date.now().toString());
         } catch (e) {
           // localStorage may be full or disabled — the model cache is best-effort only.
         }
@@ -3683,7 +3712,7 @@ async function fetchOpenRouterModels(force = false) {
       }
     }
   } catch (e) {
-    console.warn('[Inkflow] Could not auto-fetch OpenRouter models, using current catalog:', e);
+    console.warn('[InkForge] Could not auto-fetch OpenRouter models, using current catalog:', e);
     updateModelSyncBadge('Offline / Fallback', false);
   } finally {
     isFetchingOpenRouterModels = false;
@@ -3746,7 +3775,7 @@ function initApiKeyPersistence() {
   if (!providerSelect || !keyInput || !rememberCheckbox) return;
 
   // Restore global checkbox preference (default to checked if a key was previously saved)
-  const globalRemember = localStorage.getItem('inkflow-remember-api-key');
+  const globalRemember = localStorage.getItem('inkforge-remember-api-key');
   if (globalRemember === '1') {
     rememberCheckbox.checked = true;
   } else if (globalRemember === '0') {
@@ -3760,7 +3789,7 @@ function initApiKeyPersistence() {
     const provider = providerSelect.value;
     if (provider === 'ollama') return;
 
-    const savedKey = localStorage.getItem('inkflow-api-key-' + provider) || '';
+    const savedKey = localStorage.getItem('inkforge-api-key-' + provider) || '';
 
     // If checkbox is checked, restore saved key if available
     if (rememberCheckbox.checked && savedKey) {
@@ -3773,15 +3802,15 @@ function initApiKeyPersistence() {
     if (provider === 'ollama') return;
 
     if (rememberCheckbox.checked) {
-      localStorage.setItem('inkflow-remember-api-key', '1');
+      localStorage.setItem('inkforge-remember-api-key', '1');
       const val = keyInput.value.trim();
       if (val) {
-        localStorage.setItem('inkflow-api-key-' + provider, val);
+        localStorage.setItem('inkforge-api-key-' + provider, val);
       }
     } else {
-      localStorage.setItem('inkflow-remember-api-key', '0');
-      localStorage.removeItem('inkflow-api-key-openrouter');
-      localStorage.removeItem('inkflow-api-key-anthropic');
+      localStorage.setItem('inkforge-remember-api-key', '0');
+      localStorage.removeItem('inkforge-api-key-openrouter');
+      localStorage.removeItem('inkforge-api-key-anthropic');
     }
   }
 
@@ -3885,7 +3914,7 @@ async function callClaude(prompt, systemPrompt, onChunk) {
           'Content-Type': 'application/json',
           'Authorization': 'Bearer ' + key,
           'HTTP-Referer': window.location.href,
-          'X-Title': 'Inkflow Notes Generator',
+          'X-Title': 'InkForge Notes Generator',
         },
         body: JSON.stringify({
           model: model,
@@ -4054,9 +4083,9 @@ async function callOllama(prompt, systemPrompt, model, onChunk) {
 /* ───────────────────────────────────────────
    UPGRADED AI SYSTEM PROMPTS (Rich Syntax Aware)
 ─────────────────────────────────────────── */
-const AI_SYSTEM_BASE_PROMPT = `You are an expert AI notebook assistant for Inkflow, a high-fidelity handwritten notes app.
+const AI_SYSTEM_BASE_PROMPT = `You are an expert AI notebook assistant for InkForge, a high-fidelity handwritten notes app.
 
-Format your output using Inkflow's native structured syntax so notes render beautifully on paper:
+Format your output using InkForge's native structured syntax so notes render beautifully on paper:
 1. HEADINGS: Use '# Title' for the main note title and '## Subtitle' for section headers.
 2. LISTS: Use '- Item' for bullet lists and '1. Item' for step-by-step numbered points.
 3. HIGHLIGHTS: Wrap core concepts or keywords in '==key term==' to highlight them.
@@ -4065,7 +4094,7 @@ Format your output using Inkflow's native structured syntax so notes render beau
 6. FLASHCARDS: Include study questions using 'Q: Question' followed by 'A: Answer' on the next line.
 
 GUIDELINES:
-- Output clean text with Inkflow syntax tags only. Do NOT use markdown code fences (\`\`\`), HTML tags, or raw bold asterisks (\*\*).
+- Output clean text with InkForge syntax tags only. Do NOT use markdown code fences (\`\`\`), HTML tags, or raw bold asterisks (\*\*).
 - Write naturally, like a thoughtful human—not a generic AI, essay, brochure, or corporate press release. Be direct, specific, clear, and useful. Use simple words and ordinary verbs.
 - Avoid AI-style filler such as "delve", "pivotal", "crucial", "robust", "vibrant", "meticulous", "enduring", "showcase", "foster", "garner", "bolster", "landscape", "tapestry", "testament", "underscore", "serves as", and "boasts".
 - State facts plainly. Never inflate ordinary facts into grand significance, legacy, impact, cultural importance, broader trends, debates, or future prospects. Avoid empty "highlighting", "underscoring", "reflecting", and "showcasing" clauses.
@@ -4085,8 +4114,8 @@ GUIDELINES:
 ─────────────────────────────────────────── */
 
 /**
- * Convert a raw AI response into clean Inkflow-syntax text.
- * Preserves Inkflow's own markup (# headings, ==highlights==,
+ * Convert a raw AI response into clean InkForge-syntax text.
+ * Preserves InkForge's own markup (# headings, ==highlights==,
  * [sticky:…], [callout:…]) while removing markdown artefacts.
  *
  * @param {string} raw - The raw text returned by the AI provider.
@@ -4311,7 +4340,7 @@ function smartArrangeLocal(text) {
       line = prefix + indent + spaced;
     }
 
-    // 6. Normalize Inkflow tags ([sticky : yellow] -> [sticky:yellow], [callout : info] -> [callout:info])
+    // 6. Normalize InkForge tags ([sticky : yellow] -> [sticky:yellow], [callout : info] -> [callout:info])
     line = line.replace(/\[\s*(sticky|callout)\s*:\s*([a-zA-Z0-9_-]*)\s*\]/gi, (m, tag, color) => `[${tag.toLowerCase()}${color ? ':' + color.toLowerCase() : ''}]`);
     line = line.replace(/\[\s*(sticky|callout)\s*\]/gi, (m, tag) => `[${tag.toLowerCase()}]`);
 
@@ -4487,7 +4516,7 @@ async function exportImage(format) {
           return;
         }
         const url = URL.createObjectURL(blob);
-        triggerDownload(url, 'inkflow-notes.' + ext);
+        triggerDownload(url, 'inkforge-notes.' + ext);
         setTimeout(() => URL.revokeObjectURL(url), 1000);
         showExportToast('✓ ' + ext.toUpperCase() + ' saved!', 'success');
       }, mimeType, quality);
@@ -4499,7 +4528,7 @@ async function exportImage(format) {
           hq.toBlob((blob) => {
             if (!blob) { resolve(); return; }
             const url = URL.createObjectURL(blob);
-            triggerDownload(url, `inkflow-notes-page${i + 1}.${ext}`);
+            triggerDownload(url, `inkforge-notes-page${i + 1}.${ext}`);
             setTimeout(() => URL.revokeObjectURL(url), 1000);
             resolve();
           }, mimeType, quality);
@@ -4510,7 +4539,7 @@ async function exportImage(format) {
     }
   } catch (e) {
     showExportToast('Export failed: ' + e.message, 'error');
-    console.error('[Inkflow] exportImage error:', e);
+    console.error('[InkForge] exportImage error:', e);
   }
 }
 
@@ -4560,11 +4589,11 @@ async function exportPDF() {
       doc.addImage(imgData, preset.format, 0, 0, 210, 297, undefined, preset.tag);
     }
 
-    doc.save('inkflow-notes.pdf');
+    doc.save('inkforge-notes.pdf');
     showExportToast(`✓ PDF saved (${preset.label})!`, 'success');
   } catch (e) {
     showExportToast('PDF export failed: ' + e.message, 'error');
-    console.error('[Inkflow] exportPDF error:', e);
+    console.error('[InkForge] exportPDF error:', e);
   }
 }
 
@@ -4592,14 +4621,14 @@ async function exportSVG() {
       const blob = new Blob([svgContent], { type: 'image/svg+xml' });
       const url = URL.createObjectURL(blob);
       const suffix = pages.length > 1 ? `-page${i + 1}` : '';
-      triggerDownload(url, `inkflow-notes${suffix}.svg`);
+      triggerDownload(url, `inkforge-notes${suffix}.svg`);
       URL.revokeObjectURL(url);
       await new Promise(r => setTimeout(r, 120));
     }
     showExportToast('✓ SVG saved!', 'success');
   } catch (e) {
     showExportToast('SVG export failed: ' + e.message, 'error');
-    console.error('[Inkflow] exportSVG error:', e);
+    console.error('[InkForge] exportSVG error:', e);
   }
 }
 
@@ -4674,14 +4703,132 @@ function showToast(msg, type = 'info') {
 /* ───────────────────────────────────────────
    PHASE 8.6–8.7 — AUTOSAVE & STATE RESTORE
 ─────────────────────────────────────────── */
-const DB_NAME = 'InkflowDB';
+const DB_NAME = 'InkForgeDB';
 const DB_VERSION = 2;
 const STORE_NAME = 'draftedGlyphs';
 let dbInstance = null;
 
+/* ───────────────────────────────────────────
+   ONE-TIME MIGRATION — legacy "InkflowDB" database
+   v1.6.x stored glyphs and notebooks in IndexedDB under "InkflowDB".
+   Copy both stores into "InkForgeDB" on first load, then delete the
+   legacy database, so returning users keep their glyphs and notebooks.
+   Store names / version below are literals and must stay in sync with
+   DB_NAME / DB_VERSION / STORE_NAME / NOTEBOOKS_STORE (literals keep
+   this function safe to call before those consts are evaluated).
+─────────────────────────────────────────── */
+let legacyIDBMigration = null;
+
+function migrateLegacyIDB() {
+  if (legacyIDBMigration) return legacyIDBMigration;
+  legacyIDBMigration = (async () => {
+    try {
+      if (typeof indexedDB === 'undefined' || !indexedDB) return;
+      if (localStorage.getItem('inkforge-migrated-idb-v1')) return;
+
+      const LEGACY_NAME = 'InkflowDB';
+      const STORES = [
+        { name: 'draftedGlyphs', hasKeyPath: false },
+        { name: 'notebooks', hasKeyPath: true }
+      ];
+      const read = (makeReq) => new Promise((resolve, reject) => {
+        const req = makeReq();
+        req.onsuccess = () => resolve(req.result);
+        req.onerror = () => reject(req.error);
+      });
+
+      if (typeof indexedDB.databases === 'function') {
+        const dbs = await indexedDB.databases();
+        if (!dbs.some((d) => d && d.name === LEGACY_NAME)) {
+          localStorage.setItem('inkforge-migrated-idb-v1', '1');
+          return;
+        }
+        // Never copy over a database the app is already using — that
+        // would mean a previous migration attempt already opened it.
+        if (dbs.some((d) => d && d.name === 'InkForgeDB')) {
+          localStorage.setItem('inkforge-migrated-idb-v1', '1');
+          return;
+        }
+      }
+
+      // Snapshot legacy records. Opening without a version never
+      // triggers an upgrade, whatever version the old database is at.
+      const legacyDb = await new Promise((resolve, reject) => {
+        const req = indexedDB.open(LEGACY_NAME);
+        req.onsuccess = () => resolve(req.result);
+        req.onerror = () => reject(req.error);
+      });
+      const snapshot = {};
+      try {
+        for (const store of STORES) {
+          if (!legacyDb.objectStoreNames.contains(store.name)) continue;
+          snapshot[store.name] = {
+            hasKeyPath: store.hasKeyPath,
+            records: await read(() =>
+              legacyDb.transaction(store.name, 'readonly').objectStore(store.name).getAll()
+            ),
+            keys: store.hasKeyPath ? [] : await read(() =>
+              legacyDb.transaction(store.name, 'readonly').objectStore(store.name).getAllKeys()
+            )
+          };
+        }
+      } finally {
+        legacyDb.close();
+      }
+
+      const total = Object.values(snapshot).reduce((n, s) => n + s.records.length, 0);
+      if (total > 0) {
+        // Create the new database with the same schema the app opens it
+        // with: both stores at version 2 (see getDB()/getNotebooksDB()).
+        const newDb = await new Promise((resolve, reject) => {
+          const req = indexedDB.open('InkForgeDB', 2);
+          req.onupgradeneeded = (e) => {
+            const db = e.target.result;
+            if (!db.objectStoreNames.contains('draftedGlyphs')) {
+              db.createObjectStore('draftedGlyphs');
+            }
+            if (!db.objectStoreNames.contains('notebooks')) {
+              db.createObjectStore('notebooks', { keyPath: 'id' });
+            }
+          };
+          req.onsuccess = () => resolve(req.result);
+          req.onerror = () => reject(req.error);
+        });
+        try {
+          await new Promise((resolve, reject) => {
+            const tx = newDb.transaction(Object.keys(snapshot), 'readwrite');
+            for (const [name, s] of Object.entries(snapshot)) {
+              const os = tx.objectStore(name);
+              s.records.forEach((record, i) => {
+                if (s.hasKeyPath) os.put(record);
+                else os.put(record, s.keys[i]);
+              });
+            }
+            tx.oncomplete = resolve;
+            tx.onerror = () => reject(tx.error);
+            tx.onabort = () => reject(tx.error || new Error('migration copy aborted'));
+          });
+        } finally {
+          newDb.close();
+        }
+      }
+
+      // Copy succeeded (or there was nothing to copy) — drop the legacy
+      // database and never run again.
+      indexedDB.deleteDatabase(LEGACY_NAME);
+      localStorage.setItem('inkforge-migrated-idb-v1', '1');
+    } catch (err) {
+      // Best-effort: never block the app. The flag stays unset on failure
+      // so the next load retries with the legacy database still intact.
+      console.warn('[InkForge] Legacy IndexedDB migration skipped:', err);
+    }
+  })();
+  return legacyIDBMigration;
+}
+
 function getDB() {
   if (dbInstance) return Promise.resolve(dbInstance);
-  return new Promise((resolve, reject) => {
+  return migrateLegacyIDB().then(() => new Promise((resolve, reject) => {
     const request = indexedDB.open(DB_NAME, DB_VERSION);
     request.onupgradeneeded = (e) => {
       const db = e.target.result;
@@ -4702,7 +4849,7 @@ function getDB() {
     request.onerror = (e) => {
       reject(e.target.error);
     };
-  });
+  }));
 }
 
 function saveGlyphDB(char, dataUrl) {
@@ -4790,7 +4937,7 @@ async function pruneBlankGlyphs() {
     }
   }
   if (pruned > 0) {
-    console.warn(`Inkflow: removed ${pruned} blank drafted glyph(s) that were rendering as invisible characters.`);
+    console.warn(`InkForge: removed ${pruned} blank drafted glyph(s) that were rendering as invisible characters.`);
   }
   return pruned;
 }
@@ -4829,7 +4976,7 @@ function autosave() {
       showHeaderBox: S.showHeaderBox,
       showMarginLabels: S.showMarginLabels
     };
-    localStorage.setItem('inkflow-state', JSON.stringify(state));
+    localStorage.setItem('inkforge-state', JSON.stringify(state));
 
     // Save to active notebook in IndexedDB if exists
     if (activeNotebookId) {
@@ -4888,7 +5035,7 @@ function autosave() {
 }
 
 async function restoreState() {
-  const raw = localStorage.getItem('inkflow-state');
+  const raw = localStorage.getItem('inkforge-state');
   
   // 1. Try to load from IndexedDB
   try {
@@ -4999,7 +5146,7 @@ async function restoreState() {
       
       // Remove draftedGlyphs from localStorage and save back
       delete state.draftedGlyphs;
-      localStorage.setItem('inkflow-state', JSON.stringify(state));
+      localStorage.setItem('inkforge-state', JSON.stringify(state));
     }
   } catch (e) { /* ignore corrupt state */ }
 
@@ -5117,9 +5264,9 @@ function bindUIActions() {
     btn.addEventListener('click', () => exportImage(btn.dataset.export));
   });
   const pdfSizeSelect = $('pdf-size-select');
-  pdfSizeSelect.value = localStorage.getItem('inkflow-pdf-size') || 'standard';
+  pdfSizeSelect.value = localStorage.getItem('inkforge-pdf-size') || 'standard';
   pdfSizeSelect.addEventListener('change', (e) => {
-    localStorage.setItem('inkflow-pdf-size', e.target.value);
+    localStorage.setItem('inkforge-pdf-size', e.target.value);
   });
   $('btn-export-pdf').addEventListener('click', () => exportPDF());
   $('btn-export-svg').addEventListener('click', () => exportSVG());
@@ -5186,7 +5333,7 @@ async function initApp() {
       // Create first welcome note
       const welcomeNote = {
         id: 'welcome-note',
-        title: 'Welcome to Inkflow',
+        title: 'Welcome to InkForge',
         content: S.text,
         folder: 'Drafts',
         tags: ['welcome'],
@@ -5834,7 +5981,7 @@ function showCharPreview(dataUrl) {
 function exportFontProject() {
   const projectData = {
     version: '1.0',
-    appName: 'Inkflow HandFonted Studio',
+    appName: 'InkForge HandFonted Studio',
     exportDate: new Date().toISOString(),
     glyphs: draftedGlyphs,
     fontName: document.getElementById('custom-font-name')?.value || 'MyHandwriting',
@@ -6062,7 +6209,7 @@ function generateDownloadTemplate() {
     '   • Use high contrast (300 DPI recommended)',
     '   • Ensure the image is well-lit and in focus',
     '',
-    '6. Upload your sheets in Inkflow\'s HandFonted Studio',
+    '6. Upload your sheets in InkForge\'s HandFonted Studio',
     '',
     '7. Align the grid overlay to match your written template',
     '',
@@ -6083,8 +6230,8 @@ function generateDownloadTemplate() {
   frontCtx.fillStyle = '#9e9078';
   frontCtx.font = 'italic 20px serif';
   frontCtx.textAlign = 'center';
-  frontCtx.fillText('Powered by Inkflow — AI Handwritten Notes Generator', 800, 1500);
-  frontCtx.fillText('inkflow.app', 800, 1535);
+  frontCtx.fillText('Powered by InkForge — AI Handwritten Notes Generator', 800, 1500);
+  frontCtx.fillText('inkforge.app', 800, 1535);
   
   sheets.push({
     canvas: frontCanvas,
@@ -6893,7 +7040,7 @@ async function exportCustomFontTTF() {
     if (progressDiv) progressDiv.classList.add('hidden');
     showToast(`✓ Downloaded ${fontName}.ttf! Double-click to install on Windows/macOS.`, 'success');
   } catch (err) {
-    console.error('[Inkflow] exportCustomFontTTF error:', err);
+    console.error('[InkForge] exportCustomFontTTF error:', err);
     alert('Error exporting TTF font: ' + err.message);
     if (progressDiv) progressDiv.classList.add('hidden');
   }
@@ -7210,14 +7357,14 @@ setTimeout(initVoiceToNotes, 500);
 /* ───────────────────────────────────────────
    NOTEBOOKS & FOLDERS INDEXEDDB PERSISTENCE
 ─────────────────────────────────────────── */
-const NOTEBOOKS_DB_NAME = 'InkflowDB';
+const NOTEBOOKS_DB_NAME = 'InkForgeDB';
 const NOTEBOOKS_DB_VERSION = 2;
 const NOTEBOOKS_STORE = 'notebooks';
 let notebooksDbInstance = null;
 
 function getNotebooksDB() {
   if (notebooksDbInstance) return Promise.resolve(notebooksDbInstance);
-  return new Promise((resolve, reject) => {
+  return migrateLegacyIDB().then(() => new Promise((resolve, reject) => {
     const request = indexedDB.open(NOTEBOOKS_DB_NAME, NOTEBOOKS_DB_VERSION);
     request.onupgradeneeded = (e) => {
       const db = e.target.result;
@@ -7236,7 +7383,7 @@ function getNotebooksDB() {
     request.onerror = (e) => {
       reject(e.target.error);
     };
-  });
+  }));
 }
 
 function saveNotebook(notebook) {

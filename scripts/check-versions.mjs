@@ -12,7 +12,7 @@ const sw = readFileSync(join(root, 'sw.js'), 'utf8');
 const html = readFileSync(join(root, 'index.html'), 'utf8');
 
 const pkgVersion = pkg.version;
-const swMatch = sw.match(/CACHE_VERSION\s*=\s*'inkflow-v([^']+)'/);
+const swMatch = sw.match(/CACHE_VERSION\s*=\s*'inkforge-v([^']+)'/);
 const htmlMatch = html.match(/index\.js\?v=([^"']+)/);
 
 const refs = {

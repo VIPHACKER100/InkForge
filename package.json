@@ -1,5 +1,5 @@
 {
-  "name": "inkflow",
+  "name": "inkforge",
   "version": "1.6.24",
   "description": "AI Handwritten Notes Generator",
   "main": "index.js",
@@ -13,7 +13,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/VIPHACKER100/Inkflow.git"
+    "url": "git+https://github.com/VIPHACKER100/InkForge.git"
   },
   "keywords": [
     "handwriting",
@@ -24,9 +24,9 @@
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/VIPHACKER100/Inkflow/issues"
+    "url": "https://github.com/VIPHACKER100/InkForge/issues"
   },
-  "homepage": "https://github.com/VIPHACKER100/Inkflow#readme",
+  "homepage": "https://github.com/VIPHACKER100/InkForge#readme",
   "dependencies": {
     "@vercel/analytics": "^2.0.1"
   }

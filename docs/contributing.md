@@ -1,16 +1,16 @@
 <p align="center">
-  <img src="../inkflow_logo.jpeg" alt="Inkflow Logo" width="80" style="border-radius: 50%; box-shadow: 0 4px 12px rgba(0,0,0,0.15);" />
+  <img src="../inkforge_logo.jpeg" alt="InkForge Logo" width="80" style="border-radius: 50%; box-shadow: 0 4px 12px rgba(0,0,0,0.15);" />
 </p>
 
 # 🤝 Contributing
 
-Guidelines for contributing to Inkflow.
+Guidelines for contributing to InkForge.
 
 ---
 
 ## Project Philosophy
 
-Inkflow is a **single-page, zero-dependency-install** application. Contributions should maintain this philosophy:
+InkForge is a **single-page, zero-dependency-install** application. Contributions should maintain this philosophy:
 - No build tools, bundlers, or transpilers required
 - All code runs directly in the browser
 - Dependencies are loaded via CDN only
