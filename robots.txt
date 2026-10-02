@@ -1,0 +1,5 @@
+# InkForge — https://inkforge.in/
+User-agent: *
+Allow: /
+
+Sitemap: https://inkforge.in/sitemap.xml

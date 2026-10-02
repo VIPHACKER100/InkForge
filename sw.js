@@ -166,7 +166,7 @@ async function networkFirst(request, cacheName) {
     if (offlineCache) return offlineCache;
 
     return new Response(
-      `<!DOCTYPE html><html><body style="font-family:sans-serif;text-align:center;padding:60px">
+      `<!DOCTYPE html><html><head><meta name="robots" content="noindex"></head><body style="font-family:sans-serif;text-align:center;padding:60px">
         <img src="./inkforge_logo.jpeg" alt="InkForge Logo" style="width:64px;height:64px;border-radius:50%;margin-bottom:12px;box-shadow:0 4px 12px rgba(0,0,0,0.15)">
         <h1 style="margin:0 0 10px 0;color:#7c6af7">InkForge</h1>
         <p>You're offline. Open InkForge while connected at least once to cache the app.</p>

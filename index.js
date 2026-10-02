@@ -6231,7 +6231,7 @@ function generateDownloadTemplate() {
   frontCtx.font = 'italic 20px serif';
   frontCtx.textAlign = 'center';
   frontCtx.fillText('Powered by InkForge — AI Handwritten Notes Generator', 800, 1500);
-  frontCtx.fillText('inkforge.app', 800, 1535);
+  frontCtx.fillText('inkforge.in', 800, 1535);
   
   sheets.push({
     canvas: frontCanvas,

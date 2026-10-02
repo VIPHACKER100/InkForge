@@ -84,6 +84,26 @@ The repo includes `.github/workflows/codeql.yml` — a GitHub CodeQL Advanced wo
 
 ---
 
+## SEO Surface
+
+The app is a single page, so SEO is concentrated in `index.html` plus two crawler files:
+
+- **Meta**: `description`, `robots`, `author`, and `rel="canonical"` in `<head>`.
+- **Social cards**: Open Graph (`og:*`) and Twitter (`twitter:*`) tags, using the absolute
+  logo URL so scrapers can fetch it.
+- **Structured data**: an inline `application/ld+json` block (`schema.org/WebApplication`)
+  describing the app, its features, and its free offer. Allowed by the CSP because
+  `script-src` already permits `'unsafe-inline'`; the block is a data node and never executes.
+- **`robots.txt`** and **`sitemap.xml`** live at the repo root and are served as-is.
+
+All absolute URLs use the canonical origin `https://inkforge.in/`. If the
+production domain changes, update it in five places: the `canonical` link, `og:url`,
+`og:image`, `twitter:image`, and the JSON-LD `url` in `index.html`, plus the URLs in
+`robots.txt` and `sitemap.xml`. The offline fallback page served by `sw.js` is marked
+`noindex` so crawlers never index it instead of the real app.
+
+---
+
 ## Verification Checklist
 
 Before shipping an update:
@@ -94,3 +114,4 @@ Before shipping an update:
 - [ ] Exports (PNG/JPG/PDF/SVG/Copy/Print) produce correct output
 - [ ] Dark mode, paper styles, and theme packs render correctly
 - [ ] AI features fail gracefully when offline
+- [ ] SEO tags intact (description, canonical, OG/Twitter, JSON-LD, `robots.txt`, `sitemap.xml`)

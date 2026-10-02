@@ -16,6 +16,12 @@
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com; font-src 'self' data: https://fonts.gstatic.com https://cdnjs.cloudflare.com; img-src 'self' data: blob:; connect-src 'self' https://openrouter.ai https://api.anthropic.com http://localhost:* http://127.0.0.1:* https://va.vercel-insights.com; object-src 'none'; base-uri 'self'; form-action 'none'" />
   <title>InkForge — AI Handwritten Notes Generator</title>
 
+  <!-- SEO: crawl & index -->
+  <meta name="description" content="InkForge turns typed text into realistic handwritten notes with AI — custom handwriting fonts, study tools, and PNG/PDF/SVG export. Free, offline-capable, no install." />
+  <meta name="robots" content="index, follow" />
+  <meta name="author" content="VIPHACKER100" />
+  <link rel="canonical" href="https://inkforge.in/" />
+
   <!-- Favicon & PWA Manifest & Theme -->
   <link rel="icon" type="image/jpeg" href="./inkforge_logo.jpeg" />
   <link rel="apple-touch-icon" href="./inkforge_logo.jpeg" />
@@ -24,7 +30,50 @@
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <meta name="apple-mobile-web-app-title" content="InkForge" />
-  <meta property="og:image" content="./inkforge_logo.jpeg" />
+  <!-- Open Graph / social sharing -->
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="InkForge" />
+  <meta property="og:title" content="InkForge — AI Handwritten Notes Generator" />
+  <meta property="og:description" content="Turn typed text into realistic handwritten notes with AI — custom fonts, study tools, and multi-format export. Free, offline-capable PWA." />
+  <meta property="og:url" content="https://inkforge.in/" />
+  <meta property="og:image" content="https://inkforge.in/inkforge_logo.jpeg" />
+  <meta property="og:image:width" content="512" />
+  <meta property="og:image:height" content="512" />
+  <meta property="og:image:type" content="image/jpeg" />
+  <meta property="og:image:alt" content="InkForge logo" />
+  <meta property="og:locale" content="en_US" />
+
+  <!-- Twitter/X card -->
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="InkForge — AI Handwritten Notes Generator" />
+  <meta name="twitter:description" content="Turn typed text into realistic handwritten notes with AI — custom fonts, study tools, and multi-format export. Free, offline-capable PWA." />
+  <meta name="twitter:image" content="https://inkforge.in/inkforge_logo.jpeg" />
+  <meta name="twitter:image:alt" content="InkForge logo" />
+
+  <!-- Structured data for search engines -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "InkForge",
+    "url": "https://inkforge.in/",
+    "description": "InkForge turns typed text into realistic handwritten notes with AI — custom handwriting fonts, study tools, and PNG/PDF/SVG export. Free, offline-capable, no install.",
+    "applicationCategory": "ProductivityApplication",
+    "operatingSystem": "Any",
+    "browserRequirements": "Requires JavaScript. Works in all modern browsers.",
+    "inLanguage": "en",
+    "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+    "featureList": [
+      "AI-generated handwritten notes",
+      "Custom handwriting fonts",
+      "Realistic A4 paper rendering",
+      "PNG, PDF and SVG export",
+      "Study mode with flashcards",
+      "Offline support as a PWA"
+    ],
+    "author": { "@type": "Person", "name": "VIPHACKER100", "url": "https://github.com/VIPHACKER100" }
+  }
+  </script>
 
   <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
