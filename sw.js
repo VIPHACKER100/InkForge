@@ -11,6 +11,8 @@ const ASSET_CACHE   = `${CACHE_VERSION}-assets`;
 const SHELL_URLS = [
   './',
   './index.html',
+  './about.html',
+  './about.css',
   './index.css',
   './index.js',
   './inkforge_logo.jpeg',

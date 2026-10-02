@@ -65,12 +65,12 @@
 ════════════════════════════════════════ -->
   <header id="toolbar">
     <button id="hamburger" class="btn icon-btn" aria-label="Toggle sidebar" aria-expanded="false" aria-controls="sidebar">☰</button>
-    <div class="logo">
+    <a href="./about.html" class="logo" title="About InkForge">
       <div class="logo-img-wrapper">
         <img src="./inkforge_logo.jpeg" alt="InkForge Logo" class="logo-img" />
       </div>
       <span class="logo-text">Ink<span>Forge</span></span>
-    </div>
+    </a>
 
     <div class="toolbar-group">
       <button class="btn sm" id="btn-animate" title="Watch notes write themselves" aria-label="Animate">✍ <span class="btn-label">Animate</span></button>
@@ -84,6 +84,7 @@
       <span id="page-indicator-toolbar">Page 1 of 1</span>
       <button class="btn sm" id="btn-study-mode" title="Toggle Study Mode" aria-label="Study Mode">📖 <span class="btn-label">Study Mode</span></button>
       <button class="btn sm" id="btn-open-flashcards" title="Review Flashcards" aria-label="Flashcards" style="display:none; margin-left: 5px;">🃏 <span class="btn-label">Flashcards (<span id="flashcard-count-indicator">0</span>)</span></button>
+      <a href="./about.html" class="btn sm" id="btn-about" title="About InkForge" aria-label="About InkForge" style="text-decoration: none;">ℹ️ <span class="btn-label">About</span></a>
       <button class="dark-toggle" id="dark-toggle" aria-label="Toggle dark mode" style="margin-left: 8px;">
         <span id="dark-icon">☀️</span>
       </button>
@@ -519,6 +520,11 @@ Try pasting a paragraph of lecture notes!"></textarea>
             </button>
           </div>
         </div>
+      <!-- ── SIDEBAR FOOTER LINKS ── -->
+      <div class="sidebar-footer-links" style="padding: 14px 16px; border-top: 1px solid var(--sidebar-border); display: flex; align-items: center; justify-content: space-between; font-size: 13px; margin-top: auto;">
+        <a href="./about.html" style="color: var(--accent); text-decoration: none; font-weight: 600; display: inline-flex; align-items: center; gap: 4px;">ℹ️ About InkForge</a>
+        <a href="./docs/README.md" target="_blank" style="color: var(--text-muted); text-decoration: none;">📖 Docs</a>
+        <a href="https://github.com/VIPHACKER100/InkForge" target="_blank" style="color: var(--text-muted); text-decoration: none;">⭐ GitHub</a>
       </div>
 
     </aside><!-- /sidebar -->

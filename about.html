@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com; font-src 'self' data: https://fonts.gstatic.com https://cdnjs.cloudflare.com; img-src 'self' data: blob:; connect-src 'self' https://openrouter.ai https://api.anthropic.com http://localhost:* http://127.0.0.1:* https://va.vercel-insights.com; object-src 'none'; base-uri 'self'; form-action 'none'" />
+  
+  <title>About InkForge — The AI Handwriting & Digital Scribe Studio</title>
+  <meta name="description" content="Learn about InkForge, the next-generation AI handwriting studio. Discover how physics-based jitter, artisanal paper simulation, and client-side privacy create lifelike handwritten notes." />
+
+  <!-- Favicon & PWA Icons -->
+  <link rel="icon" type="image/jpeg" href="./inkforge_logo.jpeg" />
+  <link rel="apple-touch-icon" href="./inkforge_logo.jpeg" />
+  <link rel="manifest" href="./manifest.json" />
+  <meta name="theme-color" content="#7c6af7" />
+  <meta property="og:title" content="About InkForge — AI Handwriting Studio" />
+  <meta property="og:description" content="Turn digital text into authentic handwritten notes with organic physics, custom fonts, and study tools." />
+  <meta property="og:image" content="./inkforge_logo.jpeg" />
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400..700&family=Crimson+Pro:ital,wght@0,200..900;1,200..900&family=Indie+Flower&family=Patrick+Hand&family=Kalam:wght@300;400;700&display=swap" rel="stylesheet" />
+
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" />
+
+  <!-- Stylesheet -->
+  <link rel="stylesheet" href="./about.css" />
+</head>
+
+<body>
+
+  <!-- ════════════════════════════════════════
+     NAVIGATION BAR
+  ════════════════════════════════════════ -->
+  <nav class="navbar">
+    <div class="container nav-inner">
+      <a href="./index.html" class="brand" title="Return to InkForge Studio">
+        <div class="brand-logo-wrap">
+          <img src="./inkforge_logo.jpeg" alt="InkForge Logo" />
+        </div>
+        <div class="brand-name">Ink<span>Forge</span></div>
+      </a>
+
+      <ul class="nav-links">
+        <li><a href="#features">Features</a></li>
+        <li><a href="#realism-engine">Realism Engine</a></li>
+        <li><a href="#tech-stack">Architecture</a></li>
+        <li><a href="#docs">Documentation</a></li>
+        <li><a href="#creator">Creator</a></li>
+      </ul>
+
+      <div class="nav-actions">
+        <button id="dark-toggle" class="theme-toggle-btn" aria-label="Toggle dark mode" title="Toggle theme">
+          <span id="dark-icon">☀️</span>
+        </button>
+        <a href="./index.html" class="btn-cta" title="Launch InkForge App">
+          <i class="fa-solid fa-pen-nib"></i> Open Studio
+        </a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ════════════════════════════════════════
+     HERO SECTION
+  ════════════════════════════════════════ -->
+  <header class="hero">
+    <div class="container">
+      <div class="hero-pill">
+        <i class="fa-solid fa-sparkles"></i> v1.6.24 • Pure Client-Side AI Scribe
+      </div>
+      
+      <h1 class="hero-title">
+        Handwriting, Re-imagined with <br />
+        <span class="gradient-text">Physics &amp; Intelligence</span>
+      </h1>
+
+      <p class="hero-subtitle">
+        InkForge bridges the gap between digital efficiency and the soul of handwritten notes. Powered by a deterministic jitter engine, artisanal paper textures, custom font compilation, and zero-latency local privacy.
+      </p>
+
+      <div class="hero-buttons">
+        <a href="./index.html" class="btn-cta">
+          <i class="fa-solid fa-arrow-right"></i> Launch Studio Editor
+        </a>
+        <a href="https://github.com/VIPHACKER100/InkForge" target="_blank" rel="noopener noreferrer" class="btn-secondary">
+          <i class="fa-brands fa-github"></i> Star on GitHub
+        </a>
+        <a href="#docs" class="btn-secondary">
+          <i class="fa-solid fa-book"></i> Browse Docs
+        </a>
+      </div>
+
+      <!-- Key Metrics -->
+      <div class="metrics-grid">
+        <div class="metric-card">
+          <div class="metric-number">35+</div>
+          <div class="metric-label">Curated Fonts</div>
+          <div class="metric-sub">English, Cursive &amp; Devanagari</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-number">100%</div>
+          <div class="metric-label">Private &amp; Offline</div>
+          <div class="metric-sub">Zero note telemetry or tracking</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-number">2× DPI</div>
+          <div class="metric-label">Lossless Export</div>
+          <div class="metric-sub">Ultra-crisp PDF, SVG, PNG &amp; JPG</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-number">0 ms</div>
+          <div class="metric-label">Server Latency</div>
+          <div class="metric-sub">Runs completely in your browser</div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ════════════════════════════════════════
+     INTERACTIVE REALISM PLAYGROUND
+  ════════════════════════════════════════ -->
+  <section id="realism-engine" class="section">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-tag">Interactive Simulation</span>
+        <h2 class="section-title">The Physics of Realistic Ink</h2>
+        <p class="section-desc">
+          Computer fonts look artificial because every character is identical. InkForge applies seeded random variations to simulate human muscle drift, pressure changes, and paper interaction.
+        </p>
+      </div>
+
+      <div class="demo-card">
+        <div class="demo-controls">
+          <div class="demo-group">
+            <label for="demo-text-input" class="demo-label-row">
+              <span>Sample Note Text</span>
+            </label>
+            <input type="text" id="demo-text-input" class="demo-input" value="InkForge: Natural handwriting with AI precision." title="Demo text" />
+          </div>
+
+          <div class="demo-group">
+            <div class="demo-label-row">
+              <span>Realism Jitter Magnitude</span>
+              <span id="demo-jitter-val" class="demo-val">0.65</span>
+            </div>
+            <input type="range" id="demo-jitter-slider" class="demo-slider" min="0" max="1.5" step="0.05" value="0.65" title="Jitter intensity" />
+          </div>
+
+          <div class="demo-group">
+            <div class="demo-label-row">
+              <span>Baseline Wobble (Drift)</span>
+              <span id="demo-drift-val" class="demo-val">1.2px</span>
+            </div>
+            <input type="range" id="demo-drift-slider" class="demo-slider" min="0" max="4" step="0.2" value="1.2" title="Baseline drift" />
+          </div>
+
+          <div class="demo-group" style="flex-direction: row; justify-content: space-between; align-items: center;">
+            <label for="demo-retrace-toggle" style="font-family: var(--font-sans); font-size: 14px; font-weight: 600; cursor: pointer;">
+              ✍️ Retrace Double-Strokes (Human Stutters)
+            </label>
+            <input type="checkbox" id="demo-retrace-toggle" checked style="accent-color: var(--accent); width: 18px; height: 18px; cursor: pointer;" />
+          </div>
+
+          <div class="demo-group" style="flex-direction: row; justify-content: space-between; align-items: center;">
+            <label for="demo-lines-toggle" style="font-family: var(--font-sans); font-size: 14px; font-weight: 600; cursor: pointer;">
+              📏 Ruled Notebook Guidelines
+            </label>
+            <input type="checkbox" id="demo-lines-toggle" checked style="accent-color: var(--accent); width: 18px; height: 18px; cursor: pointer;" />
+          </div>
+        </div>
+
+        <div class="demo-canvas-wrap">
+          <canvas id="demo-canvas" width="600" height="260"></canvas>
+          <div class="demo-caption">Live Canvas 2D simulation with sub-pixel micro-shearing &amp; tilt</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ════════════════════════════════════════
+     CORE INNOVATIONS & FEATURES
+  ════════════════════════════════════════ -->
+  <section id="features" class="section">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-tag">Feature Suite</span>
+        <h2 class="section-title">Built for Scholars, Creators &amp; Thinkers</h2>
+        <p class="section-desc">Everything you need to turn raw ideas, lectures, and articles into stunning handwritten documents.</p>
+      </div>
+
+      <div class="features-grid">
+        <!-- Feature 1 -->
+        <div class="feature-box">
+          <div class="feature-icon-wrap">🖋️</div>
+          <h3>Organic Realism Engine</h3>
+          <p>
+            Uses a seeded <code>mulberry32</code> pseudo-random generator to provide 100% deterministic layout across re-renders. Every glyph experiences minute rotation jitter, anisotropic scale transforms (<code>scaleX</code>, <code>scaleY</code>), and micro-shear transforms.
+          </p>
+          <div class="feature-tags">
+            <span class="feature-tag">Deterministic PRNG</span>
+            <span class="feature-tag">Micro-Shear</span>
+            <span class="feature-tag">Ink Bleed</span>
+          </div>
+        </div>
+
+        <!-- Feature 2 -->
+        <div class="feature-box">
+          <div class="feature-icon-wrap">📜</div>
+          <h3>Artisanal Paper &amp; Layouts</h3>
+          <p>
+            Choose from authentic cream parchment, legal ruled paper, engineering graph grid, dotted bullet journal, and Cornell study layouts with dedicated margin markers and header boxes. Includes realistic procedural paper noise shaders.
+          </p>
+          <div class="feature-tags">
+            <span class="feature-tag">Cornell Notes</span>
+            <span class="feature-tag">Parchment Shaders</span>
+            <span class="feature-tag">Multi-Page Sync</span>
+          </div>
+        </div>
+
+        <!-- Feature 3 -->
+        <div class="feature-box">
+          <div class="feature-icon-wrap">🤖</div>
+          <h3>Generative AI Scribe</h3>
+          <p>
+            Direct integration with OpenRouter, Anthropic Claude, Google Gemini, and local Ollama models. Instant one-click workflows: Smart Arrange, Lecture Summarizer, Grammar Improver, and interactive study flashcards.
+          </p>
+          <div class="feature-tags">
+            <span class="feature-tag">Multi-Provider</span>
+            <span class="feature-tag">Q&amp;A Resequencer</span>
+            <span class="feature-tag">Study Mode</span>
+          </div>
+        </div>
+
+        <!-- Feature 4 -->
+        <div class="feature-box">
+          <div class="feature-icon-wrap">🔤</div>
+          <h3>HandFonted Custom Font Studio</h3>
+          <p>
+            Create your very own handwriting font right inside the app! Draw alphabet glyphs on canvas or calibrate scanned worksheet templates. Features Ramer-Douglas-Peucker contour smoothing and instant in-browser OpenType TTF compilation.
+          </p>
+          <div class="feature-tags">
+            <span class="feature-tag">RDP Smoothing</span>
+            <span class="feature-tag">OpenType.js</span>
+            <span class="feature-tag">IndexedDB Glyphs</span>
+          </div>
+        </div>
+
+        <!-- Feature 5 -->
+        <div class="feature-box">
+          <div class="feature-icon-wrap">📄</div>
+          <h3>Lossless Multi-Format Exports</h3>
+          <p>
+            Export notes at crystal-clear 2× DPI for print or submission. Support for single/multi-page PDF documents, transparent PNG images, optimized JPG, scalable vector SVG, direct system printing, and one-click clipboard copying.
+          </p>
+          <div class="feature-tags">
+            <span class="feature-tag">2× DPI Raster</span>
+            <span class="feature-tag">Vector SVG</span>
+            <span class="feature-tag">Lossless PDF</span>
+          </div>
+        </div>
+
+        <!-- Feature 6 -->
+        <div class="feature-box">
+          <div class="feature-icon-wrap">⚡</div>
+          <h3>100% Offline-First PWA</h3>
+          <p>
+            Installed to your home screen or desktop as a native app. All application assets, fonts, and scripts are cached by the Service Worker. Notes automatically persist in browser IndexedDB with real-time cloud-sync status simulation.
+          </p>
+          <div class="feature-tags">
+            <span class="feature-tag">PWA Standalone</span>
+            <span class="feature-tag">Service Worker</span>
+            <span class="feature-tag">Auto-Save</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ════════════════════════════════════════
+     PRIVACY & TRUST
+  ════════════════════════════════════════ -->
+  <section class="section" style="padding-top: 0;">
+    <div class="container">
+      <div class="privacy-banner">
+        <div class="privacy-icon">🛡️</div>
+        <div class="privacy-content">
+          <h3>Your Notes Are Strictly Yours</h3>
+          <p>
+            InkForge has no backend servers storing your personal writings or journal entries. The text layout, handwriting synthesis, font compilation, and PDF generation occur 100% locally on your own machine. If you configure AI keys, they remain locked in your browser's private storage.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ════════════════════════════════════════
+     SYSTEM ARCHITECTURE & TECH STACK
+  ════════════════════════════════════════ -->
+  <section id="tech-stack" class="section">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-tag">Under the Hood</span>
+        <h2 class="section-title">Engineered with Modern Web Standards</h2>
+        <p class="section-desc">Built lean, clean, and fast with zero bloated frameworks.</p>
+      </div>
+
+      <div class="tech-grid">
+        <div class="tech-card">
+          <div class="tech-card-header">
+            <span class="tech-icon">⚡</span>
+            <h4>Vanilla ES2022</h4>
+          </div>
+          <p>Zero heavy framework overhead (React/Vue/Angular). High-performance event loops, debounced renders, and buttery 60 FPS transitions.</p>
+        </div>
+
+        <div class="tech-card">
+          <div class="tech-card-header">
+            <span class="tech-icon">🎨</span>
+            <h4>Canvas 2D Engine</h4>
+          </div>
+          <p>Sub-pixel coordinate positioning, custom transform matrices (<code>ctx.transform</code>), anisotropic scaling, and procedural noise generation.</p>
+        </div>
+
+        <div class="tech-card">
+          <div class="tech-card-header">
+            <span class="tech-icon">🗄️</span>
+            <h4>IndexedDB + LocalStorage</h4>
+          </div>
+          <p>Dual storage hierarchy. Lightweight state keys stored in localStorage, while complete notebook trees and custom glyph curves persist in IndexedDB.</p>
+        </div>
+
+        <div class="tech-card">
+          <div class="tech-card-header">
+            <span class="tech-icon">🔤</span>
+            <h4>OpenType.js Compilation</h4>
+          </div>
+          <p>In-browser TrueType Font (TTF) binary generator. Converts vector contours directly into standard font files ready for system-wide installation.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ════════════════════════════════════════
+     DOCUMENTATION REPOSITORY
+  ════════════════════════════════════════ -->
+  <section id="docs" class="section">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-tag">Developer &amp; User Manuals</span>
+        <h2 class="section-title">Comprehensive Documentation</h2>
+        <p class="section-desc">Detailed architectural guides, engine specifications, and API references.</p>
+      </div>
+
+      <div class="docs-grid">
+        <a href="./docs/getting-started.md" class="doc-link-card">
+          <span>🚀</span>
+          <span class="doc-link-title">Getting Started Guide</span>
+        </a>
+        <a href="./docs/handwriting-engine.md" class="doc-link-card">
+          <span>🖋️</span>
+          <span class="doc-link-title">Handwriting Engine</span>
+        </a>
+        <a href="./docs/system-architecture.md" class="doc-link-card">
+          <span>🏗️</span>
+          <span class="doc-link-title">System Architecture</span>
+        </a>
+        <a href="./docs/paper-rendering.md" class="doc-link-card">
+          <span>📜</span>
+          <span class="doc-link-title">Paper Rendering Math</span>
+        </a>
+        <a href="./docs/ai-integration.md" class="doc-link-card">
+          <span>🤖</span>
+          <span class="doc-link-title">AI Integration Pipeline</span>
+        </a>
+        <a href="./docs/custom-font-suite.md" class="doc-link-card">
+          <span>🔤</span>
+          <span class="doc-link-title">Custom Font Suite</span>
+        </a>
+        <a href="./docs/export-pipelines.md" class="doc-link-card">
+          <span>📄</span>
+          <span class="doc-link-title">Export Pipelines</span>
+        </a>
+        <a href="./docs/configuration-guide.md" class="doc-link-card">
+          <span>⚙️</span>
+          <span class="doc-link-title">Configuration Guide</span>
+        </a>
+        <a href="./docs/changelog.md" class="doc-link-card">
+          <span>📝</span>
+          <span class="doc-link-title">Changelog &amp; Releases</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ════════════════════════════════════════
+     CREATOR & OPEN SOURCE
+  ════════════════════════════════════════ -->
+  <section id="creator" class="section">
+    <div class="container">
+      <div class="creator-section">
+        <div class="creator-avatar">
+          <img src="./inkforge_logo.jpeg" alt="Aryan Ahirwar — VIPHACKER100" />
+        </div>
+        <h2 class="creator-name">Aryan Ahirwar</h2>
+        <div class="creator-role">Lead Architect &amp; Creator of InkForge (VIPHACKER100)</div>
+        <p class="creator-bio">
+          Built with a passion for classical typography, digital craftsmanship, and privacy-first web software. InkForge is fully open-source and welcoming to community contributions, font additions, and paper styles.
+        </p>
+        <div class="creator-links">
+          <a href="https://github.com/VIPHACKER100/InkForge" target="_blank" rel="noopener noreferrer" class="btn-cta">
+            <i class="fa-brands fa-github"></i> GitHub Repository
+          </a>
+          <a href="https://github.com/VIPHACKER100/InkForge/issues" target="_blank" rel="noopener noreferrer" class="btn-secondary">
+            <i class="fa-solid fa-bug"></i> Report Issue / Suggest Feature
+          </a>
+          <a href="./LICENSE" target="_blank" class="btn-secondary">
+            <i class="fa-solid fa-scale-balanced"></i> ISC License
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ════════════════════════════════════════
+     FOOTER
+  ════════════════════════════════════════ -->
+  <footer class="footer">
+    <div class="container footer-inner">
+      <div class="footer-text">
+        © 2026 <strong>InkForge</strong> — Created by Aryan Ahirwar. Licensed under ISC.
+      </div>
+      <ul class="footer-links">
+        <li><a href="./index.html">Studio Editor</a></li>
+        <li><a href="./docs/README.md">Documentation</a></li>
+        <li><a href="https://github.com/VIPHACKER100/InkForge" target="_blank" rel="noopener noreferrer">GitHub</a></li>
+        <li><a href="#top">Back to top ↑</a></li>
+      </ul>
+    </div>
+  </footer>
+
+  <!-- ════════════════════════════════════════
+     SCRIPTS & INTERACTIVE DEMO ENGINE
+  ════════════════════════════════════════ -->
+  <script>
+    /* ── Theme Management ── */
+    const darkToggle = document.getElementById('dark-toggle');
+    const darkIcon = document.getElementById('dark-icon');
+    let isDark = localStorage.getItem('inkforge-dark') === '1';
+
+    function applyDark() {
+      document.documentElement.classList.toggle('dark', isDark);
+      if (darkIcon) darkIcon.textContent = isDark ? '🌙' : '☀️';
+      renderDemo();
+    }
+    applyDark();
+
+    if (darkToggle) {
+      darkToggle.addEventListener('click', () => {
+        isDark = !isDark;
+        localStorage.setItem('inkforge-dark', isDark ? '1' : '0');
+        applyDark();
+      });
+    }
+
+    /* ── Interactive Realism Canvas Demo ── */
+    const demoCanvas = document.getElementById('demo-canvas');
+    const demoCtx = demoCanvas ? demoCanvas.getContext('2d') : null;
+    const demoInput = document.getElementById('demo-text-input');
+    const demoJitter = document.getElementById('demo-jitter-slider');
+    const demoDrift = document.getElementById('demo-drift-slider');
+    const demoJitterVal = document.getElementById('demo-jitter-val');
+    const demoDriftVal = document.getElementById('demo-drift-val');
+    const demoRetrace = document.getElementById('demo-retrace-toggle');
+    const demoLines = document.getElementById('demo-lines-toggle');
+
+    // Deterministic PRNG (Mulberry32)
+    function mulberry32(seed) {
+      return function () {
+        let t = seed += 0x6D2B79F5;
+        t = Math.imul(t ^ (t >>> 15), t | 1);
+        t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+        return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+      };
+    }
+
+    function renderDemo() {
+      if (!demoCanvas || !demoCtx) return;
+
+      const dpr = window.devicePixelRatio || 1;
+      const rect = demoCanvas.getBoundingClientRect();
+      const w = rect.width || 440;
+      const h = rect.height || 200;
+
+      demoCanvas.width = w * dpr;
+      demoCanvas.height = h * dpr;
+      demoCtx.resetTransform ? demoCtx.resetTransform() : demoCtx.setTransform(1, 0, 0, 1, 0, 0);
+      demoCtx.scale(dpr, dpr);
+
+      // Background Paper
+      const paperBg = isDark ? '#1a1c2b' : '#faf9f5';
+      const inkColor = isDark ? '#e6dfd1' : '#1c2340';
+      const ruledLineColor = isDark ? 'rgba(255, 255, 255, 0.08)' : 'rgba(192, 98, 42, 0.16)';
+
+      demoCtx.fillStyle = paperBg;
+      demoCtx.fillRect(0, 0, w, h);
+
+      // Draw Ruled Lines
+      const lineH = 46;
+      if (demoLines && demoLines.checked) {
+        demoCtx.strokeStyle = ruledLineColor;
+        demoCtx.lineWidth = 1;
+        for (let y = lineH; y < h; y += lineH) {
+          demoCtx.beginPath();
+          demoCtx.moveTo(20, y);
+          demoCtx.lineTo(w - 20, y);
+          demoCtx.stroke();
+        }
+      }
+
+      // Draw Handwriting
+      const text = (demoInput ? demoInput.value : 'InkForge Realistic Handwriting') || 'InkForge';
+      const jitterMag = parseFloat(demoJitter ? demoJitter.value : 0.65);
+      const driftMag = parseFloat(demoDrift ? demoDrift.value : 1.2);
+      const doRetrace = demoRetrace ? demoRetrace.checked : true;
+
+      const fontSize = 28;
+      demoCtx.font = `${fontSize}px 'Caveat', cursive`;
+
+      const startX = 30;
+      let currX = startX;
+      let currY = lineH * 1.5;
+
+      const prng = mulberry32(1234567);
+
+      for (let i = 0; i < text.length; i++) {
+        const char = text[i];
+        if (char === ' ') {
+          currX += fontSize * 0.35;
+          continue;
+        }
+
+        // Wrap to second line if exceeding canvas width
+        if (currX > w - 40 && currY < lineH * 2.5) {
+          currX = startX;
+          currY += lineH;
+        }
+
+        const metrics = demoCtx.measureText(char);
+        const charW = metrics.width;
+
+        // Calculate organic variations
+        const tilt = (prng() - 0.5) * 6 * jitterMag;
+        const tiltRad = (tilt * Math.PI) / 180;
+        const shear = (prng() - 0.5) * 0.12 * jitterMag;
+        const scaleX = 1 + (prng() - 0.5) * 0.18 * jitterMag;
+        const scaleY = 1 + (prng() - 0.5) * 0.18 * jitterMag;
+        const yDrift = (prng() - 0.5) * driftMag * 2;
+        const opacity = 0.85 + prng() * 0.15;
+
+        demoCtx.save();
+        demoCtx.translate(currX + charW / 2, currY + yDrift);
+        demoCtx.transform(scaleX, Math.tan(tiltRad), shear, scaleY, 0, 0);
+
+        demoCtx.fillStyle = inkColor;
+        demoCtx.globalAlpha = opacity;
+        demoCtx.fillText(char, -charW / 2, 0);
+
+        // Retrace double stroke simulation on occasional letters
+        if (doRetrace && prng() < 0.22 * jitterMag) {
+          demoCtx.globalAlpha = 0.35;
+          demoCtx.fillText(char, -charW / 2 + 0.6, 0.4);
+        }
+
+        demoCtx.restore();
+
+        currX += charW + (prng() - 0.5) * 2 * jitterMag;
+      }
+    }
+
+    // Attach listeners
+    if (demoInput) demoInput.addEventListener('input', renderDemo);
+    if (demoJitter) {
+      demoJitter.addEventListener('input', (e) => {
+        if (demoJitterVal) demoJitterVal.textContent = parseFloat(e.target.value).toFixed(2);
+        renderDemo();
+      });
+    }
+    if (demoDrift) {
+      demoDrift.addEventListener('input', (e) => {
+        if (demoDriftVal) demoDriftVal.textContent = `${parseFloat(e.target.value).toFixed(1)}px`;
+        renderDemo();
+      });
+    }
+    if (demoRetrace) demoRetrace.addEventListener('change', renderDemo);
+    if (demoLines) demoLines.addEventListener('change', renderDemo);
+
+    // Initial render when font is ready
+    if (document.fonts) {
+      document.fonts.ready.then(renderDemo);
+    } else {
+      setTimeout(renderDemo, 300);
+    }
+    window.addEventListener('resize', renderDemo);
+  </script>
+</body>
+
+</html>
