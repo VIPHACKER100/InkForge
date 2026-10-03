@@ -2,7 +2,7 @@ import { describe, it, expect } from 'vitest';
 import { createRequire } from 'node:module';
 
 const require = createRequire(import.meta.url);
-const { clusterQueueLines, isQuestionLine, isAnswerLine, computeMarginLabels } = require('./margin-labels.js');
+import { clusterQueueLines, isQuestionLine, isAnswerLine, computeMarginLabels } from './margin-labels.js';
 
 const OPTS = { fontSize: 22, lineHeight: 1.5 };
 
