@@ -8,3 +8,4 @@ coverage/
 dist-verify*/
 .lighthouseci/
 graphify-out/cache/
+test-results/
