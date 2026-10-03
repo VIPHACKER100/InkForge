@@ -94,3 +94,16 @@ Inkflow includes a service worker (`sw.js`) and web app manifest (`manifest.json
 
 ### Verification
 After deployment, open DevTools → Application → Service Workers to confirm registration.
+
+---
+
+## Collaboration Relay Hardening (v1.18.0 — Phase F4)
+
+The WebSocket relay (`server.js`) supports an optional shared room token. Run it
+with `INKFLOW_ROOM_TOKEN=your-secret node server.js`; clients must then set the
+same value before connecting — `localStorage.setItem('inkflow-collab-token',
+'your-secret')` — or they are disconnected with close code 4401 ("Room token
+required"). Without the variable the relay runs in open LAN mode exactly as
+before. Additional built-in limits: 240 messages per 10 s per connection
+(closed with 1008), a maximum of 5 concurrent connections per IP (closed with
+1013), a 64 KB per-frame cap (1009), and binary frames are rejected (1003).

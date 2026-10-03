@@ -54,6 +54,7 @@ Welcome to the **Inkflow** documentation hub. This folder contains all technical
 | [Performance](./performance.md) | Optimization techniques, benchmarks, rendering budget |
 | [Contributing](./contributing.md) | Code style, PR workflow, issue templates |
 | [Changelog](./changelog.md) | Version history and release notes |
+| [Upgrade Plan](./upgrade-plan.md) | v1.9 → v2.0 upgrade roadmap: measured health snapshot, phased plan, milestones |
 
 ---
 

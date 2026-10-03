@@ -86,3 +86,17 @@ Draw characters sheet-by-sheet on an interactive canvas. Each character is saved
 4. Upload and align using the interactive grid overlay sliders. Independent images and grid offsets (`X, Y, W, H`) are stored for each sheet.
 5. The engine automatically slices, traces, and compiles characters from both uploaded sheets.
 
+---
+
+## Live Jitter Preview & .inkfont Format (v1.19.0 — Phase F5)
+
+Saving a glyph now shows two previews: the flat 48×48 thumbnail and an
+**"In Your Notes (live jitter)"** strip that draws the saved artwork five times
+through the actual handwriting pipeline (rotation, anisotropic scale, micro-shear
+and pressure-correlated ink bleed at the current realism setting) on a ruled
+baseline — a true what-you-get check before committing to a font.
+
+Project export downloads **`<FontName>.inkfont`** — the project JSON wrapped with
+a `format: 'inkfont'` marker and `formatVersion: 1`. Import accepts both `.inkfont`
+files and the legacy bare-project JSON. The format helpers live in the pure
+`inkfont-format.js` module and are covered by unit tests.

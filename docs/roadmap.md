@@ -8,6 +8,119 @@ This plan is grounded in a codebase analysis (knowledge-graph audit, lint/test r
 
 ## Progress Log
 
+**2026-10-03 — Pass #23 (i18n coverage growth → v1.20.1)**
+
+- ✅ Hindi extended to the 11 paper-style buttons + Copy/Print (38 tagged strings); unused nav keys removed; round-trip toggle re-verified in-browser
+- ✅ **The upgrade plan (M1–M3, Phase D, E, F) is complete.** Only user-gated items remain: the `next-level` → `main` merge and committing the working tree
+
+**2026-10-03 — Pass #22 (F6 UI localization — Phase F complete → v1.20.0)**
+
+- ✅ **`i18n.js`**: en/hi string tables (26 keys), `t()` with English→key fallback, `data-i18n` attribute bindings (toolbar, 11 section headers, primary actions, flashcards title), persisted `🌐` toolbar toggle, `document.documentElement.lang` sync — **6 new unit tests (264 total)**
+- ✅ Verified in-browser: toggle to हिंदी translates the chrome instantly and persists across reload
+- ✅ **Phase F complete** (F1 spaced repetition, F2 Gemini provider, F3 template gallery, F4 relay hardening, F5 HandFonted improvements, F6 localization)
+- ⏭️ Remaining: merge `next-level` → `main` (standing recommendation); i18n coverage growth (sliders/comboboxes/toasts) as an open enhancement
+
+**2026-10-03 — Pass #21 (F5 HandFonted improvements → v1.19.0)**
+
+- ✅ **Live jitter preview**: saved glyphs render five times through the real variation pipeline (tilt/scale/shear + pressure-correlated bleed at live `S.realism`) on a ruled strip beside the flat preview — verified in-browser (630 ink pixels from a saved stroke)
+- ✅ **`.inkfont` share format**: wrapped project export (format marker + version), legacy-accepting import, extracted into node-safe `inkfont-format.js` — **4 new unit tests (258 total)**
+- ✅ Studio labels updated (Save Progress (.inkfont))
+- ⏭️ Phase F remaining: F6 i18n (last item); merge `next-level` → `main` (standing recommendation)
+
+**2026-10-03 — Pass #20 (F4 collaboration hardening → v1.18.0)**
+
+- ✅ **server.js** refactored into `createCollabServer({ port, token })` (OT logic unchanged; direct run via `node server.js` with optional `INKFLOW_ROOM_TOKEN`); hardening: room-token gate (close 4401), 240-msg/10 s per-connection rate limit (close 1008), 5-per-IP concurrent cap (close 1013), 64 KB frame cap (1009), binary-frame rejection (1003)
+- ✅ **Client**: token attached from `localStorage.inkflow-collab-token` when present; a 4401 close surfaces "Room token required" and stops the reconnect loop
+- ✅ **7 new unit tests (254 total)** on ephemeral ports: open mode, token none/wrong/correct, per-IP cap, rate-limit flood, payload cap
+- ✅ Verified: lint 0 errors, 254/254 unit, build green
+- ⏭️ Phase F remaining: F5 HandFonted improvements, F6 i18n; merge `next-level` → `main` (standing recommendation)
+
+**2026-10-03 — Pass #19 (F3 template gallery → v1.17.0)**
+
+- ✅ **Four starter study layouts** registered in template-manager.js (`registerGalleryTemplates()`): lecture (header → notes → key-terms column), lab report (Objective → Method → Observations → Result in document order), vocabulary (term/definition columns), reading notes (header → notes → quotes/page-refs) — each with zone labels + guide lines drawn by the layout-decoration pass
+- ✅ Dropdown extended; **5 new unit tests (247 total)** validating finite/in-page zone resolution; Lab Report render verified in-browser (section flow + guides + labels)
+- ⏭️ Phase F remaining: F4 collaboration hardening (room tokens/rate limits — or document LAN-only), F5 HandFonted improvements, F6 i18n; merge `next-level` → `main` (standing recommendation)
+
+**2026-10-03 — Pass #18 (F1 spaced repetition → v1.16.0)**
+
+- ✅ **SM-2 lite review scheduling** in flashcards.js: pure engine (`cardId` FNV-1a identity, `gradeCard` 4-grade transitions with ease clamps, `isDue`/`countDue`) + localStorage persistence with node-safe fallback — **15 new unit tests (242 total)**
+- ✅ **Review UI**: due badge in the Flashcards Review header, Anki-style grade buttons (1 Again / 2 Hard / 3 Good / 4 Easy) shown on flip with keyboard shortcuts, grading auto-advances; fixed a `.hidden`-vs-`display:flex` specificity clash found in browser verification
+- ✅ Verified: 242/242 unit + full E2E + 0 lint errors + in-browser SRS round-trip (2 due → good → 1 due → again → persisted)
+- ⏭️ Phase F remaining: F3 template gallery, F4 collaboration hardening, F5 HandFonted improvements, F6 i18n; merge `next-level` → `main` (standing recommendation)
+
+**2026-10-03 — Pass #17 (Phase E complete + Gemini provider → v1.15.0)**
+
+- ✅ **E1 — Phase E complete**: `lighthouserc.json` + `lighthouse` CI job (a11y ≥ 0.9 blocking; perf ≥ 0.4 + size budgets warn-level — headless perf variance measured ±0.09 between runs); `npm run lhci` runs locally against dist
+- ✅ **F2 — Gemini direct provider**: `callGemini()` SSE streaming (`streamGenerateContent?alt=sse`), 5-model registry, provider dropdown option, per-provider key persistence, SW endpoint exclusion; no-key path + busy-state recovery verified in-browser
+- ✅ Verified: 227/227 unit + 17/17 E2E + 0 lint errors + build + in-browser provider switch
+- ⏭️ Phase F remaining: F1 spaced-repetition flashcards, F3 template gallery, F4 collaboration hardening, F5 HandFonted improvements, F6 i18n; merge `next-level` → `main` (standing recommendation)
+
+**2026-10-03 — Pass #16 (Phase E first slice → v1.14.0)**
+
+- ✅ **E2**: 50-family handwriting stylesheet loads non-blocking (`media="print"` swap + noscript fallback); canvas correctness preserved by the existing `document.fonts.ready` boot re-render and per-selection `fonts.load()` re-render; SW precache URL unchanged
+- ✅ **E3**: paper-background cache gained an LRU cap (6 entries) — closes the slider-drag memory-growth path (~3.5 MB per cache entry)
+- ⏭️ Phase E remaining: Lighthouse CI budgets (E1), grain shader → OffscreenCanvas/worker if profiling justifies it beyond the cache (E3 extended), canvas memory audit for very long documents (E4); Phase F features; merge `next-level` → `main` (standing recommendation)
+
+**2026-10-03 — Pass #15 (D4 contrast audit → v1.13.1)**
+
+- ✅ **Phase D complete.** axe-core audit (WCAG 2.0/2.1 A+AA) over index.html light+dark with all sidebar sections expanded; about.html verified by manual token math (its CSP blocks injected scripts)
+- ✅ Fixes: `role="textbox"` + `aria-multiline` on contentEditable page editor + margin overlays (aria-prohibited-attr); `#canvas-area` keyboard-focusable (scrollable-region-focusable); about.css light `--accent` darkened to the index.css AA value
+- ✅ Result: **light mode 0 violations**; dark mode's remaining 23 color-contrast flags are axe glass-compositing artifacts (translucent toolbar/sidebar layers — manual math ≥ 5:1 on every flagged pair; tokens already AA from the prior contrast pass)
+- ✅ Documented in `docs/accessibility.md`
+- ⏭️ Next: Phase E performance (font diet, grain-shader worker, page virtualization, Lighthouse CI), Phase F features, merge `next-level` → `main` (standing recommendation)
+
+**2026-10-03 — Pass #14 (window bridge fully retired → v1.13.0)**
+
+- ✅ **`render-pipeline.js` extracted** (662 L) and **`settings-sync.js`** (53 L); every lazy `window.*` reader converted to real imports; **the window bridge is gone** (verified in production: `typeof window.S === 'undefined'` while the app renders/exports/collaborates)
+- ✅ index.js: **1,461 → ~900 lines** (4,276 at the original audit; −78%)
+- ✅ Completed the interrupted wave-5 agent's cutover (its render-pipeline.js/settings-sync.js + reader conversions landed; index.js cut over, repaired a splice in `toggleCollaboration` against the git-HEAD original, removed extraction duplicates)
+- ✅ Verified: 227/227 unit + 17/17 E2E + 0 lint errors + production bundle in-browser
+- ⏭️ Remaining: **D4 dark-mode contrast audit** (agent dispatch hit the quota ceiling — rerun), merge `next-level` → `main` (standing recommendation), Phase E performance (font diet, grain-shader worker, page virtualization), Phase F features
+
+**2026-10-03 — Pass #13 (M2 exit criterion met + Phase D slice → v1.12.0)**
+
+- ✅ Executed with parallel-agent wave 4 (file-disjoint: Agent A owned index.js/new modules, Agent B owned ai-assistant.js/persistence.js/index.html/index.css/docs)
+- ✅ **M2 EXIT MET: index.js 1,461 lines** (< 1,500) — **`layout-engine.js`** (626 L: layout engine, sticky/callout painters, margin-label drawing; `layoutText(text, currentPrediction)` parameterized) + **`shape-drawing.js`** (178 L: drawArrowhead/drawShapeOrEdge) + `fontSwitcher`/`markdownParser` moved to state.js; script-detector gained a node-env guard
+- ✅ **D1**: AI busy states (aria-busy + button disable with single finally recovery — offline Smart Arrange verified round-trip in production); **D2**: autosave quota guard with 60 s-throttled rescue toast; **D3**: canvas `role="img"` + aria-label bridge (mine); **D5**: 9 slider min/max hint rows
+- ✅ Verified: 227/227 unit + 17/17 E2E + 0 lint errors + production browser check
+- ⏭️ Remaining: lazy `window.*` reader conversion (ai-assistant/notebooks/voice-notes/flashcards/persistence → imports), render/AI core extraction if index.js should shrink further, Phase D remainder (D4 dark-mode contrast audit, D6 docs catch-up), merge `next-level` → `main` (standing recommendation)
+
+**2026-10-03 — Pass #12 (M2 exit + Phase C quality → v1.11.0)**
+
+- ✅ Executed with parallel-agent wave 3 (file-disjoint: Agent A owned index.js/index.html, Agent B owned e2e/)
+- ✅ **B4**: all **113 inline handlers** migrated to `addEventListener` (55 new stable ids, `preventDefault` semantics preserved) — **ESLint allowlist deleted**; **`ui-bindings.js`** (805 L) extracted with 16 per-panel binders replacing `bindUIActions()`
+- ✅ **B3**: **`layer-panel.js`** (424 L) extracted; dead code removed (`addNewLayer`, `buildCharQueue`); `maybeUpdateLayerUI()` guard added for the render path
+- ✅ **Window bridge retired to minimum**: only the lazy-reader publications remain (`renderText`/`autosave`/`debounceRender`/`S` + persistence's three UI hooks + `ALL_TEMPLATE_CHARS` + `renderSpecificPage`); converting those readers to imports = follow-up
+- ✅ **C2**: `e2e/export-formats.spec.js` — 7 assertions covering PNG/JPG/transparent downloads, PDF Standard+High (upscale path), SVG content check, real clipboard image read, `window.print` counter → **17 E2E tests**
+- ✅ **C3**: coverage ratchet in CI (`@vitest/coverage-v8`, thresholds 52/42/54/51 over the 15 module files, measured 2026-10-03) — raise with each release
+- ✅ **C4**: global `error` + `unhandledrejection` listeners → rate-limited error toast + console group
+- 🐛 `e2e/layer-manager.spec.js` updated for the retired `window.addNewLayerPreset` (now clicks the Add-Layer dropdown)
+- ✅ index.js: **3,141 → 2,232 lines** (4,569 at v1.8.0; 4,276 at the original audit)
+- ✅ Verified: 227/227 unit + 17/17 E2E + 0 lint errors (18 warnings, all pre-existing eqeqeq-style) + production bundle check
+- ⏭️ Remaining for index.js < 1,500: render/AI core extraction (Phase B continuation); then Phase D UX/a11y polish; merge `next-level` → `main` still recommended before starting Phase D
+
+**2026-10-02 — Pass #11 (M2 Architecture via parallel agents → v1.10.0)**
+
+- ✅ Executed `docs/upgrade-plan.md` Phase B with two agent waves (file-disjoint partitions, integration-verified between waves)
+- ✅ **Wave 1** — Agent 1: `handfonted-studio.js` extracted (index.js 4,607 → 3,316; glyph state + IndexedDB glyph layer moved into `state.js`); Agent 2: hashed filenames + build-injected precache manifest (`BUILD-PRECACHE` markers in dist/sw.js, idempotent, drift-fails-loudly; CI hash-safe; drift-tested all-200)
+- ✅ **Wave 2** — Agent 3: `persistence.js` extracted (`autosave`/`restoreState`/`AUTOSAVE_KEYS`/`buildAutosavePayload`/`parseAutosaveState`; restoreState moved in full; +11 tests); Agent 4: 3 new E2E specs (about page, HandFonted modal, Diagram dropdown) — 10/10 passing; found the about-page version-pill drift (fixed)
+- ✅ index.js: **4,607 → 3,141 lines** this release (4,569 at v1.8.0); new modules: handfonted-studio.js (1,200), persistence.js (269), state.js (211)
+- ✅ Verified combined: 227/227 unit + 10/10 E2E + 0 lint errors + production browser check (persistence round-trip across reload, SW installed with the generated precache incl. hashed bundle/CSS)
+- ⏭️ Remaining M2 exit criteria: split `bindUIActions()` + replace the ~113 inline handlers (kills the window bridge); then Phase C (export E2E assertions, coverage ratchet, error toast)
+
+**2026-10-02 — Pass #10 (M1 Foundation: ES-module conversion → v1.9.0)**
+
+- ✅ Executed per `docs/upgrade-plan.md` Phase A, with Context7-verified Vite semantics (`import.meta.env.DEV` static replacement, Rollup output options)
+- ✅ **A1**: `npm audit` 2 high findings fixed (`brace-expansion`, `undici` via `npm audit fix`); CI audit job now blocking + dev-inclusive
+- ✅ **A3 (the keystone)**: all 22 app scripts converted to ES modules — single `<script type="module" src="index.js">` entry, explicit imports replacing 59 `window.*` glue refs, inventory-driven (grep census + ESLint `no-undef` as the verifier with the project-global allowlist removed). Method: keep each module's `window.*` namespace assignments (zero behavior change), import state where modules read it at call time
+- ✅ **state.js extracted** (Phase B2 first slice): `S`, `pages` (const, mutated in place), `PAGE_W`/`PAGE_H`, `cursiveConnector` — library modules import shared state directly; **zero index.js ⇄ module cycles remain**
+- ✅ **Window bridge** in index.js for the ~45 inline-handler entry points + `renderText`/`autosave`/`debounceRender` lazy readers; **A2**: SW registers only when `!import.meta.env.DEV`
+- ✅ **Real bundling**: single 161.8 kB `dist/index.js` (52.8 kB gzip), stable names, sw.js precache = the exact bundled shell; export-manager now calls `renderQueueItems`/`renderCursiveConnectionsOn` via direct imports (window.ExportRenderers namespace kept for console access)
+- 🐛 Fixed 3 dead inline handlers found by the inventory: `closeGrammarModal`, `toggleLayerAddDropdown`, `closeLayerAddDropdown` (Add-Layer dropdown never opened via click — E2E only covered the hover path)
+- 🐛 Test-harness conversions: `require()` → ES imports across 9 files; `cursive-connector.test.js`/`markdown-parser.pbt.js` renamed `.mjs` (Node-run ESM, still outside Vitest); stroke-prediction test switched from a side-effect import to a named import
+- ✅ Verified: 216/216 unit + 7/7 E2E + 0 lint errors (warnings 50 → 23) + build + in-browser production check (render pipeline, bridged handlers, SW install, 0 console errors)
+- ⏭️ Next (M2 / Phase B): `handfonted-studio.js` extraction (~1,382 L), `persistence.js`, `layer-panel.js`, split `bindUIActions()`, replace the remaining 113 inline handlers, hashed filenames + generated precache manifest (B5)
+
 **2026-10-02 — Pass #9 (upstream sync: InkForge v1.6.25–v1.6.26 → v1.8.0)**
 
 - ✅ Upstream download `InkForge-1.6.26` diffed against this fork; everything after the already-ported v1.6.24 was carried over (see `docs/changelog.md` [1.8.0])

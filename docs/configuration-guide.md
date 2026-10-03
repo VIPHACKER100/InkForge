@@ -39,6 +39,10 @@ Complete reference for all user-configurable controls in Inkflow.
 | **Standard (Flowing)** | Default single-column layout where text flows naturally and wraps. | Standard text |
 | **Two-Column Grid** | Splits the page into two equal-width columns. Text fills the left column first, then the right column, before breaking to the next page. | Standard text |
 | **Cornell Study Notes** | Divides the page into three areas: "Cues / Questions" (left column), "Main Notes" (right column), and "Summary" (bottom footer). | Prefix a line with `? ` or `cue:` to place it in the Cues column.<br>Prefix a line with `== ` or `summary:` to place it in the bottom Summary area.<br>All other lines automatically flow into the Main Notes area. |
+| **Lecture Notes** (F3) | Topic/date header → main notes → key-terms column |
+| **Lab Report** (F3) | Objective → Method → Observations → Result, flowing in order |
+| **Vocabulary (Term / Definition)** (F3) | 40/60 labeled columns |
+| **Reading Notes** (F3) | Book/chapter header → main notes → quotes & page refs |
 | **Meeting Notes** | Structured layout for meeting minutes with agenda, notes, and action items. | Standard text |
 
 ---

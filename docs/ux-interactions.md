@@ -81,6 +81,7 @@ function debounceRender() {
 ### Slider Controls
 - Real-time value preview labels update on `oninput`
 - Values displayed next to each slider label
+- Min/max range hints: a small `.slider-hints` row sits under each sidebar slider (Font & Style, Ink Effects, and Animation sections) showing the input's own `min`/`max` values; marked `aria-hidden` since the range input already exposes them to assistive technology
 - Immediate canvas re-render via debouncer
 
 ### Color Picker
@@ -122,6 +123,27 @@ function debounceRender() {
 
 ---
 
+## AI Loading States (Phase D)
+
+Every AI action (`aiAction()` in `ai-assistant.js`) runs under an explicit busy state so long requests never feel frozen:
+
+- All `.ai-btn-group` buttons are disabled for the duration of the request
+- `#sec-ai` carries `aria-busy="true"` plus the `.ai-busy` class — CSS dims the buttons (`opacity: .6`, no pointer events) and spins a small marker beside the inline status line
+- Progress text reuses `setAiStatus()`, which mirrors into `#ai-status` and the `#status-announcer` live region
+- A single `finally` in `aiAction()` clears the busy state, so every exit path (empty input, missing API key, API/network errors, unexpected throws) re-enables the buttons exactly once
+
+---
+
+## Storage Quota Guard (Phase D)
+
+`autosave()` in `persistence.js` wraps the `localStorage.setItem('inkflow-state')` write:
+
+- On `QuotaExceededError` (name check or code 22) it logs the failure and raises an error toast: "Storage full — your note is too large to auto-save. Export your notes, then clear old text."
+- The toast is throttled to once per minute (module-level timestamp, same pattern as the global error hook) so a full storage device can't spam notifications
+- Non-quota failures re-throw and surface through the global error hook
+
+---
+
 ## Mobile & Drawer (1.7.0)
 
 - **Sidebar drawer**: `setSidebarOpen()` owns the state — `aria-expanded` sync on the hamburger, body scroll-lock (`body.sidebar-open`), and a `#sidebar-backdrop` scrim. Closes on scrim tap, canvas tap (capture-phase, so the tap still reaches the page editor), and Escape (deferred while a modal is open).
@@ -130,3 +152,15 @@ function debounceRender() {
 - **Stable viewport**: `viewport-fit=cover` + `env(safe-area-inset-*)` padding on toolbar/drawer/pagination; `100dvh` (with `vh` fallback) prevents browser-chrome jumps.
 - **Touch polish**: `touch-action: manipulation` removes the 300ms double-tap delay; drawer inputs are pinned ≥16px so iOS Safari doesn't zoom on focus; HandFonted and Flashcards modals become edge-to-edge sheets ≤768px.
 - **Keyboard**: Escape exits Study Mode when no modal is open; Escape closes the drawer otherwise.
+
+---
+
+## UI Language Toggle (v1.20.0 — Phase F6)
+
+The toolbar's 🌐-style toggle (labelled with the other language, e.g. "हिं") switches
+the interface between **English and हिंदी** instantly: toolbar buttons, sidebar
+section headers, primary actions and the Flashcards modal title update from the
+string tables in `i18n.js`, the choice persists in `inkflow-lang`, and
+`document.documentElement.lang` tracks the active language for assistive tech.
+Coverage currently spans the most visible chrome; extend by adding table entries
+and `data-i18n` attributes.

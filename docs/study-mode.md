@@ -233,3 +233,15 @@ body.study-mode .page { box-shadow: 0 0 0 2px var(--accent); }
 - `loadFlashcardsFromText()` — Q/A extractor in `index.js`
 - `flashcards[]` — runtime array, reset on each `loadFlashcardsFromText()` call
 - `THEME_PACKS` — constant in `index.js`, applied via `applyThemePack()`
+
+---
+
+## Spaced Repetition (v1.16.0 — Phase F1)
+
+Flashcards carry SM-2-lite review state. After flipping a card, grade it with
+**1 Again / 2 Hard / 3 Good / 4 Easy** (buttons or number keys): Again lapses the
+card (due immediately, ease −0.2), Hard/Good/Easy grow the interval by the card's
+ease factor (boosted ×1.3 on Easy). Ease is clamped to 1.3–3.0. The header badge
+shows how many cards are due now. Review history is stored per browser under the
+`inkflow-srs` localStorage key, keyed by question text — editing an answer never
+resets a card's schedule.

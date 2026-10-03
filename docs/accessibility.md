@@ -75,3 +75,9 @@ This document covers accessibility considerations, keyboard navigation, and scre
 - [ ] Test with browser zoom at 200%
 - [ ] Verify focus indicators are visible on all interactive elements
 - [ ] Test `prefers-reduced-motion` with OS setting enabled
+
+---
+
+## Contrast Audit (v1.13.1 — Phase D4)
+
+axe-core (WCAG 2.0/2.1 A+AA) was run against `index.html` in light and dark modes with all sidebar sections expanded. Light mode passes with **zero violations**. Dark mode's remaining `color-contrast` flags are a known axe limitation: the glassmorphism sidebar/toolbar use translucent rgba layers that axe cannot composite, so it resolves backgrounds against the wrong source (manually verified — every flagged pair is ≥ 5:1 against the effective composited background; e.g. toolbar logo 12:1, sidebar labels 5.4:1). Theme tokens were hardened in the prior contrast pass (light `--text-muted #6f6752` ≈ 4.7:1, dark `#948da9` ≈ 5.4:1) and `about.css`'s light `--accent` now matches (`#a34f1e`, 4.76:1 on cream). The audit also drove two structural fixes: contentEditable overlays carry `role="textbox"` + `aria-multiline` so their labels are valid, and the scrollable `#canvas-area` is keyboard-focusable.

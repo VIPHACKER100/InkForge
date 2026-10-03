@@ -4,7 +4,7 @@ Inkflow turns typed text into realistic handwritten notes, rendered on canvas wi
 variation: baseline wobble, pen pressure, ink bleed, smudge, and cursive connections. It runs
 entirely in the browser as an installable PWA — no account, no server required.
 
-![Version](https://img.shields.io/badge/version-1.8.0-blue) ![Tests](https://img.shields.io/badge/tests-216%20passing-brightgreen) ![License](https://img.shields.io/badge/license-MIT-green)
+![Version](https://img.shields.io/badge/version-1.20.1-blue) ![Tests](https://img.shields.io/badge/tests-264%20passing-brightgreen) ![License](https://img.shields.io/badge/license-MIT-green)
 
 ## ✨ Features
 
@@ -13,17 +13,22 @@ entirely in the browser as an installable PWA — no account, no server required
   correlated ink bleed, smudge, cursive connections, and a crisp ✨ **Clean** paper mode
 - **Margin Q/Ans labels** — numbered question/answer marks in the left margin (Standard layout)
 - **AI actions** — Smart Arrange (fully offline), Summarize, Grammar fix, Lecture→Notes, Assignment
-  generation via OpenRouter, Anthropic, or local Ollama; every result is sanitized and Q:/A: pairs
-  renumbered & deduplicated automatically
+  generation via OpenRouter, Anthropic, Google Gemini (direct), or local Ollama; every result is
+  sanitized and Q:/A: pairs renumbered & deduplicated automatically
 - **HandFonted Studio** — draw your own glyphs and compile them into a real `.ttf` font in-browser
-- **Study tools** — Q:/A: flashcards, study mode, rich syntax (stickies, callouts, highlights)
+- **Study tools** — Q:/A: flashcards with spaced repetition (SM-2 lite), study mode, rich syntax
+  (stickies, callouts, highlights)
+- **Template gallery** — 8 note layouts: Standard, Two-Column, Cornell, Meeting, Lecture, Lab Report,
+  Vocabulary, Reading Notes
 - **10 paper styles**, 4 note layouts (Standard, Two-Column, Cornell, Meeting), layer manager
 - **Export** — PNG / JPG / transparent PNG / SVG / multi-page PDF (Compact/Standard/High size
   presets) / clipboard / print
 - **Voice to Notes** — live speech-to-text via Web Speech API
 - **About page** — standalone `about.html` with an interactive realism playground, docs directory,
   and a brand emblem wired into the toolbar, favicon, and PWA manifest
+- **हिंदी UI** — one-click English ⇄ हिंदी interface toggle (extensible string tables)
 - **PWA** — installable, offline-capable via service worker (app shell + About page precached)
+- **Hardened collaboration relay** — optional room token, rate limits, connection and payload caps
 
 ## 🚀 Quick Start
 
