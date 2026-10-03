@@ -10,7 +10,7 @@
  * 2. The structure is preserved through round-trip conversion
  */
 
-const MarkdownParser = typeof module !== 'undefined' && module.exports ? require('./markdown-parser.js') : window.MarkdownParser;
+import { MarkdownParser } from './markdown-parser.js';
 
 // ─────────────────────────────────────────────────────────────
 // RANDOM MARKDOWN GENERATOR

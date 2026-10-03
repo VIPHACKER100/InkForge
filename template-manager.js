@@ -9,6 +9,7 @@ class TemplateManager {
   constructor() {
     this.templates = new Map();
     this.registerBuiltInTemplates();
+    this.registerGalleryTemplates();
   }
 
   registerBuiltInTemplates() {
@@ -177,6 +178,213 @@ class TemplateManager {
           text: 'Action Items',
           x: 'calc(65% + 20px)',
           y: 110,
+          font: 'italic bold 11px sans-serif',
+          color: 'ink',
+          alpha: 0.5,
+        },
+      ],
+    });
+  }
+
+  /* ── Phase F3 — Template Gallery: four starter study layouts ── */
+
+  registerGalleryTemplates() {
+    // 5. Lecture Notes — header strip, main notes, key-terms column
+    this.templates.set('lecture', {
+      id: 'lecture',
+      name: 'Lecture Notes',
+      zones: [
+        { id: 'header', name: 'Topic / Date', x: 0, y: 0, width: '100%', height: 80, nextZone: 'notes' },
+        {
+          id: 'notes',
+          name: 'Lecture Notes',
+          x: 0,
+          y: 100,
+          width: 'calc(65% - 20px)',
+          height: 'calc(100% - 100px)',
+          nextZone: 'terms',
+        },
+        {
+          id: 'terms',
+          name: 'Key Terms',
+          x: 'calc(65% + 20px)',
+          y: 100,
+          width: 'calc(35% - 20px)',
+          height: 'calc(100% - 100px)',
+          nextZone: null,
+        },
+      ],
+      guides: [
+        { type: 'line', x1: -20, y1: 90, x2: 'calc(100% + 20px)', y2: 90, color: 'ink', alpha: 0.35 },
+        {
+          type: 'line',
+          x1: 'calc(65% + 10px)',
+          y1: 100,
+          x2: 'calc(65% + 10px)',
+          y2: '100%',
+          color: 'ink',
+          alpha: 0.35,
+        },
+      ],
+      labels: [
+        { text: 'Topic / Date', x: 0, y: -10, font: 'italic bold 11px sans-serif', color: 'ink', alpha: 0.5 },
+        { text: 'Lecture Notes', x: 0, y: 90, font: 'italic bold 11px sans-serif', color: 'ink', alpha: 0.5 },
+        {
+          text: 'Key Terms',
+          x: 'calc(65% + 20px)',
+          y: 90,
+          font: 'italic bold 11px sans-serif',
+          color: 'ink',
+          alpha: 0.5,
+        },
+      ],
+    });
+
+    // 6. Lab Report — Objective → Method → Observations → Result flow in order
+    this.templates.set('labreport', {
+      id: 'labreport',
+      name: 'Lab Report',
+      zones: [
+        { id: 'objective', name: 'Objective', x: 0, y: 0, width: '100%', height: 'calc(25% - 30px)', nextZone: 'method' },
+        {
+          id: 'method',
+          name: 'Method',
+          x: 0,
+          y: 'calc(25% + 20px)',
+          width: '100%',
+          height: 'calc(25% - 20px)',
+          nextZone: 'observations',
+        },
+        {
+          id: 'observations',
+          name: 'Observations',
+          x: 0,
+          y: 'calc(50% + 40px)',
+          width: '100%',
+          height: 'calc(25% - 20px)',
+          nextZone: 'result',
+        },
+        {
+          id: 'result',
+          name: 'Result / Conclusion',
+          x: 0,
+          y: 'calc(75% + 60px)',
+          width: '100%',
+          height: 'calc(25% - 60px)',
+          nextZone: null,
+        },
+      ],
+      guides: [
+        { type: 'line', x1: -20, y1: 'calc(25% + 10px)', x2: 'calc(100% + 20px)', y2: 'calc(25% + 10px)', color: 'ink', alpha: 0.35 },
+        { type: 'line', x1: -20, y1: 'calc(50% + 30px)', x2: 'calc(100% + 20px)', y2: 'calc(50% + 30px)', color: 'ink', alpha: 0.35 },
+        { type: 'line', x1: -20, y1: 'calc(75% + 50px)', x2: 'calc(100% + 20px)', y2: 'calc(75% + 50px)', color: 'ink', alpha: 0.35 },
+      ],
+      labels: [
+        { text: 'Objective', x: 0, y: -10, font: 'italic bold 11px sans-serif', color: 'ink', alpha: 0.5 },
+        { text: 'Method', x: 0, y: 'calc(25% + 10px)', font: 'italic bold 11px sans-serif', color: 'ink', alpha: 0.5 },
+        {
+          text: 'Observations',
+          x: 0,
+          y: 'calc(50% + 30px)',
+          font: 'italic bold 11px sans-serif',
+          color: 'ink',
+          alpha: 0.5,
+        },
+        {
+          text: 'Result / Conclusion',
+          x: 0,
+          y: 'calc(75% + 50px)',
+          font: 'italic bold 11px sans-serif',
+          color: 'ink',
+          alpha: 0.5,
+        },
+      ],
+    });
+
+    // 7. Vocabulary — Term / Definition columns
+    this.templates.set('vocabulary', {
+      id: 'vocabulary',
+      name: 'Vocabulary (Term / Definition)',
+      zones: [
+        { id: 'terms', name: 'Terms', x: 0, y: 0, width: 'calc(40% - 20px)', height: '100%', nextZone: 'definitions' },
+        {
+          id: 'definitions',
+          name: 'Definitions',
+          x: 'calc(40% + 20px)',
+          y: 0,
+          width: 'calc(60% - 20px)',
+          height: '100%',
+          nextZone: null,
+        },
+      ],
+      guides: [
+        {
+          type: 'line',
+          x1: 'calc(40% + 10px)',
+          y1: 0,
+          x2: 'calc(40% + 10px)',
+          y2: '100%',
+          color: 'ink',
+          alpha: 0.35,
+        },
+      ],
+      labels: [
+        { text: 'Term', x: 0, y: -10, font: 'italic bold 11px sans-serif', color: 'ink', alpha: 0.5 },
+        {
+          text: 'Definition',
+          x: 'calc(40% + 20px)',
+          y: -10,
+          font: 'italic bold 11px sans-serif',
+          color: 'ink',
+          alpha: 0.5,
+        },
+      ],
+    });
+
+    // 8. Reading Notes — header, main notes, quotes/page-refs column
+    this.templates.set('reading', {
+      id: 'reading',
+      name: 'Reading Notes',
+      zones: [
+        { id: 'header', name: 'Book / Chapter / Pages', x: 0, y: 0, width: '100%', height: 80, nextZone: 'notes' },
+        {
+          id: 'notes',
+          name: 'Main Notes',
+          x: 0,
+          y: 100,
+          width: 'calc(60% - 20px)',
+          height: 'calc(100% - 100px)',
+          nextZone: 'quotes',
+        },
+        {
+          id: 'quotes',
+          name: 'Quotes & Page Refs',
+          x: 'calc(60% + 20px)',
+          y: 100,
+          width: 'calc(40% - 20px)',
+          height: 'calc(100% - 100px)',
+          nextZone: null,
+        },
+      ],
+      guides: [
+        { type: 'line', x1: -20, y1: 90, x2: 'calc(100% + 20px)', y2: 90, color: 'ink', alpha: 0.35 },
+        {
+          type: 'line',
+          x1: 'calc(60% + 10px)',
+          y1: 100,
+          x2: 'calc(60% + 10px)',
+          y2: '100%',
+          color: 'ink',
+          alpha: 0.35,
+        },
+      ],
+      labels: [
+        { text: 'Book / Chapter / Pages', x: 0, y: -10, font: 'italic bold 11px sans-serif', color: 'ink', alpha: 0.5 },
+        { text: 'Main Notes', x: 0, y: 90, font: 'italic bold 11px sans-serif', color: 'ink', alpha: 0.5 },
+        {
+          text: 'Quotes & Page Refs',
+          x: 'calc(60% + 20px)',
+          y: 90,
           font: 'italic bold 11px sans-serif',
           color: 'ink',
           alpha: 0.5,

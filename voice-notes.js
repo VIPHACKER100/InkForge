@@ -1,9 +1,17 @@
+import { showExportToast } from './export-manager.js';
+
 /**
  * Voice to Notes Module — Web Speech API speech-to-text into the note editor.
  * Functions: startVoiceRecording
- * Depends on: window.S (state), window.renderText, window.autosave
+ * Depends on: state.js (S), render-pipeline.js (renderText), persistence.js
+ * (autosave). window.showExportToast remains a namespace read (self-published
+ * by export-manager.js).
  * Extracted from index.js (docs/roadmap.md Phase 1).
  */
+import { S } from './state.js';
+import { renderText } from './render-pipeline.js';
+import { autosave } from './persistence.js';
+
 (function () {
   'use strict';
 
@@ -40,9 +48,9 @@
           const current = textarea.value;
           const newText = current ? current + '\n' + finalTranscript : finalTranscript;
           textarea.value = newText;
-          window.S.text = newText;
-          window.renderText(window.S.text);
-          window.autosave();
+          S.text = newText;
+          renderText(S.text);
+          autosave();
         }
       }
     };
@@ -58,8 +66,8 @@
         'no-speech': 'No speech detected — try speaking a bit closer to the microphone.',
       };
       const msg = messages[event && event.error];
-      if (msg && typeof window.showExportToast === 'function') {
-        window.showExportToast(msg, 'error');
+      if (msg) {
+        showExportToast(msg, 'error');
       }
     };
     voiceRecognition.onend = () => {

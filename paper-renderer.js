@@ -3,6 +3,8 @@
  * Functions: drawLayoutDecorations, drawPaperBackground, renderSmudgeEffects, getAlignmentOffset
  * Extracted from index.js (lines 643–1153). Reads globals: S, PAGE_W, PAGE_H.
  */
+import { S, PAGE_W, PAGE_H } from './state.js';
+
 (function () {
   'use strict';
 
@@ -41,8 +43,12 @@
     ctx.restore();
   }
 
-  // Offscreen canvas cache for static paper backgrounds
+  // Offscreen canvas cache for static paper backgrounds.
+  // ponytail: LRU cap — each entry is a 794x1123 canvas (~3.5 MB); a margin/size
+  // slider drag would otherwise pin hundreds of them. 6 entries cover every
+  // style a session realistically touches; evicted entries redraw on demand.
   const _paperBgCache = new Map();
+  const _PAPER_BG_CACHE_MAX = 6;
 
   function _renderPaperBackgroundDirect(ctx, style) {
     if (!S || !PAGE_W || !PAGE_H) return;
@@ -376,10 +382,17 @@
         if (offCtx) {
           _renderPaperBackgroundDirect(offCtx, style);
           _paperBgCache.set(cacheKey, cachedCanvas);
+          if (_paperBgCache.size > _PAPER_BG_CACHE_MAX) {
+            const oldest = _paperBgCache.keys().next().value;
+            _paperBgCache.delete(oldest);
+          }
         }
       }
 
       if (cachedCanvas) {
+        // LRU touch: re-insert so the newest keys survive eviction
+        _paperBgCache.delete(cacheKey);
+        _paperBgCache.set(cacheKey, cachedCanvas);
         ctx.clearRect(0, 0, w, h);
         ctx.drawImage(cachedCanvas, 0, 0);
         return;

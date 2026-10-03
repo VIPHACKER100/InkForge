@@ -1,7 +1,14 @@
 /**
  * Notebooks Module
  * IndexedDB CRUD + notebook management
+ * Depends on: state.js (S), render-pipeline.js (renderText), persistence.js
+ * (autosave). window.NotebooksDB / window.NotebooksUI stay self-published —
+ * the sidebar markup is rendered at runtime with inline handlers.
  */
+import { S } from './state.js';
+import { renderText } from './render-pipeline.js';
+import { autosave } from './persistence.js';
+
 (function () {
   'use strict';
 
@@ -133,22 +140,20 @@
     const id = generateId();
     saveNotebook(id, {
       title,
-      text: window.S?.text || '',
-      state: { ...window.S },
+      text: S?.text || '',
+      state: { ...S },
     }).then(() => renderNotebooksSidebar());
   }
 
   function openNotebook(id) {
     loadNotebook(id).then((nb) => {
       if (!nb) return;
-      if (window.S) {
-        Object.assign(window.S, nb.state);
-        window.S.text = nb.text;
-      }
+      Object.assign(S, nb.state);
+      S.text = nb.text;
       const textarea = document.getElementById('text-input');
       if (textarea) textarea.value = nb.text;
-      if (window.renderText) window.renderText(nb.text);
-      if (window.autosave) window.autosave();
+      renderText(nb.text);
+      autosave();
     });
   }
 

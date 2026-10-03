@@ -205,3 +205,5 @@ class StrokePredictionEngine {
 if (typeof window !== 'undefined') {
   window.StrokePredictionEngine = StrokePredictionEngine;
 }
+
+export { StrokePredictionEngine };

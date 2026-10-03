@@ -3,7 +3,7 @@
  * Tests for connection rendering, ligature detection, and exit/entry points.
  */
 
-const { CursiveConnector } = require('./cursive-connector.js');
+import { CursiveConnector } from './cursive-connector.js';
 
 let passed = 0;
 let failed = 0;
