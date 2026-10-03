@@ -1,7 +1,7 @@
 /**
  * Margin Q/Ans Labels Module — clusters the layout queue into visual lines and
  * assigns margin labels: Q1..Qn next to numbered question lines, Ans next to
- * bare "Answer:" lines (upstream Inkflow v1.6.8–1.6.11 parity, adapted).
+ * bare "Answer:" lines (upstream InkForge v1.6.8–1.6.11 parity, adapted).
  * Pure functions — no DOM. render-pipeline.js's renderText() computes the
  * labels once per render; layout-engine.js draws them on canvas.
  *

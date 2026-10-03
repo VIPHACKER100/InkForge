@@ -1,12 +1,12 @@
 /* ═══════════════════════════════════════════════════════════
-   Inkflow — axe-core contrast/accessibility audit (Phase D4)
+   InkForge — axe-core contrast/accessibility audit (Phase D4)
    Usage:
      npx vite --port 5210 --strictPort   # in another shell
      node scripts/contrast-audit.mjs
    Env:
      AUDIT_BASE_URL (default http://localhost:5210)
    Audits index.html + about.html in light & dark mode
-   (localStorage key `inkflow-dark`), with sidebar sections and
+   (localStorage key `inkforge-dark`), with sidebar sections and
    dropdowns opened first so hidden-but-reachable states are
    covered. axe-core is downloaded once and injected as INLINE
    content (about.html's CSP only allows 'unsafe-inline', not
@@ -59,7 +59,7 @@ const report = {};
 for (const p of PAGES) {
   const ctx = await browser.newContext({ viewport: { width: 1440, height: 900 } });
   await ctx.addInitScript((dark) => {
-    try { localStorage.setItem('inkflow-dark', dark ? '1' : '0'); } catch {}
+    try { localStorage.setItem('inkforge-dark', dark ? '1' : '0'); } catch {}
   }, p.dark);
   const page = await ctx.newPage();
   const pageErrors = [];

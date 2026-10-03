@@ -8,7 +8,7 @@ import { wrapInkfont, parseInkfont } from './inkfont-format.js';
 
 const PROJECT = {
   version: '1.0',
-  appName: 'Inkflow HandFonted Studio',
+  appName: 'InkForge HandFonted Studio',
   glyphs: { a: 'data:image/png;base64,AAA', b: 'data:image/png;base64,BBB' },
   fontName: 'MyHandwriting',
   totalGlyphs: 2,

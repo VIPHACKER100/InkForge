@@ -1,4 +1,4 @@
-# 🚀 Inkflow Upgrade Plan — v1.9 → v2.0
+# 🚀 InkForge Upgrade Plan — v1.9 → v2.0
 
 > **✅ COMPLETED 2026-10-03 (v1.9.0 → v1.20.1).** All milestones shipped: M1 Foundation (v1.9.0),
 > M2 Architecture (v1.10.0–1.13.0), M3 Quality (v1.11.0–1.12.0), Phase D (v1.13.1), Phase E
@@ -15,7 +15,7 @@ This plan supersedes the phase tables in `docs/roadmap.md` (which stay as the hi
 
 ## 1. Where the project stands (2026-10-02)
 
-Inkflow is a client-side vanilla-JS PWA that renders typed text as realistic handwriting (canvas, per-character jitter/pressure/bleed), with AI actions (OpenRouter / Anthropic / Ollama), a custom-font studio (sketch → vectorize → TTF), study tools, notebooks, multi-format export, and an About/docs site. **It is now fully synced with upstream InkForge through v1.6.26 and ahead of it** (modular tests, CI, E2E, clean-mode polish) — future upstream syncs are small diffs, not projects.
+InkForge is a client-side vanilla-JS PWA that renders typed text as realistic handwriting (canvas, per-character jitter/pressure/bleed), with AI actions (OpenRouter / Anthropic / Ollama), a custom-font studio (sketch → vectorize → TTF), study tools, notebooks, multi-format export, and an About/docs site. **It is now fully synced with upstream InkForge through v1.6.26 and ahead of it** (modular tests, CI, E2E, clean-mode polish) — future upstream syncs are small diffs, not projects.
 
 ### Health snapshot (measured 2026-10-02)
 
@@ -54,7 +54,7 @@ Sequenced so each phase ships independently behind a version bump. Effort = one 
 |---|------|---------|
 | A1 | **Triage the 2 high-severity audit findings** (`npm audit` output; almost certainly dev-chain: jsdom/ws). Fix or add targeted `overrides`; make the CI audit job **blocking** | Only red item in the health snapshot |
 | A2 | **Service-worker dev guard**: don't register `sw.js` in dev (`import.meta.env.DEV` after A3, or a `location.port` check today). Kills the unstyled-dev-session quirk permanently | Discovered 2026-10-02 |
-| A3 | **ES-module conversion, staged**: leaf modules first (`script-detector`, `markdown-parser`, `text-layout`, `paper-renderer`, …), `index.js` last; one `<script type="module">` graph, explicit imports replacing the 59 `window.*` handoffs; keep one `window.Inkflow` debug facade. Run the E2E suite after each file | The keystone — unblocks B4/C/E |
+| A3 | **ES-module conversion, staged**: leaf modules first (`script-detector`, `markdown-parser`, `text-layout`, `paper-renderer`, …), `index.js` last; one `<script type="module">` graph, explicit imports replacing the 59 `window.*` handoffs; keep one `window.InkForge` debug facade. Run the E2E suite after each file | The keystone — unblocks B4/C/E |
 | A4 | **Merge `next-level` → `main`** and adopt PR flow (standing item since 2026-09-13; divergence keeps growing) | Risk management |
 
 ### Phase B — Finish the modularization (~2 weeks, P0) → **v1.10.0**

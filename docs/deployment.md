@@ -1,23 +1,23 @@
 # 🌐 Deployment Guide
 
-Options and best practices for hosting Inkflow in production.
+Options and best practices for hosting InkForge in production.
 
 ---
 
 ## Static Hosting (Recommended)
 
-Inkflow is a pure static site — no server-side runtime required. Any static hosting service works perfectly.
+InkForge is a pure static site — no server-side runtime required. Any static hosting service works perfectly.
 
 ### GitHub Pages
 ```bash
 # Push to a GitHub repository
 git add .
-git commit -m "Deploy Inkflow"
+git commit -m "Deploy InkForge"
 git push origin main
 
 # Enable Pages in Settings → Pages → Source: main branch
 ```
-Your app will be live at `https://username.github.io/inkflow/`
+Your app will be live at `https://username.github.io/inkforge/`
 
 ### Netlify
 1. Drag and drop the project folder to [app.netlify.com/drop](https://app.netlify.com/drop)
@@ -38,7 +38,7 @@ npx vercel --prod
 
 ## CDN Dependencies
 
-Inkflow loads these libraries from CDN at runtime:
+InkForge loads these libraries from CDN at runtime:
 
 | Library | CDN | Fallback Strategy |
 | :--- | :--- | :--- |
@@ -81,7 +81,7 @@ mkdir vendor
 
 ## PWA Deployment
 
-Inkflow includes a service worker (`sw.js`) and web app manifest (`manifest.json`) for progressive web app support.
+InkForge includes a service worker (`sw.js`) and web app manifest (`manifest.json`) for progressive web app support.
 
 ### Features
 - **Offline support**: All static assets (JS, CSS, HTML) are precached on first load
@@ -100,8 +100,8 @@ After deployment, open DevTools → Application → Service Workers to confirm r
 ## Collaboration Relay Hardening (v1.18.0 — Phase F4)
 
 The WebSocket relay (`server.js`) supports an optional shared room token. Run it
-with `INKFLOW_ROOM_TOKEN=your-secret node server.js`; clients must then set the
-same value before connecting — `localStorage.setItem('inkflow-collab-token',
+with `INKFORGE_ROOM_TOKEN=your-secret node server.js`; clients must then set the
+same value before connecting — `localStorage.setItem('inkforge-collab-token',
 'your-secret')` — or they are disconnected with close code 4401 ("Room token
 required"). Without the variable the relay runs in open LAN mode exactly as
 before. Additional built-in limits: 240 messages per 10 s per connection

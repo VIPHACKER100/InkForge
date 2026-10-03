@@ -2,9 +2,9 @@
 
 ## Introduction
 
-This document specifies requirements for advanced Inkflow features covering two main areas: **Rendering & Realism Enhancements** and **AI Features**. These enhancements target improved handwriting authenticity, multi-language support (especially Hindi/Devanagari), and AI-powered educational workflows for Indian students.
+This document specifies requirements for advanced InkForge features covering two main areas: **Rendering & Realism Enhancements** and **AI Features**. These enhancements target improved handwriting authenticity, multi-language support (especially Hindi/Devanagari), and AI-powered educational workflows for Indian students.
 
-The features build upon Inkflow's existing handwriting synthesis engine, unified layout engine, and AI integration architecture to deliver contextual character variation, smudge effects, cursive rendering, multi-pen support, AI-powered doubt solving, diagram generation, voice-to-notes pipelines, and bilingual Hinglish support.
+The features build upon InkForge's existing handwriting synthesis engine, unified layout engine, and AI integration architecture to deliver contextual character variation, smudge effects, cursive rendering, multi-pen support, AI-powered doubt solving, diagram generation, voice-to-notes pipelines, and bilingual Hinglish support.
 
 ---
 

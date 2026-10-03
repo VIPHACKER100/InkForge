@@ -1,6 +1,6 @@
 # 🎨 UI Design System
 
-This document describes Inkflow's CSS design token architecture, theme system, and layout grid structure.
+This document describes InkForge's CSS design token architecture, theme system, and layout grid structure.
 
 ---
 
@@ -23,7 +23,7 @@ The visual foundations are centralized in a robust CSS Custom Property system, e
 
 ## CSS Architecture & Utility Classes
 
-Inkflow avoids inline styles. All layout, spacing, and component styling rules are abstracted into utility and component classes inside `index.css`.
+InkForge avoids inline styles. All layout, spacing, and component styling rules are abstracted into utility and component classes inside `index.css`.
 
 Key utility categories include:
 - **Layout & Spacing**: `.flex-center`, `.margin-top-sm`, `.gap-md`

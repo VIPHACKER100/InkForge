@@ -1,4 +1,4 @@
-# Implementation Plan: Advanced InkFlow Features
+# Implementation Plan: Advanced InkForge Features
 
 ## Overview
 
@@ -6,7 +6,7 @@ This implementation plan covers two major feature categories:
 1. **Rendering & Realism Enhancements**: Contextual character variation, smudge effects, cursive rendering, multi-pen support
 2. **Advanced Collaborative & AI Features**: Real-time collaborative writing, stroke prediction, template system, multi-layer canvas, AI tools (doubt-solver, diagrams, voice-to-notes), and Hindi/Hinglish support
 
-All implementation will be in JavaScript, building upon the existing InkFlow architecture with its unified layout engine, canvas rendering system, and AI integration.
+All implementation will be in JavaScript, building upon the existing InkForge architecture with its unified layout engine, canvas rendering system, and AI integration.
 
 ## Tasks
 
@@ -322,7 +322,7 @@ All implementation will be in JavaScript, building upon the existing InkFlow arc
 - Each task references specific requirements for traceability
 - Property-based tests validate universal correctness properties from the design
 - Unit tests and integration tests validate specific examples and edge cases
-- Implementation assumes existing InkFlow architecture (layoutText engine, state management, export pipelines)
+- Implementation assumes existing InkForge architecture (layoutText engine, state management, export pipelines)
 - All collaborative features require WebSocket server deployment (not included in this spec)
 - ML model for stroke prediction requires separate training or pre-trained model download
 - Hindi support requires Hindi-capable AI models (Claude 3+, GPT-4)

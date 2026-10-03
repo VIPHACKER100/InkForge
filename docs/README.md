@@ -1,6 +1,6 @@
-# 📖 Inkflow Documentation
+# 📖 InkForge Documentation
 
-Welcome to the **Inkflow** documentation hub. This folder contains all technical, design, and operational documentation for the project.
+Welcome to the **InkForge** documentation hub. This folder contains all technical, design, and operational documentation for the project.
 
 **Current Version**: 1.6.0 — Modular Architecture, Rich Syntax, PWA, 20 JS Files
 

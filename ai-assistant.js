@@ -64,7 +64,7 @@ import { autosave } from './persistence.js';
             'Content-Type': 'application/json',
             Authorization: 'Bearer ' + key,
             'HTTP-Referer': window.location.href,
-            'X-Title': 'Inkflow Notes Generator',
+            'X-Title': 'InkForge Notes Generator',
           },
           body: JSON.stringify({
             model: model,
@@ -374,7 +374,7 @@ Constraints:
 
   /* ── Ollama Local AI ────────────────────────────────────────────────────── */
 
-  const AI_SYSTEM_BASE_PROMPT = `You are Inkflow's AI assistant for handwritten notes. Output using Inkflow's native rich study syntax:
+  const AI_SYSTEM_BASE_PROMPT = `You are InkForge's AI assistant for handwritten notes. Output using InkForge's native rich study syntax:
 - # H1 headers for main topics
 - ## H2 subheaders for subtopics
 - - Bullet lists for key points
@@ -518,7 +518,7 @@ Keep responses concise and structured for handwritten note-taking.`;
     if (!keyInput) return;
     const loadKey = () => {
       const provider = providerSelect?.value || 'openrouter';
-      const saved = localStorage.getItem('inkflow-api-key-' + provider);
+      const saved = localStorage.getItem('inkforge-api-key-' + provider);
       if (saved) {
         keyInput.value = saved;
         if (rememberCheck) rememberCheck.checked = true;
@@ -529,15 +529,15 @@ Keep responses concise and structured for handwritten note-taking.`;
     keyInput.addEventListener('input', () => {
       if (rememberCheck?.checked) {
         const provider = providerSelect?.value || 'openrouter';
-        localStorage.setItem('inkflow-api-key-' + provider, keyInput.value);
+        localStorage.setItem('inkforge-api-key-' + provider, keyInput.value);
       }
     });
     rememberCheck?.addEventListener('change', () => {
       const provider = providerSelect?.value || 'openrouter';
       if (rememberCheck.checked) {
-        localStorage.setItem('inkflow-api-key-' + provider, keyInput.value);
+        localStorage.setItem('inkforge-api-key-' + provider, keyInput.value);
       } else {
-        localStorage.removeItem('inkflow-api-key-' + provider);
+        localStorage.removeItem('inkforge-api-key-' + provider);
       }
     });
   }

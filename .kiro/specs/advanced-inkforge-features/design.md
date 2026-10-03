@@ -1,10 +1,10 @@
-# Design Document: Advanced InkFlow Features
+# Design Document: Advanced InkForge Features
 
 ## Overview
 
-This design introduces four advanced feature enhancements to the InkFlow handwriting application: **Real-Time Collaborative Writing**, **Smart Stroke Prediction**, **Advanced Template System**, and **Multi-Layer Canvas Architecture**. These features extend InkFlow's capabilities to support collaborative workflows, predictive handwriting assistance, flexible document templates, and sophisticated layer-based composition while maintaining the existing architecture's modularity and performance characteristics.
+This design introduces four advanced feature enhancements to the InkForge handwriting application: **Real-Time Collaborative Writing**, **Smart Stroke Prediction**, **Advanced Template System**, and **Multi-Layer Canvas Architecture**. These features extend InkForge's capabilities to support collaborative workflows, predictive handwriting assistance, flexible document templates, and sophisticated layer-based composition while maintaining the existing architecture's modularity and performance characteristics.
 
-The design leverages InkFlow's existing unified layout engine (`layoutText`), animation system, state management, and export pipelines while introducing new subsystems for real-time synchronization, machine learning inference, template management, and layer composition.
+The design leverages InkForge's existing unified layout engine (`layoutText`), animation system, state management, and export pipelines while introducing new subsystems for real-time synchronization, machine learning inference, template management, and layer composition.
 
 ## Architecture
 
@@ -85,7 +85,7 @@ graph TD
 
 ```mermaid
 graph LR
-    A[Existing InkFlow Core] --> B[Real-Time Collaborative Writing]
+    A[Existing InkForge Core] --> B[Real-Time Collaborative Writing]
     A --> C[Smart Stroke Prediction]
     A --> D[Advanced Template System]
     A --> E[Multi-Layer Canvas Architecture]

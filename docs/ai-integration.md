@@ -1,12 +1,12 @@
 # 🤖 AI Integration
 
-This document describes Inkflow's multi-provider AI integration with SSE streaming support.
+This document describes InkForge's multi-provider AI integration with SSE streaming support.
 
 ---
 
 ## Connection Details
 
-Inkflow supports two primary AI backends. Users select their provider and model from the UI dropdowns.
+InkForge supports two primary AI backends. Users select their provider and model from the UI dropdowns.
 
 ### 🌐 OpenRouter (Primary)
 - **URL**: `https://openrouter.ai/api/v1/chat/completions`
@@ -16,7 +16,7 @@ Inkflow supports two primary AI backends. Users select their provider and model 
   Content-Type: application/json
   Authorization: Bearer USER_API_KEY
   HTTP-Referer: [Window Location]
-  X-Title: Inkflow Notes Generator
+  X-Title: InkForge Notes Generator
   ```
 
 ### 🔑 Anthropic (Direct)
@@ -99,7 +99,7 @@ and bullet points. Plain text only. No markdown.
 
 ### 6. Rich Syntax Formatting (Ollama)
 ```
-System: You are Inkflow's AI assistant for handwritten notes. Output using Inkflow's native rich study syntax:
+System: You are InkForge's AI assistant for handwritten notes. Output using InkForge's native rich study syntax:
 - # H1 headers for main topics
 - ==highlighted text== for important terms
 - [sticky:yellow]margin notes[sticky] for supplementary info
@@ -147,6 +147,6 @@ On page load, `fetchOpenRouterModels()` asynchronously fetches the full model ca
 
 - **Smart Arrange is fully offline**: the 🪄 button runs a deterministic in-browser tidy-up (`smartArrangeLocal()` in `ai-postprocess.js`) — no provider or API key. It normalizes bullet markers, header/tag/highlight spacing, `q 1 :` → `Q1:` labels and punctuation spacing, inserts structural breaks before questions and headers, collapses blank-line runs, and reports the fix count via toast and the AI status line.
 - **Every AI result is post-processed** before it reaches the textarea or renderer:
-  1. `sanitizeAiResponse()` strips code fences, inline backticks, bold/italic markers and raw HTML — while preserving Inkflow syntax (`[sticky:…]`, `[callout:…]`, `==highlight==`, `#` headings) and the `​```diagram` / `​```mermaid` fences the renderer parses.
+  1. `sanitizeAiResponse()` strips code fences, inline backticks, bold/italic markers and raw HTML — while preserving InkForge syntax (`[sticky:…]`, `[callout:…]`, `==highlight==`, `#` headings) and the `​```diagram` / `​```mermaid` fences the renderer parses.
   2. `resequenceQA()` renumbers Q:/A: pairs sequentially from Q1 (ignoring model numbering) and drops near-duplicate questions — trigram Jaccard similarity ≥ 0.72 — together with their paired answers.
 - Accepted grammar corrections pass through the sanitizer as well.

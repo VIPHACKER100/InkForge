@@ -1,6 +1,6 @@
 # 🤖 AI Assistant Module
 
-This document covers Inkflow's `ai-assistant.js` module — provider routing, streaming, Ollama local AI, grammar correction, and API key persistence.
+This document covers InkForge's `ai-assistant.js` module — provider routing, streaming, Ollama local AI, grammar correction, and API key persistence.
 
 ---
 
@@ -72,7 +72,7 @@ Parses SSE JSON lines, calls `onChunk(textContent)` with accumulated text.
 
 ### `AI_SYSTEM_BASE_PROMPT`
 
-Rich-syntax-aware prompt for Ollama that instructs the model to output Inkflow's native syntax:
+Rich-syntax-aware prompt for Ollama that instructs the model to output InkForge's native syntax:
 
 ```
 # H1 headers for main topics
@@ -148,7 +148,7 @@ Modal-based grammar correction workflow:
 Called once on boot to restore saved API keys from localStorage.
 
 **Behavior**:
-- On load: reads `localStorage['inkflow-api-key-{provider}']` and populates `#api-key` input
+- On load: reads `localStorage['inkforge-api-key-{provider}']` and populates `#api-key` input
 - On input: if "Remember" checkbox is checked, saves key to localStorage
 - On checkbox change: saves or removes key from localStorage
 - On provider change: loads the key for the newly selected provider
@@ -157,9 +157,9 @@ Called once on boot to restore saved API keys from localStorage.
 
 | Key Pattern | Provider |
 |-------------|----------|
-| `inkflow-api-key-openrouter` | OpenRouter |
-| `inkflow-api-key-anthropic` | Anthropic |
-| `inkflow-api-key-ollama` | *(unused — no key needed)* |
+| `inkforge-api-key-openrouter` | OpenRouter |
+| `inkforge-api-key-anthropic` | Anthropic |
+| `inkforge-api-key-ollama` | *(unused — no key needed)* |
 
 ---
 

@@ -508,7 +508,7 @@ function showJitterPreview(dataUrl, char = '') {
 export function exportFontProject() {
   const projectData = {
     version: '1.0',
-    appName: 'Inkflow HandFonted Studio',
+    appName: 'InkForge HandFonted Studio',
     exportDate: new Date().toISOString(),
     glyphs: draftedGlyphs,
     fontName: document.getElementById('custom-font-name')?.value || 'MyHandwriting',
@@ -734,7 +734,7 @@ export function generateDownloadTemplate() {
     '   • Use high contrast (300 DPI recommended)',
     '   • Ensure the image is well-lit and in focus',
     '',
-    "6. Upload your sheets in Inkflow's HandFonted Studio",
+    "6. Upload your sheets in InkForge's HandFonted Studio",
     '',
     '7. Align the grid overlay to match your written template',
     '',
@@ -755,8 +755,8 @@ export function generateDownloadTemplate() {
   frontCtx.fillStyle = '#9e9078';
   frontCtx.font = 'italic 20px serif';
   frontCtx.textAlign = 'center';
-  frontCtx.fillText('Powered by Inkflow — AI Handwritten Notes Generator', 800, 1500);
-  frontCtx.fillText('inkflow.app', 800, 1535);
+  frontCtx.fillText('Powered by InkForge — AI Handwritten Notes Generator', 800, 1500);
+  frontCtx.fillText('inkforge.app', 800, 1535);
 
   sheets.push({
     canvas: frontCanvas,

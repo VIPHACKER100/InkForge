@@ -81,13 +81,50 @@ export const draftedGlyphs = {};
 // concern, not shared data. draftedGlyphs above stays the shared source of
 // truth; renderText() sweeps stale cache entries on every render.
 
-/* IndexedDB persistence for drafted glyphs (InkflowDB / 'draftedGlyphs' store).
+/* IndexedDB persistence for drafted glyphs (InkForgeDB / 'draftedGlyphs' store).
    The studio saves on every character; index.js's restoreState() loads them
    back and migrates any legacy localStorage copies. */
-const DB_NAME = 'InkflowDB';
+const DB_NAME = 'InkForgeDB';
 const DB_VERSION = 1;
 const STORE_NAME = 'draftedGlyphs';
 let dbInstance = null;
+
+// InkForge rename (v1.21.0): copy records from the legacy InkflowDB into the
+// renamed database on first open, then delete the old one. Failures are
+// non-fatal — the app simply starts with empty glyph storage.
+async function migrateLegacyInkflowDB(db) {
+  if (typeof indexedDB === 'undefined' || !indexedDB.databases) return;
+  try {
+    const databases = await indexedDB.databases();
+    if (!databases.some((d) => d.name === 'InkflowDB')) return;
+    const legacyDb = await new Promise((resolve, reject) => {
+      const request = indexedDB.open('InkflowDB');
+      request.onsuccess = () => resolve(request.result);
+      request.onerror = () => reject(request.error);
+    });
+    for (const storeName of Array.from(legacyDb.objectStoreNames)) {
+      if (!Array.from(db.objectStoreNames).includes(storeName)) continue;
+      const records = await new Promise((resolve, reject) => {
+        const request = legacyDb.transaction(storeName).objectStore(storeName).getAll();
+        request.onsuccess = () => resolve(request.result);
+        request.onerror = () => reject(request.error);
+      });
+      if (records.length > 0) {
+        await new Promise((resolve, reject) => {
+          const tx = db.transaction(storeName, 'readwrite');
+          records.forEach((record) => tx.objectStore(storeName).put(record));
+          tx.oncomplete = () => resolve();
+          tx.onerror = () => reject(tx.error);
+        });
+      }
+    }
+    legacyDb.close();
+    indexedDB.deleteDatabase('InkflowDB');
+    console.log('[InkForge] Migrated legacy InkflowDB storage');
+  } catch (err) {
+    console.error('[InkForge] Legacy InkflowDB migration skipped:', err);
+  }
+}
 
 function getDB() {
   if (dbInstance) return Promise.resolve(dbInstance);
@@ -99,8 +136,14 @@ function getDB() {
         db.createObjectStore(STORE_NAME);
       }
     };
-    request.onsuccess = (e) => {
-      dbInstance = e.target.result;
+    request.onsuccess = async (e) => {
+      const db = e.target.result;
+      try {
+        await migrateLegacyInkflowDB(db);
+      } catch (err) {
+        console.error('[InkForge] Legacy DB migration error:', err);
+      }
+      dbInstance = db;
       resolve(dbInstance);
     };
     request.onerror = (e) => {
@@ -199,7 +242,7 @@ export async function pruneBlankGlyphs() {
     }
   }
   if (pruned > 0) {
-    console.warn(`Inkflow: removed ${pruned} blank drafted glyph(s) that were rendering as invisible characters.`);
+    console.warn(`InkForge: removed ${pruned} blank drafted glyph(s) that were rendering as invisible characters.`);
   }
   return pruned;
 }

@@ -1,6 +1,6 @@
-// Inkflow Service Worker — offline cache
+// InkForge Service Worker — offline cache
 // Keep CACHE_NAME in sync with package.json — scripts/check-version.js (`npm run check:version`) enforces it in CI.
-const CACHE_NAME = 'inkflow-v1.20.1';
+const CACHE_NAME = 'inkforge-v1.20.1';
 // Same-origin app shell only. CDN libraries (jsPDF, mammoth, mermaid, opentype.js,
 // rough.js, TensorFlow.js) and Google Fonts are cached at runtime on first use —
 // see the fetch handler — so offline mode works after the first visit without

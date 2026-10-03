@@ -201,7 +201,7 @@ dist output (hashed bundle + CSS + shell) — see docs/pwa.md.
 **v1.3.0** — Initializes the application asynchronously. Awaits `restoreState()` to populate custom glyphs from IndexedDB, sets up the file upload triggers, initializes HandFonted Studio controls, and triggers the initial page render.
 
 ### `autosave()`
-Debounced function (1000ms) that serializes current configurations to `localStorage` under key `inkflow-state`. Does *not* include custom glyph coordinate arrays.
+Debounced function (1000ms) that serializes current configurations to `localStorage` under key `inkforge-state`. Does *not* include custom glyph coordinate arrays.
 
 ### `async restoreState()`
 **v1.3.0** — Hydrates the system state on boot. Reads saved settings from `localStorage`, updates all corresponding DOM UI inputs (sliders, dropdowns, layouts), and loads drawn glyphs from IndexedDB. If legacy glyph data is found in `localStorage`, migrates it to IndexedDB and purges it from `localStorage`.
@@ -210,7 +210,7 @@ Debounced function (1000ms) that serializes current configurations to `localStor
 Resets all configurations to factory defaults, updates DOM controls, and triggers a re-render.
 
 ### `getDB()`
-**v1.3.0** — Resolves a Promise with the active `IndexedDB` connection instance to `InkflowDB`, initializing the `draftedGlyphs` object store if it does not exist.
+**v1.3.0** — Resolves a Promise with the active `IndexedDB` connection instance to `InkForgeDB`, initializing the `draftedGlyphs` object store if it does not exist.
 
 ### `saveGlyphDB(char, dataUrl)`
 **v1.3.0** — Asynchronously writes the SVG path data URL for a given character to `IndexedDB`.
@@ -230,7 +230,7 @@ Exports rendered pages as PNG or JPG using `canvas.toBlob()` and Blob URLs.
 - **Parameters**: `format` (String — `png|jpg`)
 
 ### `exportPDF()`
-Compiles all pages into a multi-page A4 PDF with progress toasts. Output: `inkflow-notes.pdf`.
+Compiles all pages into a multi-page A4 PDF with progress toasts. Output: `inkforge-notes.pdf`.
 
 ### `exportSVG()`
 Generates SVG files wrapping full-resolution PNG images. One file per page for multi-page documents.

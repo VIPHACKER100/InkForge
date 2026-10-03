@@ -4,7 +4,7 @@ const http = require('http');
 const PORT = 8080;
 
 /* Phase F4 — collaboration hardening:
-   - optional shared room token (INKFLOW_ROOM_TOKEN env): connections without
+   - optional shared room token (INKFORGE_ROOM_TOKEN env): connections without
      ?token=<match> are closed with 4401 before joining;
    - per-connection message rate limit and per-IP concurrent-connection cap;
    - 64 KB payload cap (ws closes oversized frames with 1009 itself).
@@ -300,9 +300,9 @@ const connectedClients = new Map();
 
 module.exports = { createCollabServer, transform, HARDENING };
 
-/* Run directly: node server.js — set INKFLOW_ROOM_TOKEN to require a room token. */
+/* Run directly: node server.js — set INKFORGE_ROOM_TOKEN to require a room token. */
 if (require.main === module) {
-  const token = process.env.INKFLOW_ROOM_TOKEN || null;
+  const token = process.env.INKFORGE_ROOM_TOKEN || null;
   createCollabServer({ port: PORT, token });
   console.log(
     `WebSocket Collaborative Server running on ws://localhost:${PORT}` +

@@ -12,10 +12,10 @@ import { readFile } from 'node:fs/promises';
 // Bounded wait for downloads — generous vs. the 60s per-test timeout in playwright.config.js.
 const DOWNLOAD_TIMEOUT = 15000;
 
-// Filenames from export-manager.js: single-page docs export as `inkflow-notes.<ext>`,
-// multi-page as `inkflow-notes-pageN.<ext>`. Transparent PNGs are ALWAYS page-suffixed
-// (`inkflow-transparent-pageN.png`), even for a single-page document.
-const SINGLE_OR_PAGED = (ext) => new RegExp(`^inkflow-notes(-page\\d+)?\\.${ext}$`);
+// Filenames from export-manager.js: single-page docs export as `inkforge-notes.<ext>`,
+// multi-page as `inkforge-notes-pageN.<ext>`. Transparent PNGs are ALWAYS page-suffixed
+// (`inkforge-transparent-pageN.png`), even for a single-page document.
+const SINGLE_OR_PAGED = (ext) => new RegExp(`^inkforge-notes(-page\\d+)?\\.${ext}$`);
 
 /**
  * Render a short single-page note (the shared arrange step of every export test)
@@ -38,7 +38,7 @@ async function expectHealthyDownload(download, filenamePattern) {
   expect(await download.failure()).toBeNull();
 }
 
-test('PNG export downloads a valid inkflow-notes PNG', async ({ page }) => {
+test('PNG export downloads a valid inkforge-notes PNG', async ({ page }) => {
   const errors = await renderOnePageNote(page, 'PNG export pipeline test.');
   const [download] = await Promise.all([
     page.waitForEvent('download', { timeout: DOWNLOAD_TIMEOUT }),
@@ -48,7 +48,7 @@ test('PNG export downloads a valid inkflow-notes PNG', async ({ page }) => {
   expect(errors).toEqual([]);
 });
 
-test('JPG export downloads a valid inkflow-notes JPG', async ({ page }) => {
+test('JPG export downloads a valid inkforge-notes JPG', async ({ page }) => {
   const errors = await renderOnePageNote(page, 'JPG export pipeline test.');
   const [download] = await Promise.all([
     page.waitForEvent('download', { timeout: DOWNLOAD_TIMEOUT }),
@@ -58,18 +58,18 @@ test('JPG export downloads a valid inkflow-notes JPG', async ({ page }) => {
   expect(errors).toEqual([]);
 });
 
-test('Transparent PNG export downloads inkflow-transparent-pageN.png', async ({ page }) => {
+test('Transparent PNG export downloads inkforge-transparent-pageN.png', async ({ page }) => {
   const errors = await renderOnePageNote(page, 'Transparent PNG export pipeline test.');
   const [download] = await Promise.all([
     page.waitForEvent('download', { timeout: DOWNLOAD_TIMEOUT }),
     page.click('[aria-label="Export as PNG with transparent background"]'),
   ]);
-  // export-manager.js always page-suffixes transparent exports (inkflow-transparent-page1.png here).
-  await expectHealthyDownload(download, /^inkflow-transparent-page\d+\.png$/);
+  // export-manager.js always page-suffixes transparent exports (inkforge-transparent-page1.png here).
+  await expectHealthyDownload(download, /^inkforge-transparent-page\d+\.png$/);
   expect(errors).toEqual([]);
 });
 
-test('PDF export downloads inkflow-notes.pdf in Standard and High presets', async ({ page }) => {
+test('PDF export downloads inkforge-notes.pdf in Standard and High presets', async ({ page }) => {
   const errors = await renderOnePageNote(page, 'PDF export pipeline test.');
 
   // jsPDF loads from a CDN with defer — wait until it is ready before exporting.
@@ -87,10 +87,10 @@ test('PDF export downloads inkflow-notes.pdf in Standard and High presets', asyn
   await expectHealthyDownload(download, SINGLE_OR_PAGED('pdf'));
 
   // High preset (2×, lossless PNG) — exercises ExportRenderers._upscaleCanvas.
-  // index.js persists the select to localStorage under 'inkflow-pdf-size'.
+  // index.js persists the select to localStorage under 'inkforge-pdf-size'.
   await page.selectOption('#pdf-size-select', 'high');
   await expect
-    .poll(() => page.evaluate(() => localStorage.getItem('inkflow-pdf-size')))
+    .poll(() => page.evaluate(() => localStorage.getItem('inkforge-pdf-size')))
     .toBe('high');
   const [highDownload] = await Promise.all([
     page.waitForEvent('download', { timeout: DOWNLOAD_TIMEOUT }),

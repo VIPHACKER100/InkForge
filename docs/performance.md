@@ -1,6 +1,6 @@
 # ⚡ Performance
 
-This document covers Inkflow's performance characteristics, optimization techniques, and rendering budget.
+This document covers InkForge's performance characteristics, optimization techniques, and rendering budget.
 
 ---
 
@@ -20,7 +20,7 @@ function debounceRender() {
 ```
 
 ### Canvas vs DOM Rendering
-Inkflow renders text on `<canvas>` elements rather than DOM text nodes:
+InkForge renders text on `<canvas>` elements rather than DOM text nodes:
 - **Faster repaints**: Canvas redraws are GPU-accelerated
 - **No layout thrashing**: No DOM reflow calculations
 - **Precise control**: Per-pixel character positioning
@@ -46,7 +46,7 @@ Export Blob URLs are revoked after 1 second via `URL.revokeObjectURL()`, prevent
 - `autosave()` runs at most once per second (1000ms debounce)
 - Only serializes the config object — not canvas pixel data
 - localStorage limit: ~5MB (sufficient for text + settings)
-- Custom glyph data (`draftedGlyphs`) is stored in `IndexedDB` (`InkflowDB` -> `draftedGlyphs` store), bypassing the 5MB localStorage limit and preventing quota crashes
+- Custom glyph data (`draftedGlyphs`) is stored in `IndexedDB` (`InkForgeDB` -> `draftedGlyphs` store), bypassing the 5MB localStorage limit and preventing quota crashes
 
 ---
 
@@ -118,7 +118,7 @@ AI responses use Server-Sent Events streaming, rendering text incrementally rath
 
 ## Test Coverage
 
-As of v1.5.0, Inkflow includes 9 test suites (2,332 lines):
+As of v1.5.0, InkForge includes 9 test suites (2,332 lines):
 
 | Test File | Runner | Lines | Tests |
 |-----------|--------|------:|-------|

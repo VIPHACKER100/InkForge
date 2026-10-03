@@ -9,5 +9,5 @@ test('PNG export triggers a download', async ({ page }) => {
     page.waitForEvent('download'),
     page.click('[aria-label="Export as PNG image"]'),
   ]);
-  expect(download.suggestedFilename()).toMatch(/inkflow-notes.*\.png$/);
+  expect(download.suggestedFilename()).toMatch(/inkforge-notes.*\.png$/);
 });

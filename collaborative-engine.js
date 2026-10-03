@@ -3,7 +3,7 @@
  * Task 13: Real-Time Collaborative Writing
  *
  * Implements Operational Transformation (OT) and WebSocket management
- * for multi-user collaborative editing in InkFlow.
+ * for multi-user collaborative editing in InkForge.
  *
  * Protocol: Client <-> server.js (ws on port 8080)
  *
@@ -124,9 +124,9 @@ class CollaborativeEngine {
     this.url = url;
     this.onStatusChange('Connecting…', false);
     // Phase F4: attach the shared room token if one is configured
-    // (localStorage 'inkflow-collab-token' — set it to match the server's
-    // INKFLOW_ROOM_TOKEN when the relay runs token-gated).
-    const token = typeof localStorage !== 'undefined' ? localStorage.getItem('inkflow-collab-token') : null;
+    // (localStorage 'inkforge-collab-token' — set it to match the server's
+    // INKFORGE_ROOM_TOKEN when the relay runs token-gated).
+    const token = typeof localStorage !== 'undefined' ? localStorage.getItem('inkforge-collab-token') : null;
     this.ws = new WebSocket(token ? url + '?token=' + encodeURIComponent(token) : url);
 
     this.ws.onopen = () => {};

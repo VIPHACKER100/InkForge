@@ -12,9 +12,44 @@ import { autosave } from './persistence.js';
 (function () {
   'use strict';
 
-  const DB_NAME = 'InkflowNotebooks';
+  const DB_NAME = 'InkForgeNotebooks';
   const DB_VERSION = 1;
   const STORE_NAME = 'notebooks';
+
+  // InkForge rename (v1.21.0): copy records from the legacy InkflowNotebooks
+  // database on first open, then delete the old one (failures non-fatal).
+  async function migrateLegacyInkflowNotebooks(db) {
+    if (!indexedDB.databases) return;
+    try {
+      const databases = await indexedDB.databases();
+      if (!databases.some((d) => d.name === 'InkflowNotebooks')) return;
+      const legacyDb = await new Promise((resolve, reject) => {
+        const req = indexedDB.open('InkflowNotebooks');
+        req.onsuccess = () => resolve(req.result);
+        req.onerror = () => reject(req.error);
+      });
+      if (Array.from(legacyDb.objectStoreNames).includes(STORE_NAME)) {
+        const records = await new Promise((resolve, reject) => {
+          const req = legacyDb.transaction(STORE_NAME).objectStore(STORE_NAME).getAll();
+          req.onsuccess = () => resolve(req.result);
+          req.onerror = () => reject(req.error);
+        });
+        if (records.length > 0) {
+          await new Promise((resolve, reject) => {
+            const tx = db.transaction(STORE_NAME, 'readwrite');
+            records.forEach((record) => tx.objectStore(STORE_NAME).put(record));
+            tx.oncomplete = () => resolve();
+            tx.onerror = () => reject(tx.error);
+          });
+        }
+      }
+      legacyDb.close();
+      indexedDB.deleteDatabase('InkflowNotebooks');
+      console.log('[InkForge] Migrated legacy InkflowNotebooks storage');
+    } catch (err) {
+      console.error('[InkForge] Legacy InkflowNotebooks migration skipped:', err);
+    }
+  }
 
   function openDB() {
     return new Promise((resolve, reject) => {
@@ -26,7 +61,14 @@ import { autosave } from './persistence.js';
           store.createIndex('updatedAt', 'updatedAt', { unique: false });
         }
       };
-      req.onsuccess = () => resolve(req.result);
+      req.onsuccess = async () => {
+        try {
+          await migrateLegacyInkflowNotebooks(req.result);
+        } catch (err) {
+          console.error('[InkForge] Legacy DB migration error:', err);
+        }
+        resolve(req.result);
+      };
       req.onerror = () => reject(req.error);
     });
   }

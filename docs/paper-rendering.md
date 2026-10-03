@@ -1,12 +1,12 @@
 # 📄 Paper Rendering Engine
 
-This document describes Inkflow's paper background rendering system — the supported styles, grain texture shader, and ruling/grid mathematics.
+This document describes InkForge's paper background rendering system — the supported styles, grain texture shader, and ruling/grid mathematics.
 
 ---
 
 ## Overview
 
-Inkflow features A4 aspect ratio rendering ($794\text{px} \times 1123\text{px}$) inside standard `<canvas>` blocks. The background generator dynamically paints complex background styles based on selected notebook options.
+InkForge features A4 aspect ratio rendering ($794\text{px} \times 1123\text{px}$) inside standard `<canvas>` blocks. The background generator dynamically paints complex background styles based on selected notebook options.
 
 ---
 

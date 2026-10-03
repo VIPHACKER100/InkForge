@@ -37,7 +37,7 @@ describe('sanitizeAiResponse', () => {
     expect(sanitizeAiResponse('line one<br>line two <strong>bold</strong>')).toBe('line one\nline two bold');
   });
 
-  it('preserves Inkflow rich syntax', () => {
+  it('preserves InkForge rich syntax', () => {
     const text = '# Title\n==key==\n[sticky:yellow]note[sticky]\nQ: What?\nA: This.';
     expect(sanitizeAiResponse(text)).toBe(text);
   });

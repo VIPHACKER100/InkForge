@@ -44,7 +44,7 @@ export async function exportImage(format) {
             return;
           }
           const url = URL.createObjectURL(blob);
-          triggerDownload(url, 'inkflow-notes.' + ext);
+          triggerDownload(url, 'inkforge-notes.' + ext);
           setTimeout(() => URL.revokeObjectURL(url), 1000);
           showExportToast('✓ ' + ext.toUpperCase() + ' saved!', 'success');
         },
@@ -62,7 +62,7 @@ export async function exportImage(format) {
                 return;
               }
               const url = URL.createObjectURL(blob);
-              triggerDownload(url, `inkflow-notes-page${i + 1}.${ext}`);
+              triggerDownload(url, `inkforge-notes-page${i + 1}.${ext}`);
               setTimeout(() => URL.revokeObjectURL(url), 1000);
               resolve();
             },
@@ -76,7 +76,7 @@ export async function exportImage(format) {
     }
   } catch (e) {
     showExportToast('Export failed: ' + e.message, 'error');
-    console.error('[Inkflow] exportImage error:', e);
+    console.error('[InkForge] exportImage error:', e);
   }
 }
 
@@ -116,7 +116,7 @@ export async function exportTransparentPNG() {
               return;
             }
             const url = URL.createObjectURL(blob);
-            triggerDownload(url, `inkflow-transparent-page${i + 1}.${ext}`);
+            triggerDownload(url, `inkforge-transparent-page${i + 1}.${ext}`);
             setTimeout(() => URL.revokeObjectURL(url), 1000);
             resolve();
           },
@@ -129,7 +129,7 @@ export async function exportTransparentPNG() {
     showExportToast('✓ Transparent PNGs saved!', 'success');
   } catch (e) {
     showExportToast('Export failed: ' + e.message, 'error');
-    console.error('[Inkflow] exportTransparentPNG error:', e);
+    console.error('[InkForge] exportTransparentPNG error:', e);
   }
 }
 
@@ -160,7 +160,7 @@ export async function exportPDF() {
 
     // Output size preset (upstream v1.6.20): Compact 1× JPEG 75%,
     // Standard 2× JPEG 92%, High 2× lossless PNG. Persisted separately.
-    const presetName = localStorage.getItem('inkflow-pdf-size') || 'standard';
+    const presetName = localStorage.getItem('inkforge-pdf-size') || 'standard';
     const presets = (window.ExportRenderers && window.ExportRenderers.PDF_SIZE_PRESETS) || {};
     const preset = presets[presetName] || presets.standard || { label: 'Standard', scale: 1, format: 'image/jpeg', quality: 0.93, jspdfFormat: 'JPEG', compression: 'FAST' };
 
@@ -173,11 +173,11 @@ export async function exportPDF() {
       doc.addImage(imgData, preset.jspdfFormat, 0, 0, 210, 297, undefined, preset.compression);
     }
 
-    doc.save('inkflow-notes.pdf');
+    doc.save('inkforge-notes.pdf');
     showExportToast('✓ PDF saved!', 'success');
   } catch (e) {
     showExportToast('PDF export failed: ' + e.message, 'error');
-    console.error('[Inkflow] exportPDF error:', e);
+    console.error('[InkForge] exportPDF error:', e);
   }
 }
 
@@ -205,14 +205,14 @@ export async function exportSVG() {
       const blob = new Blob([svgContent], { type: 'image/svg+xml' });
       const url = URL.createObjectURL(blob);
       const suffix = pages.length > 1 ? `-page${i + 1}` : '';
-      triggerDownload(url, `inkflow-notes${suffix}.svg`);
+      triggerDownload(url, `inkforge-notes${suffix}.svg`);
       URL.revokeObjectURL(url);
       await new Promise((r) => setTimeout(r, 120));
     }
     showExportToast('✓ SVG saved!', 'success');
   } catch (e) {
     showExportToast('SVG export failed: ' + e.message, 'error');
-    console.error('[Inkflow] exportSVG error:', e);
+    console.error('[InkForge] exportSVG error:', e);
   }
 }
 

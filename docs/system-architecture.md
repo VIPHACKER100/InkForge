@@ -1,12 +1,12 @@
 # 🏛️ System Architecture
 
-This document outlines the **high-level system architecture**, **component layers**, and **data flow** of the Inkflow Handwritten Notes Generator.
+This document outlines the **high-level system architecture**, **component layers**, and **data flow** of the InkForge Handwritten Notes Generator.
 
 ---
 
 ## Architecture Overview
 
-Inkflow is architected as a highly modular, decoupled, single-file client-side application. It operates entirely within the user's browser, eliminating backend latency and optimizing rendering speeds.
+InkForge is architected as a highly modular, decoupled, single-file client-side application. It operates entirely within the user's browser, eliminating backend latency and optimizing rendering speeds.
 
 ---
 
@@ -82,7 +82,7 @@ graph TD
 The visible DOM elements the user interacts with directly. These include the sidebar control console (300px width), the floating top toolbar (56px fixed header), the main canvas grid viewport with inline page editors (`.page-editor` contenteditable overlays), and the bottom pill-style pagination controls.
 
 ### 2. State Management Layer
-A centralized global configuration object `S` acts as the single source of truth. Changes to any UI control update `S`, which triggers re-rendering. A debounced autosave module serializes the state to `localStorage` after a 1000ms idle delay. Custom handwriting glyph data is stored in **IndexedDB** (`InkflowDB` → `draftedGlyphs` store) to bypass the 5MB `localStorage` quota limit.
+A centralized global configuration object `S` acts as the single source of truth. Changes to any UI control update `S`, which triggers re-rendering. A debounced autosave module serializes the state to `localStorage` after a 1000ms idle delay. Custom handwriting glyph data is stored in **IndexedDB** (`InkForgeDB` → `draftedGlyphs` store) to bypass the 5MB `localStorage` quota limit.
 
 ### 3. Core Execution Engines
 The rendering pipeline that transforms state data into visual canvas output. As of v1.20.1, the codebase is one **ES-module graph**: `index.html` loads a single `<script type="module" src="index.js">` and every cross-module dependency is an explicit `import` — no `window.*` glue, no inline handlers.

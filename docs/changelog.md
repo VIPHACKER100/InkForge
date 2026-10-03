@@ -1,6 +1,6 @@
 # 📋 Changelog
 
-All notable changes to Inkflow are documented in this file.
+All notable changes to InkForge are documented in this file.
 
 ---
 
@@ -16,7 +16,7 @@ All notable changes to Inkflow are documented in this file.
 
 ### ✨ Added — Phase F6: UI localization (first slice)
 - **`i18n.js`**: a string-table engine with English + Hindi (हिंदी) translations for the most visible chrome — toolbar buttons, all 11 sidebar section headers, primary actions (Render/Start/Stop/Connect/Reset), and the Flashcards modal title. `t(key)` falls back to English, then the key.
-- **🌐 language toggle** in the toolbar (shows the other language's label): switches instantly, persists in `inkflow-lang`, updates `document.documentElement.lang`, and survives reload.
+- **🌐 language toggle** in the toolbar (shows the other language's label): switches instantly, persists in `inkforge-lang`, updates `document.documentElement.lang`, and survives reload.
 - Elements declare `data-i18n="key"` (26 tagged); extending coverage = add table entries + attributes.
 - **6 new unit tests** (264 total): en/hi key parity, no empty strings, toggle-label consistency, English fallback, last-resort key fallback, default language.
 
@@ -35,7 +35,7 @@ All notable changes to Inkflow are documented in this file.
 ## [1.18.0] — 2026-10-03
 
 ### 🔒 Added — Phase F4: collaboration relay hardening
-- **Room-token gate**: set `INKFLOW_ROOM_TOKEN` when running `node server.js` — connections without a matching `?token=` are closed with 4401 before joining. The client surfaces **"Room token required"** and stops its reconnect loop (set `localStorage.inkflow-collab-token` to match). Without the env var the relay behaves exactly as before (LAN mode).
+- **Room-token gate**: set `INKFORGE_ROOM_TOKEN` when running `node server.js` — connections without a matching `?token=` are closed with 4401 before joining. The client surfaces **"Room token required"** and stops its reconnect loop (set `localStorage.inkforge-collab-token` to match). Without the env var the relay behaves exactly as before (LAN mode).
 - **Per-connection message rate limit**: 240 messages / 10 s sliding window; flooding closes the socket with 1008.
 - **Per-IP concurrent-connection cap**: 5 per address; the 6th is closed with 1013.
 - **64 KB frame cap** on the WebSocket server (oversized frames close with 1009); binary frames close with 1003.
@@ -54,7 +54,7 @@ All notable changes to Inkflow are documented in this file.
 ## [1.16.0] — 2026-10-03
 
 ### ✨ Added — Phase F1: spaced-repetition flashcards (SM-2 lite)
-- **Review scheduling**: flashcards now carry SM-2-lite review state — per-card `ease` (clamped 1.3–3.0), `interval`, `due` date and `reps`, persisted in localStorage (`inkflow-srs`). Card identity is an FNV-1a hash of the question text, so schedules survive answer edits and card reordering.
+- **Review scheduling**: flashcards now carry SM-2-lite review state — per-card `ease` (clamped 1.3–3.0), `interval`, `due` date and `reps`, persisted in localStorage (`inkforge-srs`). Card identity is an FNV-1a hash of the question text, so schedules survive answer edits and card reordering.
 - **Grade flow**: after flipping a card, four Anki-style grade buttons appear — **1 Again** (lapse: due now, ease −0.2), **2 Hard**, **3 Good**, **4 Easy** (ease boost + interval growth ×1.3) — with keyboard shortcuts 1–4. Grading auto-advances to the next card.
 - **Due badge**: the Flashcards Review header shows a live `📅 N due` badge (turns `✓ all reviewed` when clear), recomputed on open, render and grade.
 - Pure SRS engine (`cardId`, `gradeCard`, `isDue`, `countDue`, `loadSrsState`/`saveSrsState`) exported for tests — **15 new unit tests** (242 total) covering interval math, ease clamps, lapse resets and due counting.
@@ -67,7 +67,7 @@ All notable changes to Inkflow are documented in this file.
 - **Lighthouse CI budgets**: `lighthouserc.json` + a `lighthouse` CI job (chrome on ubuntu runners). `npm run lhci` audits both `dist/index.html` and `dist/about.html` per build. Assertions: **accessibility ≥ 0.9 (blocking)**; performance ≥ 0.4 and resource-size budgets are warn-level ratchets (headless perf scores vary ±0.09 run-to-run — raise the ratchet as optimizations land). Local: `npm run lhci`.
 
 ### ✨ Added — Phase F first feature (F2)
-- **Google Gemini (AI Studio direct) provider**: new `🔑 Google Gemini (Direct)` option in the AI provider dropdown with 5 models (2.5 Flash/Flash Lite/Pro, 2.0 Flash/Flash Lite). `callGemini()` streams via `streamGenerateContent?alt=sse` with the browser-recommended key-in-query pattern, parses `candidates[].content.parts[].text` deltas, reuses the AI busy-state flow, per-provider key persistence (`inkflow-api-key-gemini`), and a friendly no-key path. The service worker never intercepts the Gemini endpoint.
+- **Google Gemini (AI Studio direct) provider**: new `🔑 Google Gemini (Direct)` option in the AI provider dropdown with 5 models (2.5 Flash/Flash Lite/Pro, 2.0 Flash/Flash Lite). `callGemini()` streams via `streamGenerateContent?alt=sse` with the browser-recommended key-in-query pattern, parses `candidates[].content.parts[].text` deltas, reuses the AI busy-state flow, per-provider key persistence (`inkforge-api-key-gemini`), and a friendly no-key path. The service worker never intercepts the Gemini endpoint.
 
 ---
 
@@ -200,16 +200,16 @@ Upstream sync: ports every feature from InkForge v1.6.25–v1.6.26 that the fork
   - **Pressure-correlated ink bleed**: with Ink Bleed active, the per-glyph bleed shadow radius is modulated by `pressureMod` (`bleedFactor = 1 + (pressureMod − 1) × 0.4 × realism`) — heavier-pressure glyphs bleed slightly more, matching fluid ink dynamics on paper fibers.
 - **Blue Ink Pen preset (`#000F55`)**: deep royal-blue ballpoint tone added as the first preset in the ink row, with `data-ink`/`data-ink-name` attributes on every preset button.
 - **`updateInkPresetActive()` helper**: centralises preset active-state management — the accent-ring `.active-ink` highlight always reflects the live ink color. Called from `setInkPreset()`, the freeform color-picker handler, `restoreState()`, and `resetToDefaults()`.
-- **Standalone About page (`about.html` + `about.css`, upstream 1.6.26 parity)**, adapted to Inkflow branding:
+- **Standalone About page (`about.html` + `about.css`, upstream 1.6.26 parity)**, adapted to InkForge branding:
   - Interactive Realism Engine playground — type text, tweak jitter magnitude and baseline drift, toggle notebook guidelines and retrace double-strokes, rendered live on canvas with a deterministic `mulberry32` simulator.
-  - Deep-dive feature showcases (realism physics, paper styles, AI scribe, HandFonted Studio, exports, offline PWA), privacy guarantee, architecture & test-suite specs, documentation directory cards, and creator credits — all linked to the Inkflow repository, MIT license, and Inkflow docs.
-  - Dark/Light toggle synchronised with the app through the shared `inkflow-dark` localStorage key.
-- **Brand identity (upstream 1.6.26 parity)**: new brand emblem (`inkflow_logo.jpeg`) wired into the toolbar header, favicon, Apple touch icon, PWA manifest, and About page.
-- **Navigation overhaul (upstream 1.6.26 parity)**: clickable brand logo in the toolbar linking to `about.html`, a dedicated **ℹ️ About** toolbar button, and quick-access footer links (**About Inkflow / Docs / GitHub**) at the bottom of the sidebar drawer.
+  - Deep-dive feature showcases (realism physics, paper styles, AI scribe, HandFonted Studio, exports, offline PWA), privacy guarantee, architecture & test-suite specs, documentation directory cards, and creator credits — all linked to the InkForge repository, MIT license, and InkForge docs.
+  - Dark/Light toggle synchronised with the app through the shared `inkforge-dark` localStorage key.
+- **Brand identity (upstream 1.6.26 parity)**: new brand emblem (`inkforge_logo.jpeg`) wired into the toolbar header, favicon, Apple touch icon, PWA manifest, and About page.
+- **Navigation overhaul (upstream 1.6.26 parity)**: clickable brand logo in the toolbar linking to `about.html`, a dedicated **ℹ️ About** toolbar button, and quick-access footer links (**About InkForge / Docs / GitHub**) at the bottom of the sidebar drawer.
 
 ### 📦 PWA & Offline
-- **Manifest**: added "New Note / Export PDF / About Inkflow" shortcuts, the logo as a 512×512 maskable icon, categories, and repository metadata.
-- **Service worker**: `about.html`, `about.css`, and `inkflow_logo.jpeg` precached for 100% offline availability; cache bumped to `inkflow-v1.8.0`.
+- **Manifest**: added "New Note / Export PDF / About InkForge" shortcuts, the logo as a 512×512 maskable icon, categories, and repository metadata.
+- **Service worker**: `about.html`, `about.css`, and `inkforge_logo.jpeg` precached for 100% offline availability; cache bumped to `inkforge-v1.8.0`.
 - **Build**: `vite.config.js` copies the About page, its stylesheet, and the logo verbatim into `dist` so the precached URLs stay exact.
 
 ### 🧪 Testing
@@ -224,7 +224,7 @@ Upstream sync: ports every feature from InkForge v1.6.25–v1.6.26 that the fork
 - **Clean paper style (upstream 1.4.0 parity)**: new "✨ Clean" paper button — crisp typographic mode (neutral variation, no grain, no ink-bleed shadow, drafted glyphs bypassed). Unsupported handwriting fonts auto-switch to Kalam; bare `Answer:` lines are hidden on canvas in Standard layout and represented by the margin **Ans** label (still editable).
 - **Margin Q/Ans labels (upstream 1.6.8–1.6.17 parity)**: new `margin-labels.js` module clusters the render queue into visual lines and draws **Q1…Qn** next to numbered question lines (space-tolerant matching, trailing `?` required) and **Ans** next to bare `Answer:` lines — right-aligned in the margin, document-wide sequential numbering computed per render, toggle in the Page Layout section (Standard layout only).
 - **PDF Output Size presets (upstream 1.6.20 parity)**: new dropdown in Export — Compact (1×, JPEG 75%), Standard (2×, JPEG 92%, default), High (2×, lossless PNG). Persisted per browser; toast names the active preset.
-- **AI Response Post-Processing (upstream 1.6.23 parity)**: new `ai-postprocess.js` — `sanitizeAiResponse()` strips markdown/HTML leakage before rendering (code fences, inline backticks, bold/italic, raw tags) while preserving Inkflow syntax and `​```diagram`/`​```mermaid` fences; `resequenceQA()` renumbers Q:/A: pairs sequentially from Q1 and silently drops near-duplicate questions (trigram Jaccard ≥ 0.72) with their paired answers. Applied to every AI result and accepted grammar corrections.
+- **AI Response Post-Processing (upstream 1.6.23 parity)**: new `ai-postprocess.js` — `sanitizeAiResponse()` strips markdown/HTML leakage before rendering (code fences, inline backticks, bold/italic, raw tags) while preserving InkForge syntax and `​```diagram`/`​```mermaid` fences; `resequenceQA()` renumbers Q:/A: pairs sequentially from Q1 and silently drops near-duplicate questions (trigram Jaccard ≥ 0.72) with their paired answers. Applied to every AI result and accepted grammar corrections.
 - **Offline Smart Arrange (upstream 1.6.7 parity)**: the 🪄 Smart Arrange button no longer needs an AI provider or API key — a deterministic in-browser tidy-up normalizes bullets, headers, study tags, highlights, Q/A labels and punctuation spacing, inserts structural breaks, and reports the fix count via toast.
 - **Full 48-font handwriting suite**: Google Fonts expanded to 50 families; the font dropdown now mirrors the upstream grouping — Print Handwriting (20), Cursive & Script (20), Devanagari (8), Clean (2).
 - **Mobile UX overhaul (upstream 1.6.23/1.6.24 parity)**: proper sidebar drawer (`setSidebarOpen()`, `#sidebar-backdrop` scrim, body scroll-lock, closes on scrim tap / canvas tap / Escape); compact icon-only toolbar ≤768px; responsive canvas width via `getResponsiveCanvasWidth()` (≤480px: vw−24, ≤768px: vw−32, desktop min(794,720)) with full resize reflow; `viewport-fit=cover` + safe-area padding; `100dvh` stable height; `touch-action: manipulation`; ≥16px drawer inputs (iOS zoom guard); edge-to-edge HandFonted/Flashcards modals on phones.
@@ -463,7 +463,7 @@ Upstream sync: ports every feature from InkForge v1.6.25–v1.6.26 that the fork
 ### ✨ Added
 - **Multi-Sheet HandFonting Templates**: Extended custom handwriting font coverage by dividing templates into two sheets: `Letters` (52 upper/lowercase letters) and `Numbers & Symbols` (32 standard numbers, symbols, and punctuation marks: `0–9` and standard symbols/punctuation: `. , ? ! @ # $ % ^ & * ( ) - _ + = / : ; ' "`).
 - **Tabbed HandFonted Studio UI**: Interactive sheet tabs inside the Live Sketchpad modal and a dropdown selector inside the Scan Template upload tab to switch sheets. Each sheet retains separate grid alignment offsets (`X, Y, W, H`) and uploaded alignment image states.
-- **IndexedDB Glyph Storage**: Migrated custom character drafts from `localStorage` to `IndexedDB` (`InkflowDB` -> `draftedGlyphs` store), bypassing the 5MB browser quota limit and preventing browser data crashes.
+- **IndexedDB Glyph Storage**: Migrated custom character drafts from `localStorage` to `IndexedDB` (`InkForgeDB` -> `draftedGlyphs` store), bypassing the 5MB browser quota limit and preventing browser data crashes.
 - **IndexedDB Auto-Migration**: Included a transparent boot migration script in `restoreState()` that transfers any pre-existing custom glyphs from `localStorage` into the IndexedDB store, clearing the old keys automatically.
 - **Dotted Paper Grid**: New "Dot Grid" paper style rendering dots at 28px intervals on a beige background (`#f6f2ec`).
 - **Engineering Paper Style**: New "Engineering" paper style on pale green background (`#eef6ed`) with 10px minor grid lines, 50px major grid lines, and reddish-brown margins.

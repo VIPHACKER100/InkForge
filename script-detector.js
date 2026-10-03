@@ -134,7 +134,7 @@ class FontSwitcher {
   }
 }
 
-// Export for module systems (if applicable), or keep in global scope for InkFlow
+// Export for module systems (if applicable), or keep in global scope for InkForge
 if (typeof module !== 'undefined' && module.exports) {
   module.exports = { ScriptDetector, FontSwitcher };
 }

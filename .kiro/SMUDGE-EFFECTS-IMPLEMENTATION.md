@@ -100,7 +100,7 @@ function autosave() {
       // ... other properties
       smudgeEffects: S.smudgeEffects,  // ✅ Persisted
     };
-    localStorage.setItem('inkflow-state', JSON.stringify(state));
+    localStorage.setItem('inkforge-state', JSON.stringify(state));
   }, 1000);
 }
 ```
@@ -178,7 +178,7 @@ renderSmudgeEffects(ctx, i);  // ✅ Called before text
 2. **localStorage Persistence**:
    - Check the checkbox to enable smudge effects
    - Wait 1 second for autosave
-   - Open browser DevTools: `localStorage.getItem('inkflow-state')`
+   - Open browser DevTools: `localStorage.getItem('inkforge-state')`
    - Verify JSON contains `"smudgeEffects":true`
    - Refresh page
    - Verify checkbox remains checked
@@ -206,7 +206,7 @@ Tests cover:
 
 ### Persistence Mechanism
 
-The smudge effects toggle uses the standard InkFlow persistence pattern:
+The smudge effects toggle uses the standard InkForge persistence pattern:
 
 ```
 User Action (checkbox) 
@@ -259,4 +259,4 @@ All requirements for Task 2.1 have been successfully implemented:
 ✅ State restored on page load  
 ✅ Proper integration with existing architecture  
 
-The implementation follows InkFlow conventions, uses existing patterns for state management and persistence, and is ready for use.
+The implementation follows InkForge conventions, uses existing patterns for state management and persistence, and is ready for use.

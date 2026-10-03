@@ -1,6 +1,6 @@
 # 🧠 UX Interactions
 
-This document describes Inkflow's user experience design — responsive layouts, inline page editing, collapsible panels, debounced rendering, and interaction patterns.
+This document describes InkForge's user experience design — responsive layouts, inline page editing, collapsible panels, debounced rendering, and interaction patterns.
 
 ---
 
@@ -136,7 +136,7 @@ Every AI action (`aiAction()` in `ai-assistant.js`) runs under an explicit busy 
 
 ## Storage Quota Guard (Phase D)
 
-`autosave()` in `persistence.js` wraps the `localStorage.setItem('inkflow-state')` write:
+`autosave()` in `persistence.js` wraps the `localStorage.setItem('inkforge-state')` write:
 
 - On `QuotaExceededError` (name check or code 22) it logs the failure and raises an error toast: "Storage full — your note is too large to auto-save. Export your notes, then clear old text."
 - The toast is throttled to once per minute (module-level timestamp, same pattern as the global error hook) so a full storage device can't spam notifications
@@ -160,7 +160,7 @@ Every AI action (`aiAction()` in `ai-assistant.js`) runs under an explicit busy 
 The toolbar's 🌐-style toggle (labelled with the other language, e.g. "हिं") switches
 the interface between **English and हिंदी** instantly: toolbar buttons, sidebar
 section headers, primary actions and the Flashcards modal title update from the
-string tables in `i18n.js`, the choice persists in `inkflow-lang`, and
+string tables in `i18n.js`, the choice persists in `inkforge-lang`, and
 `document.documentElement.lang` tracks the active language for assistive tech.
 Coverage currently spans the most visible chrome; extend by adding table entries
 and `data-i18n` attributes.

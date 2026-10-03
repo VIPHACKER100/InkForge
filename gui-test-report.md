@@ -1,8 +1,8 @@
-# Inkflow — AI Handwritten Notes Generator: Full GUI Test Report
+# InkForge — AI Handwritten Notes Generator: Full GUI Test Report
 
 **Date:** 2026-09-10  
 **Target:** `http://localhost:3000/`  
-**App:** Inkflow — AI Handwritten Notes Generator  
+**App:** InkForge — AI Handwritten Notes Generator  
 **Browser:** ZCode In-app Browser (IAB)  
 **Viewport:** 1280 × 720  
 **Runs:** Run 1 (P0/P1) → Run 2 (P2) → Run 3 (P3, modals opened via launchers)
@@ -19,7 +19,7 @@
 | **Partial / Not Covered** | 2 (heavy file/AI actions: TTF download & font generation; JPG/PDF/SVG exports in-session) |
 | **Test Coverage** | P0 (100%), P1 (100%), P2 (100%), P3 (100% of GUI-verifiable interactions) |
 
-**Verdict:** Inkflow's core functionality is **solid and working correctly**. All P0, P1, P2, and P3 test points that can be exercised through the GUI passed with zero functional failures. No code changes were required.
+**Verdict:** InkForge's core functionality is **solid and working correctly**. All P0, P1, P2, and P3 test points that can be exercised through the GUI passed with zero functional failures. No code changes were required.
 
 **Important root-cause note (Run 2 → Run 3):** P3 targets initially appeared "blocked by an overlay." Investigation of `index.css` showed `.modal-overlay.hidden` uses `opacity: 0; pointer-events: none` (index.css:1217) — closed modals (HandFonted Studio, Study Flashcards) remain in the accessibility tree but are invisible and click-transparent. This is **correct app behavior**, not a bug: real users are unaffected, and the earlier automation failures were a test-procedure artifact. Opening each modal through its launcher button (✨ Create Your Own Font / 🃏 Flashcards) made every target fully actionable.
 
@@ -29,7 +29,7 @@
 
 | Test | Result | Notes |
 |------|--------|-------|
-| P0-T1 Text Input | ✅ | Typed "Hello Inkflow test!"; content confirmed in textbox + editor |
+| P0-T1 Text Input | ✅ | Typed "Hello InkForge test!"; content confirmed in textbox + editor |
 | P0-T2 Font Selection | ✅ | Changed to "Indie Flower"; auto-save cycled (⏳ Saving → ☁️ Saved) |
 | P0-T3 Paper Style | ✅ | "Plain" button confirmed active |
 | P0-T4 Note Layout Template | ✅ | Changed to "Two-Column Grid" (required `evaluate()` workaround for custom combobox) |
@@ -185,7 +185,7 @@ All screenshots in `gui-test-screenshots/`:
 
 ## Conclusion
 
-Inkflow's core functionality is **solid and working correctly**. All 7 P0 main-flow tests, 12 P1 interaction tests, all P2 input-boundary groups, and all GUI-verifiable P3 layout/feature interactions **passed with zero functional failures and zero console errors**.
+InkForge's core functionality is **solid and working correctly**. All 7 P0 main-flow tests, 12 P1 interaction tests, all P2 input-boundary groups, and all GUI-verifiable P3 layout/feature interactions **passed with zero functional failures and zero console errors**.
 
 Highlights verified end-to-end: handwriting rendering with A4 pagination (1→3 pages), real-time slider feedback with correct boundary clamping, ink color theming, Q&A flashcard generation and 3D flip, the full HandFonted Studio draw→save→undo workflow with progress tracking (1/84), editable margin notes, study-mode layout, and dependable auto-save.
 

@@ -5,7 +5,7 @@ test('about page loads, draws the demo canvas, toggles dark mode, and links back
   page.on('pageerror', (err) => errors.push(err.message));
 
   await page.goto('/about.html');
-  await expect(page).toHaveTitle(/About Inkflow/);
+  await expect(page).toHaveTitle(/About InkForge/);
 
   // Hero pill shows the app version
   await expect(page.locator('.hero-pill')).toContainText(/v\d+\.\d+\.\d+/);
@@ -32,7 +32,7 @@ test('about page loads, draws the demo canvas, toggles dark mode, and links back
   await page.click('#dark-toggle');
   await expect(html).toHaveClass(/dark/);
   await expect(page.locator('#dark-icon')).toHaveText('🌙');
-  expect(await page.evaluate(() => localStorage.getItem('inkflow-dark'))).toBe('1');
+  expect(await page.evaluate(() => localStorage.getItem('inkforge-dark'))).toBe('1');
 
   // The persisted choice is reapplied on a fresh load
   await page.reload();

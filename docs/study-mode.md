@@ -1,6 +1,6 @@
 # 📖 Study Mode, Flashcards, Voice-to-Notes & Theme Packs
 
-This document covers Inkflow's v1.6.0 study tools: interactive flashcard review, real-time voice transcription, and color theme presets.
+This document covers InkForge's v1.6.0 study tools: interactive flashcard review, real-time voice transcription, and color theme presets.
 
 ---
 
@@ -243,5 +243,5 @@ Flashcards carry SM-2-lite review state. After flipping a card, grade it with
 card (due immediately, ease −0.2), Hard/Good/Easy grow the interval by the card's
 ease factor (boosted ×1.3 on Easy). Ease is clamped to 1.3–3.0. The header badge
 shows how many cards are due now. Review history is stored per browser under the
-`inkflow-srs` localStorage key, keyed by question text — editing an answer never
+`inkforge-srs` localStorage key, keyed by question text — editing an answer never
 resets a card's schedule.

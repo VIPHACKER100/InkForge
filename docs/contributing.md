@@ -1,12 +1,12 @@
 # 🤝 Contributing
 
-Guidelines for contributing to Inkflow.
+Guidelines for contributing to InkForge.
 
 ---
 
 ## Project Philosophy
 
-Inkflow is a **single-page, zero-dependency-install** application. Contributions should maintain this philosophy:
+InkForge is a **single-page, zero-dependency-install** application. Contributions should maintain this philosophy:
 - No build tools, bundlers, or transpilers required
 - All code runs directly in the browser
 - Dependencies are loaded via CDN only
@@ -42,7 +42,7 @@ Inkflow is a **single-page, zero-dependency-install** application. Contributions
 ```
 index.html              # App shell — loads ONE <script type="module" src="index.js">
 about.html / about.css  # Standalone About page (playground, docs directory)
-inkflow_logo.jpeg       # Brand emblem (toolbar, favicon, PWA, About)
+inkforge_logo.jpeg       # Brand emblem (toolbar, favicon, PWA, About)
 index.css               # Design tokens, components, layouts, light/dark themes
 index.js                # Boot + initApp + prediction + page-editor focus + error hook
 state.js                # Shared state: S, pages, PAGE_W/PAGE_H, draftedGlyphs, fontSwitcher

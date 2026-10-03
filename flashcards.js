@@ -41,9 +41,9 @@ export function extractFlashcards(text) {
    Card identity is an FNV-1a hash of the question text, so schedules survive
    answer edits and card reordering. Grades follow a 4-button Anki-style flow:
    again (lapse), hard, good, easy. The store lives in localStorage under
-   'inkflow-srs'; node tests get an in-memory fallback.
+   'inkforge-srs'; node tests get an in-memory fallback.
 ─────────────────────────────────────────── */
-const SRS_KEY = 'inkflow-srs';
+const SRS_KEY = 'inkforge-srs';
 const SRS_MEMORY_STORE = {};
 
 // FNV-1a 32-bit over the question text → stable per-card id

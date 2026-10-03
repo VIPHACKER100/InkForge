@@ -1,6 +1,6 @@
-# Inkflow — AI Handwritten Notes Generator
+# InkForge — AI Handwritten Notes Generator
 
-Inkflow turns typed text into realistic handwritten notes, rendered on canvas with per-character
+InkForge turns typed text into realistic handwritten notes, rendered on canvas with per-character
 variation: baseline wobble, pen pressure, ink bleed, smudge, and cursive connections. It runs
 entirely in the browser as an installable PWA — no account, no server required.
 
@@ -53,7 +53,7 @@ Open the printed URL, type notes in the sidebar, and press **✦ Render**.
 | `npm run check:version` | Verify `sw.js` cache version matches `package.json` |
 | `npm run lhci` | Lighthouse audits against the production build |
 | `npx playwright test` | End-to-end suite (17 specs) |
-| `npm run server` | Collaboration WebSocket relay (optional `INKFLOW_ROOM_TOKEN`) |
+| `npm run server` | Collaboration WebSocket relay (optional `INKFORGE_ROOM_TOKEN`) |
 
 ## 📚 Documentation
 

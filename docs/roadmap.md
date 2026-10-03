@@ -1,4 +1,4 @@
-# 🗺️ Inkflow — Update & Enhancement Plan
+# 🗺️ InkForge — Update & Enhancement Plan
 
 **Version basis:** 1.6.0 · **Date:** 2026-09-13 · **Branch:** `next-level`
 
@@ -29,8 +29,8 @@ This plan is grounded in a codebase analysis (knowledge-graph audit, lint/test r
 
 **2026-10-03 — Pass #20 (F4 collaboration hardening → v1.18.0)**
 
-- ✅ **server.js** refactored into `createCollabServer({ port, token })` (OT logic unchanged; direct run via `node server.js` with optional `INKFLOW_ROOM_TOKEN`); hardening: room-token gate (close 4401), 240-msg/10 s per-connection rate limit (close 1008), 5-per-IP concurrent cap (close 1013), 64 KB frame cap (1009), binary-frame rejection (1003)
-- ✅ **Client**: token attached from `localStorage.inkflow-collab-token` when present; a 4401 close surfaces "Room token required" and stops the reconnect loop
+- ✅ **server.js** refactored into `createCollabServer({ port, token })` (OT logic unchanged; direct run via `node server.js` with optional `INKFORGE_ROOM_TOKEN`); hardening: room-token gate (close 4401), 240-msg/10 s per-connection rate limit (close 1008), 5-per-IP concurrent cap (close 1013), 64 KB frame cap (1009), binary-frame rejection (1003)
+- ✅ **Client**: token attached from `localStorage.inkforge-collab-token` when present; a 4401 close surfaces "Room token required" and stops the reconnect loop
 - ✅ **7 new unit tests (254 total)** on ephemeral ports: open mode, token none/wrong/correct, per-IP cap, rate-limit flood, payload cap
 - ✅ Verified: lint 0 errors, 254/254 unit, build green
 - ⏭️ Phase F remaining: F5 HandFonted improvements, F6 i18n; merge `next-level` → `main` (standing recommendation)
@@ -126,8 +126,8 @@ This plan is grounded in a codebase analysis (knowledge-graph audit, lint/test r
 - ✅ Upstream download `InkForge-1.6.26` diffed against this fork; everything after the already-ported v1.6.24 was carried over (see `docs/changelog.md` [1.8.0])
 - ✅ **Realism engine 1.6.25**: anisotropic scale (scaleX ±0.9·jitter compression / scaleY up to 1.1·jitter stretch), micro-shear `shearX` (±0.022·r, ×0.3 for Devanagari) applied in all three draw paths (render / animation / exports), pressure-correlated ink bleed (`bleedFactor = 1 + (pressureMod − 1) × 0.4 × r`), engine-level `clean` style guard — 8 new engine tests (216 total)
 - ✅ **Blue Ink Pen preset (#000F55)** + `updateInkPresetActive()` accent-ring sync (preset click, freeform picker, restore, reset, and app init) with `data-ink`/`data-ink-name` attributes on all preset buttons
-- ✅ **About page 1.6.26**: standalone `about.html` + `about.css` adapted to Inkflow branding (repo links, MIT license, `inkflow-dark` theme sync, Inkflow docs directory, interactive realism playground); brand emblem `inkflow_logo.jpeg` wired into toolbar, favicon, Apple touch icon, PWA manifest, and About page; toolbar logo is now clickable, plus an **ℹ️ About** toolbar button and sidebar footer links (About / Docs / GitHub)
-- ✅ **PWA**: manifest shortcuts (New Note / Export PDF / About), logo as 512×512 maskable icon; sw.js precaches `about.html`, `about.css`, `inkflow_logo.jpeg`; vite build copies the About page assets verbatim
+- ✅ **About page 1.6.26**: standalone `about.html` + `about.css` adapted to InkForge branding (repo links, MIT license, `inkforge-dark` theme sync, InkForge docs directory, interactive realism playground); brand emblem `inkforge_logo.jpeg` wired into toolbar, favicon, Apple touch icon, PWA manifest, and About page; toolbar logo is now clickable, plus an **ℹ️ About** toolbar button and sidebar footer links (About / Docs / GitHub)
+- ✅ **PWA**: manifest shortcuts (New Note / Export PDF / About), logo as 512×512 maskable icon; sw.js precaches `about.html`, `about.css`, `inkforge_logo.jpeg`; vite build copies the About page assets verbatim
 - 🐛 **Fixed pre-existing P0**: `dist/index.css` never existed (Vite bundles the stylesheet to a hashed `/assets/` name), so the sw.js `cache.addAll()` always rejected and **the service worker never installed in production** — vite.config.js now copies `index.css` to the dist root so the precache URL resolves
 - ✅ Verified: 216/216 unit tests, 7/7 Playwright E2E, 0 lint errors, version check, production build + live preview (app + About page, light & dark, blue-ink ring)
 - ⚠️ Known dev-mode quirk (pre-existing, out of scope): Vite dev serves `.css` URLs as JS HMR modules, so a SW-controlled dev session renders unstyled; test SW/PWA behavior against `npm run build` + `vite preview`
@@ -166,13 +166,13 @@ This plan is grounded in a codebase analysis (knowledge-graph audit, lint/test r
 
 **2026-09-13 — Upstream docs reference pass**
 
-- 📖 All 19 docs from `github.com/VIPHACKER100/Inkflow/tree/main/docs` fetched and cross-checked (findings recorded in `docs/feature-gap-analysis.md` → "Reference" section). Validates passes #1–3 against upstream specs; refines remaining gaps (full 48-font suite list, exact realism-engine spec incl. S.realism/mulberry32/drift/rare-imperfections, clean-style Answer-hiding, showHeaderBox).
+- 📖 All 19 docs from `github.com/VIPHACKER100/InkForge/tree/main/docs` fetched and cross-checked (findings recorded in `docs/feature-gap-analysis.md` → "Reference" section). Validates passes #1–3 against upstream specs; refines remaining gaps (full 48-font suite list, exact realism-engine spec incl. S.realism/mulberry32/drift/rare-imperfections, clean-style Answer-hiding, showHeaderBox).
 
 **2026-09-13 — Gap-fill pass #3 (margin labels + PDF presets)**
 
 - ✅ New `margin-labels.js` (pure + 15 tests): queue line clustering, space-tolerant Q/Ans classifiers, document-wide sequential numbering cached per render
 - ✅ Labels drawn in all three paint paths (renderSpecificPage, redrawPageCanvas, startAnimation lazy-per-page) with upstream v1.6.17 geometry; `S.showMarginLabels` checkbox (default on, persisted, reset-safe)
-- ✅ `PDF_SIZE_PRESETS` (Compact/Standard/High) + `_upscaleCanvas` now used by `exportPDF()`; `#pdf-size-select` persisted under `'inkflow-pdf-size'`
+- ✅ `PDF_SIZE_PRESETS` (Compact/Standard/High) + `_upscaleCanvas` now used by `exportPDF()`; `#pdf-size-select` persisted under `'inkforge-pdf-size'`
 - 🐛 Fixed: cursive render crashed (`renderCursive` called with 2 args vs 3-arg signature)
 
 **2026-09-13 — Gap-fill pass #2 (mobile UX overhaul, upstream 1.6.23/1.6.24 parity)**
@@ -213,7 +213,7 @@ This plan is grounded in a codebase analysis (knowledge-graph audit, lint/test r
 
 ## 1. Current State Analysis
 
-### What Inkflow is
+### What InkForge is
 A client-side vanilla-JS PWA that turns text into realistic handwritten notes: canvas rendering with per-character jitter/pressure/smudge effects, 10 paper styles, AI actions (OpenRouter / Anthropic / Ollama, SSE streaming), a custom handwriting-font studio (sketch → vectorize → TTF via opentype.js), flashcards/study mode, notebooks (IndexedDB), multi-format export, and a WebSocket collaboration server.
 
 ### Health snapshot
@@ -233,7 +233,7 @@ A client-side vanilla-JS PWA that turns text into realistic handwritten notes: c
 
 1. **The monolith regrew.** v1.5.0 modularized index.js to 3,765 lines; it is back to 4,276. Inside it: the entire HandFonted Studio (~700 lines, L2904–3972), all export pipelines, flashcards, voice-to-notes, layers, persistence, and AI glue. `bindUIActions()` is the graph's #1 god node (44 edges).
 2. **No real build pipeline.** `vite.config.js` exists but app scripts are non-module `<script>` tags — Rollup cannot bundle them. All inter-module communication goes through `window.*`; the ESLint config carries a 45-name allowlist of "unused" globals only because HTML inline handlers reference them.
-3. **Service worker defects.** `sw.js` precaches `/server.js` (a Node file that can never run in the browser), versions the cache by a hand-edited string (`inkflow-v1.6.0`), and cache-first serves stale assets until someone remembers to bump it.
+3. **Service worker defects.** `sw.js` precaches `/server.js` (a Node file that can never run in the browser), versions the cache by a hand-edited string (`inkforge-v1.6.0`), and cache-first serves stale assets until someone remembers to bump it.
 4. **Accessibility gaps are documented but unshipped.** `docs/accessibility.md` lists recommended ARIA labels, `aria-live` status regions, `prefers-reduced-motion`, and a skip link — none implemented. The GUI test report confirms emoji-only buttons have no accessible names, and the knowledge graph flags a "Screen Reader Gap" community. Canvas output is inherently invisible to assistive tech with no text alternative.
 5. **The 4,276-line core has zero unit tests.** The 130 passing tests cover the extracted pure modules; state, rendering, export, autosave/restore, and flashcards are untested. Export pipelines (PDF/SVG/JPG) were explicitly left unverified by the GUI test run.
 6. **No feedback during slow operations.** AI actions and full renders have no loading indicators (GUI test report recommendation #3).
@@ -268,7 +268,7 @@ Goal: `index.js` under ~1,500 lines, an ES-module graph Vite can actually bundle
 
 | # | Task | Detail |
 |---|------|--------|
-| 1.1 | Convert app scripts to ES modules (`type="module"`) and import explicitly instead of `window.*` handoff. Keep one small `window.Inkflow` facade only for console/debug access | Coupling audit |
+| 1.1 | Convert app scripts to ES modules (`type="module"`) and import explicitly instead of `window.*` handoff. Keep one small `window.InkForge` facade only for console/debug access | Coupling audit |
 | 1.2 | **Extract from `index.js`, one module per PR, tests-first:** `handfonted-studio.js` (~700 L), `export-manager.js` (exportImage/PDF/SVG/clipboard, ~450 L), `flashcards.js`, `voice-notes.js`, `layer-panel.js`, `persistence.js` (autosave/restore/glyph DB, ~350 L) | Function census |
 | 1.3 | Split `bindUIActions()` (44-edge god node) into per-panel binding modules (sidebar, toolbar, AI panel, export bar) | Graph report |
 | 1.4 | Replace all inline `onclick=` in `index.html` with `addEventListener` (enables 0.8) | Lint run |

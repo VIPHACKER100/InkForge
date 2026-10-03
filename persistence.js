@@ -17,7 +17,7 @@
  *   has no top-level side effects, so this module's node import graph
  *   (persistence.test.js) stays safe.
  *
- * Keys owned here: 'inkflow-state'. (The 'inkflow-dark' / 'inkflow-pdf-size'
+ * Keys owned here: 'inkforge-state'. (The 'inkforge-dark' / 'inkforge-pdf-size'
  * UI-preference keys stay next to their control wiring in index.js.)
  */
 import { S, draftedGlyphs, getGlyphsDB, saveGlyphDB, pruneBlankGlyphs } from './state.js';
@@ -71,7 +71,7 @@ export function buildAutosavePayload(state, text) {
 }
 
 /**
- * Parse a stored 'inkflow-state' payload. Returns null for absent, empty or
+ * Parse a stored 'inkforge-state' payload. Returns null for absent, empty or
  * corrupt JSON (restoreState() treats null exactly like the old in-function
  * JSON.parse throw: skip the whole hydration block, then keep going).
  */
@@ -92,7 +92,7 @@ export function parseAutosaveState(raw) {
 let autosaveTimeout;
 
 /* Phase D (D2) — localStorage quota guard. A very large note can push the
-   'inkflow-state' payload past the per-origin quota, making setItem() throw
+   'inkforge-state' payload past the per-origin quota, making setItem() throw
    QuotaExceededError. Surface that as an error toast (the copy tells the user
    the way out: export, then trim), throttled to once per minute with a
    module-level timestamp — same pattern as index.js's global error hook — so
@@ -105,7 +105,7 @@ function isQuotaExceededError(err) {
 }
 
 function reportStorageQuotaExceeded(err) {
-  console.error('[Inkflow] autosave failed — localStorage quota exceeded:', err);
+  console.error('[InkForge] autosave failed — localStorage quota exceeded:', err);
   const now = Date.now();
   if (now - lastQuotaToastAt < QUOTA_TOAST_INTERVAL_MS) return;
   lastQuotaToastAt = now;
@@ -120,7 +120,7 @@ export function autosave() {
   autosaveTimeout = setTimeout(() => {
     try {
       const state = buildAutosavePayload(S, document.getElementById('text-input').value);
-      localStorage.setItem('inkflow-state', JSON.stringify(state));
+      localStorage.setItem('inkforge-state', JSON.stringify(state));
     } catch (err) {
       if (isQuotaExceededError(err)) {
         reportStorageQuotaExceeded(err);
@@ -134,7 +134,7 @@ export function autosave() {
 }
 
 export async function restoreState() {
-  const raw = localStorage.getItem('inkflow-state');
+  const raw = localStorage.getItem('inkforge-state');
 
   // 1. Try to load from IndexedDB
   try {
@@ -280,7 +280,7 @@ export async function restoreState() {
 
         // Remove draftedGlyphs from localStorage and save back
         delete state.draftedGlyphs;
-        localStorage.setItem('inkflow-state', JSON.stringify(state));
+        localStorage.setItem('inkforge-state', JSON.stringify(state));
       }
     }
   } catch {

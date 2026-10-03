@@ -1,4 +1,4 @@
-# Graph Report - Inkflow-main  (2026-09-08)
+# Graph Report - InkForge-main  (2026-09-08)
 
 ## Corpus Check
 - 31 files · ~64,928 words
@@ -30,7 +30,7 @@
 - Page Editor State
 - Voice & Component Map
 - Model Discovery UI
-- Inkflow Brand & Logo
+- InkForge Brand & Logo
 - Typography & Word Wrap
 - Client Vectorization
 - ESLint Config
@@ -76,7 +76,7 @@
 - **Raster-to-Vector Custom Font Pipeline** — docs_custom_font_suite_vector_tracing_pipeline, docs_custom_font_suite_moore_neighbor_tracing, docs_custom_font_suite_rdp_simplification, docs_custom_font_suite_opentype_compilation, docs_custom_font_suite_opentype_js [EXTRACTED 1.00]
 - **Unified Layout Engine Family** — docs_api_reference_layout_text, docs_api_reference_layout_text_two_column, docs_api_reference_layout_text_cornell, docs_api_reference_layout_text_clean_standard, docs_api_reference_seeded_prng [EXTRACTED 1.00]
 - **Handwriting Rendering Pipeline (sanitize -> rich syntax -> layout -> render/animate)** — docs_handwriting_engine_sanitize_text, docs_handwriting_engine_parse_rich_syntax, docs_handwriting_engine_layout_text, docs_state_management_render_text, docs_system_architecture_start_animation, docs_state_management_page_texts [EXTRACTED 1.00]
-- **Dual Persistence Architecture (localStorage + IndexedDB + autosave)** — docs_state_management_global_state_s, docs_state_management_localstorage, docs_state_management_inkflow_db, docs_state_management_autosave_fn, docs_state_management_restore_state [EXTRACTED 1.00]
+- **Dual Persistence Architecture (localStorage + IndexedDB + autosave)** — docs_state_management_global_state_s, docs_state_management_localstorage, docs_state_management_inkforge_db, docs_state_management_autosave_fn, docs_state_management_restore_state [EXTRACTED 1.00]
 - **Custom Font Creation Flow (sketch/template -> vectorize -> TTF -> apply)** — docs_ux_interactions_handfonted_studio, docs_system_architecture_client_side_vectorization, index_html_opentype, docs_ux_interactions_build_custom_font, docs_handwriting_engine_drafted_glyphs [INFERRED 0.85]
 
 ## Communities (35 total, 7 thin omitted)
@@ -127,7 +127,7 @@ Nodes (13): buildCustomFont(), canvasToOpentypePath(), closeHandFontedModal(), c
 
 ### Community 11 - "Getting Started & App Shell"
 Cohesion: 0.22
-Nodes (10): CodeQL Static-Analysis CI Workflow, index.css, index.js (application logic), Inkflow, Progressive Web App (PWA), sw.js (Service Worker), bindUIActions() — no inline handlers, CSS Design Tokens & Theme System (+2 more)
+Nodes (10): CodeQL Static-Analysis CI Workflow, index.css, index.js (application logic), InkForge, Progressive Web App (PWA), sw.js (Service Worker), bindUIActions() — no inline handlers, CSS Design Tokens & Theme System (+2 more)
 
 ### Community 12 - "Text Layout Engine"
 Cohesion: 0.22
@@ -161,9 +161,9 @@ Nodes (6): _upscaleCanvas(src, scale) — 2x upscaling, Four-Layer Component Map
 Cohesion: 0.60
 Nodes (6): fetchOllamaModels(), fetchOpenRouterModels(), loadCachedOpenRouterModels(), onProviderChange(), refreshCurrentProviderModels(), updateModelSyncBadge()
 
-### Community 20 - "Inkflow Brand & Logo"
+### Community 20 - "InkForge Brand & Logo"
 Cohesion: 0.40
-Nodes (6): AI Handwriting Generation (product tagline), Inkflow Brand Identity, Warm Terracotta Orange Circular Minimalist Emblem Style, Inkflow Logo (inkflow_logo.jpeg), Inkwell and Fountain Pen Visual Motif, Inkflow Project
+Nodes (6): AI Handwriting Generation (product tagline), InkForge Brand Identity, Warm Terracotta Orange Circular Minimalist Emblem Style, InkForge Logo (inkforge_logo.jpeg), Inkwell and Fountain Pen Visual Motif, InkForge Project
 
 ### Community 21 - "Typography & Word Wrap"
 Cohesion: 0.40
@@ -203,7 +203,7 @@ _Questions this graph is uniquely positioned to answer:_
   _Edge tagged AMBIGUOUS (relation: conceptually_related_to) - confidence is low._
 - **What is the exact relationship between `Auto-Fit Font Size (autoFitFontSize)` and `Page Navigation Bar (#page-nav)`?**
   _Edge tagged AMBIGUOUS (relation: conceptually_related_to) - confidence is low._
-- **Why does `Inkflow Documentation Hub` connect `Docs: API & Accessibility` to `Docs: AI & Animation Features`?**
+- **Why does `InkForge Documentation Hub` connect `Docs: API & Accessibility` to `Docs: AI & Animation Features`?**
   _High betweenness centrality (0.027) - this node is a cross-community bridge._
 - **Why does `Changelog` connect `Docs: AI & Animation Features` to `Docs: API & Accessibility`?**
   _High betweenness centrality (0.022) - this node is a cross-community bridge._

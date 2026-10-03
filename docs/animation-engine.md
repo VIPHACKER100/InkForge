@@ -1,6 +1,6 @@
 # 🎬 Animation Engine
 
-This document describes Inkflow's live writing animation system — the unified layout engine integration, requestAnimationFrame loop, SVG pen tracking, viewport auto-scrolling, and coordinate calibration.
+This document describes InkForge's live writing animation system — the unified layout engine integration, requestAnimationFrame loop, SVG pen tracking, viewport auto-scrolling, and coordinate calibration.
 
 ---
 

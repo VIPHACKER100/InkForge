@@ -1,6 +1,6 @@
 # ♿ Accessibility
 
-This document covers accessibility considerations, keyboard navigation, and screen reader support in Inkflow.
+This document covers accessibility considerations, keyboard navigation, and screen reader support in InkForge.
 
 ---
 

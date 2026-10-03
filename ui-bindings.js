@@ -160,7 +160,7 @@ function bindToolbar() {
   /* PHASE 1.4 / 2.6 — DARK MODE TOGGLE (moved from index.js) */
   const darkToggle = qs('dark-toggle');
   const darkIcon = qs('dark-icon');
-  let isDark = localStorage.getItem('inkflow-dark') === '1';
+  let isDark = localStorage.getItem('inkforge-dark') === '1';
 
   function applyDark() {
     document.documentElement.classList.toggle('dark', isDark);
@@ -175,7 +175,7 @@ function bindToolbar() {
 
   darkToggle?.addEventListener('click', () => {
     isDark = !isDark;
-    localStorage.setItem('inkflow-dark', isDark ? '1' : '0');
+    localStorage.setItem('inkforge-dark', isDark ? '1' : '0');
     applyDark();
   });
 
@@ -529,9 +529,9 @@ function bindFontStylePanel() {
       fontSelect.style.fontFamily = name;
       S.font = name;
       /* Phase 3.4 — Store font name in localStorage */
-      const stored = JSON.parse(localStorage.getItem('inkflow-fonts') || '[]');
+      const stored = JSON.parse(localStorage.getItem('inkforge-fonts') || '[]');
       if (!stored.includes(name)) stored.push(name);
-      localStorage.setItem('inkflow-fonts', JSON.stringify(stored));
+      localStorage.setItem('inkforge-fonts', JSON.stringify(stored));
       debounceRender();
     } catch (e) {
       alert('Could not load font: ' + e.message);
@@ -698,9 +698,9 @@ function bindAIPanel() {
 function bindExportPanel() {
   const pdfSizeSelect = qs('pdf-size-select');
   if (pdfSizeSelect) {
-    pdfSizeSelect.value = localStorage.getItem('inkflow-pdf-size') || 'standard';
+    pdfSizeSelect.value = localStorage.getItem('inkforge-pdf-size') || 'standard';
     pdfSizeSelect.addEventListener('change', () => {
-      localStorage.setItem('inkflow-pdf-size', pdfSizeSelect.value);
+      localStorage.setItem('inkforge-pdf-size', pdfSizeSelect.value);
       const preset = window.ExportRenderers?.PDF_SIZE_PRESETS?.[pdfSizeSelect.value];
       if (preset && typeof window.showExportToast === 'function') {
         window.showExportToast('PDF output size: ' + preset.label, 'info');

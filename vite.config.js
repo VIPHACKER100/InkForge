@@ -11,7 +11,7 @@ import { join, relative, sep } from 'node:path'
 //
 // Still copied verbatim: sw.js must remain a classic script at the site root; the
 // standalone About page and brand assets keep their exact precached URLs.
-const COPY_ROOT_STATIC = ['sw.js', 'manifest.json', 'about.html', 'about.css', 'inkflow_logo.jpeg']
+const COPY_ROOT_STATIC = ['sw.js', 'manifest.json', 'about.html', 'about.css', 'inkforge_logo.jpeg']
 
 // Markers in sw.js around the precache section this build regenerates. Keep the
 // two strings byte-identical to the comments in sw.js (including indentation).

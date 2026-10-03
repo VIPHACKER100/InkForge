@@ -1,6 +1,6 @@
 # 📤 Export Pipelines
 
-This document describes Inkflow's multi-format export system — PNG/JPG image, SVG vector wrapper, multi-page PDF, clipboard copy, and native print support.
+This document describes InkForge's multi-format export system — PNG/JPG image, SVG vector wrapper, multi-page PDF, clipboard copy, and native print support.
 
 ---
 
@@ -49,7 +49,7 @@ Renders text on a transparent background — no paper grain, no rulings, no deco
 2. Fill with transparent background
 3. Call `renderQueueItems()` to draw all characters
 4. Call `renderCursiveConnectionsOn()` if cursive mode is active
-5. Export via `canvas.toBlob('image/png')` and download as `inkflow-transparent.png`
+5. Export via `canvas.toBlob('image/png')` and download as `inkforge-transparent.png`
 
 ---
 
@@ -63,10 +63,10 @@ const svgContent = `<?xml version="1.0" encoding="UTF-8"?>
   <image href="${imgData}" x="0" y="0" width="${PAGE_W}" height="${PAGE_H}"/>
 </svg>`;
 const blob = new Blob([svgContent], { type: 'image/svg+xml' });
-triggerDownload(URL.createObjectURL(blob), 'inkflow-notes.svg');
+triggerDownload(URL.createObjectURL(blob), 'inkforge-notes.svg');
 ```
 
-For multi-page documents: `inkflow-notes-page1.svg`, `inkflow-notes-page2.svg`, etc.
+For multi-page documents: `inkforge-notes-page1.svg`, `inkforge-notes-page2.svg`, etc.
 
 ---
 
@@ -82,7 +82,7 @@ for (let i = 0; i < pages.length; i++) {
   const imgData = pages[i].toDataURL('image/jpeg', 0.93);
   doc.addImage(imgData, 'JPEG', 0, 0, 210, 297, undefined, 'FAST');
 }
-doc.save('inkflow-notes.pdf');
+doc.save('inkforge-notes.pdf');
 ```
 
 ---

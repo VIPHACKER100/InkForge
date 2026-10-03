@@ -1,6 +1,6 @@
 /**
  * template-manager.js
- * Advanced Template System for InkFlow (Task 15)
+ * Advanced Template System for InkForge (Task 15)
  *
  * Manages parsed JSON templates with defined text zones, guides, and constraints.
  */
@@ -398,7 +398,7 @@ class TemplateManager {
     if (!this.templates.has(id)) {
       try {
         if (typeof localStorage !== 'undefined') {
-          const custom = localStorage.getItem('inkflow_template_' + id);
+          const custom = localStorage.getItem('inkforge_template_' + id);
           if (custom) {
             try {
               return JSON.parse(custom);
@@ -427,7 +427,7 @@ class TemplateManager {
     }
     try {
       if (typeof localStorage !== 'undefined') {
-        localStorage.setItem('inkflow_template_' + template.id, JSON.stringify(template));
+        localStorage.setItem('inkforge_template_' + template.id, JSON.stringify(template));
       }
     } catch {
       /* Safari private mode, storage full, etc. */
@@ -442,7 +442,7 @@ class TemplateManager {
       if (typeof localStorage !== 'undefined') {
         for (let i = 0; i < localStorage.length; i++) {
           const key = localStorage.key(i);
-          if (key && key.startsWith('inkflow_template_')) {
+          if (key && key.startsWith('inkforge_template_')) {
             try {
               const tpl = JSON.parse(localStorage.getItem(key));
               if (tpl && tpl.id && !this.templates.has(tpl.id)) {

@@ -8,7 +8,7 @@
  *
  * Usage: elements declare `data-i18n="key"`; the engine sets textContent for the
  * active language on load and on language switch. The language is persisted in
- * localStorage ('inkflow-lang') and toggled via #lang-toggle in the toolbar.
+ * localStorage ('inkforge-lang') and toggled via #lang-toggle in the toolbar.
  */
 
 export const LANGUAGES = [
@@ -95,7 +95,7 @@ const STRINGS = {
   },
 };
 
-const LANG_KEY = 'inkflow-lang';
+const LANG_KEY = 'inkforge-lang';
 
 export function getLanguage() {
   if (typeof localStorage === 'undefined') return 'en';

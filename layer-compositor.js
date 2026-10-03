@@ -1,6 +1,6 @@
 /**
  * layer-compositor.js
- * Multi-Layer Canvas Architecture for InkFlow (Task 16)
+ * Multi-Layer Canvas Architecture for InkForge (Task 16)
  *
  * Provides a layer management system with offscreen canvases,
  * blend modes, opacity controls, and z-index ordering.

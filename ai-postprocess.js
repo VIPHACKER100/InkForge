@@ -2,7 +2,7 @@
  * AI Post-Processing Module — pure text transforms applied to every AI result
  * before it reaches the textarea or the renderer.
  * Functions: sanitizeAiResponse, trigramSimilarity, resequenceQA, smartArrangeLocal
- * Parity with upstream Inkflow v1.6.23 (docs/feature-gap-analysis.md items A5–A7).
+ * Parity with upstream InkForge v1.6.23 (docs/feature-gap-analysis.md items A5–A7).
  * No DOM dependencies. Loads before ai-assistant.js.
  */
 (function () {
@@ -10,7 +10,7 @@
 
   /**
    * Strips markdown leakage from AI responses (code fences, inline backticks,
-   * bold/italic markers, raw HTML) while preserving Inkflow's own syntax
+   * bold/italic markers, raw HTML) while preserving InkForge's own syntax
    * (==highlights==, [sticky:…]/[callout:…], # headings, Q:/A: pairs) and the
    * ```diagram / ```mermaid fences that the renderer parses.
    */

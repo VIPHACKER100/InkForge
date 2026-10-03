@@ -1,12 +1,12 @@
 # 📱 PWA — Progressive Web App
 
-This document covers Inkflow's v1.6.0 PWA support: service worker, web app manifest, and offline caching strategy.
+This document covers InkForge's v1.6.0 PWA support: service worker, web app manifest, and offline caching strategy.
 
 ---
 
 ## Overview
 
-Inkflow can be installed as a Progressive Web App on desktop and mobile. The service worker caches all static assets for offline use while keeping AI API calls network-first to avoid stale data.
+InkForge can be installed as a Progressive Web App on desktop and mobile. The service worker caches all static assets for offline use while keeping AI API calls network-first to avoid stale data.
 
 **Files**: `sw.js`, `manifest.json`
 
@@ -16,8 +16,8 @@ Inkflow can be installed as a Progressive Web App on desktop and mobile. The ser
 
 ```json
 {
-  "name": "Inkflow — AI Handwritten Notes",
-  "short_name": "Inkflow",
+  "name": "InkForge — AI Handwritten Notes",
+  "short_name": "InkForge",
   "description": "Generate beautiful AI-powered handwritten notes in your browser",
   "start_url": "/",
   "display": "standalone",
@@ -75,7 +75,7 @@ const PRECACHE_URLS = [
 
 On every production build, the `copy-root-static` plugin in `vite.config.js`:
 
-1. Copies `sw.js`, `manifest.json`, `about.html`, `about.css`, `inkflow_logo.jpeg` verbatim into `dist/`
+1. Copies `sw.js`, `manifest.json`, `about.html`, `about.css`, `inkforge_logo.jpeg` verbatim into `dist/`
 2. Walks the emitted `dist/` output (content-hashed filenames such as `assets/index-<hash>.js` and `assets/index-<hash>.css`) and rewrites the marked section in `dist/sw.js` with one URL per line (`/` stands in for `index.html`; `sw.js` itself and `docs/` are excluded)
 
 The Google Fonts stylesheet stays a fixed entry in `sw.js`; the individual `.woff2` files are runtime-cached on first use. New modules never require touching `sw.js` — rebuild and the list follows the output.
@@ -91,7 +91,7 @@ fetch → cache-first for static, network-first for APIs
 ### Cache Name
 
 ```javascript
-const CACHE_NAME = 'inkflow-v1.6.0';
+const CACHE_NAME = 'inkforge-v1.6.0';
 ```
 
 Bump this string on each release to invalidate old caches.
@@ -146,7 +146,7 @@ Registration is silent — errors are caught and ignored (e.g., file:// protocol
 
 1. Open DevTools → Application → Service Workers
 2. Verify `sw.js` is registered and activated
-3. Check Cache Storage for `inkflow-v1.6.0` entry
+3. Check Cache Storage for `inkforge-v1.6.0` entry
 4. Go offline (DevTools → Network → Offline) and reload — app should load from cache
 5. AI actions should fail gracefully when offline (network-first, no cache)
 
@@ -156,7 +156,7 @@ Registration is silent — errors are caught and ignored (e.g., file:// protocol
 
 When releasing a new version:
 
-1. Update `CACHE_NAME` in `sw.js` (e.g., `'inkflow-v1.7.0'`) — `npm run check:version` enforces that it matches `package.json` (runs in CI)
+1. Update `CACHE_NAME` in `sw.js` (e.g., `'inkforge-v1.7.0'`) — `npm run check:version` enforces that it matches `package.json` (runs in CI)
 2. `PRECACHE_URLS` needs no manual edits — `vite build` regenerates the marked section from the actual `dist/` output (hashed filenames included)
 3. The new service worker will activate and delete the old cache automatically via `skipWaiting()` + `claimClients()`
 

@@ -1,3 +1,7 @@
+// InkForge rename (v1.21.0): one-time legacy localStorage migration MUST run
+// before anything reads its storage keys — hence the first import.
+import './storage-migration.js';
+
 /**
  * A3 ES-module conversion (docs/upgrade-plan.md Phase A): index.js is now the
  * single module entry. Imports are listed in the app's classic script load order;
@@ -763,7 +767,7 @@ function reportGlobalError(message) {
   if (now - lastErrorToastAt < 3000) return;
   lastErrorToastAt = now;
   showExportToast('Something went wrong: ' + message, 'error');
-  console.error('[Inkflow]', message);
+  console.error('[InkForge]', message);
 }
 window.addEventListener('error', (e) => {
   if (e.message) reportGlobalError(e.message);

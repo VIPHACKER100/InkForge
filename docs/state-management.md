@@ -1,6 +1,6 @@
 # 💾 State Management & Hydration
 
-This document describes Inkflow's global state schema, the hydration/persistence lifecycle, and the debounced autosave mechanism.
+This document describes InkForge's global state schema, the hydration/persistence lifecycle, and the debounced autosave mechanism.
 
 > **Module ownership (v1.20.1):** the state object `S` and shared page state live in
 > `state.js`; `autosave()`/`restoreState()` and the serialization whitelist live in
@@ -40,16 +40,16 @@ The system state is governed by a central global configuration object `S` that a
 ```mermaid
 sequenceDiagram
     participant Boot as App Boot (initApp)
-    participant DB as IndexedDB (InkflowDB)
+    participant DB as IndexedDB (InkForgeDB)
     participant LS as localStorage
     participant State as Global State S
     participant UI as DOM Controls
     participant Canvas as Canvas Renderer
     participant Editors as Page Editors
 
-    Boot->>DB: Open 'InkflowDB' & load all draftedGlyphs
+    Boot->>DB: Open 'InkForgeDB' & load all draftedGlyphs
     DB->>State: Hydrate custom glyphs dict
-    Boot->>LS: Read 'inkflow-state'
+    Boot->>LS: Read 'inkforge-state'
     alt State exists
         LS->>State: Parse JSON → Hydrate settings in S
         State->>UI: Sync sliders, dropdowns, textareas, selects
@@ -79,8 +79,8 @@ sequenceDiagram
 ### Step-by-Step Lifecycle
 
 1. **App Boot (`initApp`)**:
-   - Opens the **IndexedDB** database `InkflowDB` (version 1, object store `draftedGlyphs`) and reads all custom handwriting glyphs into memory.
-   - Reads general settings from `localStorage` under key `inkflow-state`.
+   - Opens the **IndexedDB** database `InkForgeDB` (version 1, object store `draftedGlyphs`) and reads all custom handwriting glyphs into memory.
+   - Reads general settings from `localStorage` under key `inkforge-state`.
 2. **Deserialization & Migration**:
    - Hydrates `S` with the stored settings. Updates sliders, dropdowns, page layout selects, and text fields.
    - **Migration Check**: If legacy custom glyphs are detected in `localStorage` (from previous versions), the boot pipeline automatically writes them to IndexedDB, clears them from `localStorage` to avoid exceeding the 5MB quota, and saves the cleaned state.
@@ -92,7 +92,7 @@ sequenceDiagram
 
 ## Dual Input Paths
 
-Inkflow accepts text input from two synchronized sources:
+InkForge accepts text input from two synchronized sources:
 
 ### Sidebar Textarea (`#text-input`)
 Traditional textarea input on the left panel. Changes are debounced and trigger `renderText()`.
@@ -122,7 +122,7 @@ function autosave() {
       paperStyle: S.paperStyle, noteLayout: S.noteLayout,
     };
     // persistence.js: buildAutosavePayload() → saveSrsState-free whitelist serialization
-    localStorage.setItem('inkflow-state', JSON.stringify(buildAutosavePayload(S, textarea.value)));
+    localStorage.setItem('inkforge-state', JSON.stringify(buildAutosavePayload(S, textarea.value)));
   }, 1000);
 }
 ```

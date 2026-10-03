@@ -1,6 +1,6 @@
 # 📓 Notebooks System
 
-This document covers Inkflow's v1.6.0 notebook system — IndexedDB-backed persistent storage for saving, loading, and managing multiple note documents.
+This document covers InkForge's v1.6.0 notebook system — IndexedDB-backed persistent storage for saving, loading, and managing multiple note documents.
 
 ---
 
@@ -24,7 +24,7 @@ The notebooks system provides CRUD operations for persisting complete note state
 | `createdAt` | Number | Creation timestamp (ms) |
 | `updatedAt` | Number | Last save timestamp (ms) |
 
-**Database**: `InkflowNotebooks`, **Object Store**: `notebooks`, **Index**: `updatedAt`
+**Database**: `InkForgeNotebooks`, **Object Store**: `notebooks`, **Index**: `updatedAt`
 
 ---
 

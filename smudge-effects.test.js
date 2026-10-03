@@ -56,7 +56,7 @@ if (typeof global.document === 'undefined') {
           addEventListener: (event, fn) => { listeners.push({ event, fn }); },
           dispatchEvent: (evt) => {
             S.smudgeEffects = el.checked;
-            localStorage.setItem('inkflow-state', JSON.stringify({ smudgeEffects: S.smudgeEffects }));
+            localStorage.setItem('inkforge-state', JSON.stringify({ smudgeEffects: S.smudgeEffects }));
             listeners.filter(l => l.event === evt.type).forEach(l => l.fn(evt));
           }
         };
@@ -181,14 +181,14 @@ describe('Smudge Effects Toggle - UI & State Management', () => {
     checkbox.dispatchEvent(new Event('change'));
     
     // Check if localStorage was updated
-    const savedState = JSON.parse(localStorage.getItem('inkflow-state'));
+    const savedState = JSON.parse(localStorage.getItem('inkforge-state'));
     expect(savedState.smudgeEffects).toBe(true);
     
     // Toggle smudge effects off
     checkbox.checked = false;
     checkbox.dispatchEvent(new Event('change'));
     
-    const updatedState = JSON.parse(localStorage.getItem('inkflow-state'));
+    const updatedState = JSON.parse(localStorage.getItem('inkforge-state'));
     expect(updatedState.smudgeEffects).toBe(false);
   });
 
@@ -203,11 +203,11 @@ describe('Smudge Effects Toggle - UI & State Management', () => {
       text: '',
       font: 'Caveat'
     };
-    localStorage.setItem('inkflow-state', JSON.stringify(savedState));
+    localStorage.setItem('inkforge-state', JSON.stringify(savedState));
     
     // Simulate restoreState() function call
     const checkbox = document.getElementById('smudge-effects-toggle');
-    const state = JSON.parse(localStorage.getItem('inkflow-state'));
+    const state = JSON.parse(localStorage.getItem('inkforge-state'));
     
     if (state.smudgeEffects !== undefined) {
       S.smudgeEffects = state.smudgeEffects;
@@ -271,10 +271,10 @@ describe('Smudge Effects - Property-Based Tests', () => {
       const state = {
         smudgeEffects: S.smudgeEffects
       };
-      localStorage.setItem('inkflow-state', JSON.stringify(state));
+      localStorage.setItem('inkforge-state', JSON.stringify(state));
       
       // Simulate load (via restoreState mechanism)
-      const loaded = JSON.parse(localStorage.getItem('inkflow-state'));
+      const loaded = JSON.parse(localStorage.getItem('inkforge-state'));
       const restored = loaded.smudgeEffects;
       
       // Verify round-trip consistency

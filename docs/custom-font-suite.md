@@ -77,7 +77,7 @@ document.fonts.add(font);
 ## Two Input Modes
 
 ### Live Sketchpad
-Draw characters sheet-by-sheet on an interactive canvas. Each character is saved to the glyph tray and persisted asynchronously in **IndexedDB** (`InkflowDB` -> `draftedGlyphs` store), bypassing the 5MB browser `localStorage` limit.
+Draw characters sheet-by-sheet on an interactive canvas. Each character is saved to the glyph tray and persisted asynchronously in **IndexedDB** (`InkForgeDB` -> `draftedGlyphs` store), bypassing the 5MB browser `localStorage` limit.
 
 ### Upload Template
 1. Select the sheet tab (`Letters` or `Symbols`) and click **Download Blank Template Grid**.

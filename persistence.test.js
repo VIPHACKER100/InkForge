@@ -114,9 +114,9 @@ describe('parseAutosaveState', () => {
 describe('autosave serialization round-trip', () => {
   it('survives JSON.stringify → parse with every whitelisted value intact', () => {
     const state = makeStateLike();
-    // autosave(): localStorage.setItem('inkflow-state', JSON.stringify(payload))
+    // autosave(): localStorage.setItem('inkforge-state', JSON.stringify(payload))
     const stored = JSON.stringify(buildAutosavePayload(state, 'My note text'));
-    // restoreState(): parseAutosaveState(localStorage.getItem('inkflow-state'))
+    // restoreState(): parseAutosaveState(localStorage.getItem('inkforge-state'))
     const restored = parseAutosaveState(stored);
 
     expect(restored.text).toBe('My note text');

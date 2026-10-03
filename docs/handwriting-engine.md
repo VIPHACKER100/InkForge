@@ -1,16 +1,16 @@
 <p align="center">
-  <img src="../inkflow_logo.jpeg" alt="Inkflow Logo" width="80" style="border-radius: 50%; box-shadow: 0 4px 12px rgba(0,0,0,0.15);" />
+  <img src="../inkforge_logo.jpeg" alt="InkForge Logo" width="80" style="border-radius: 50%; box-shadow: 0 4px 12px rgba(0,0,0,0.15);" />
 </p>
 
 # ✒️ Handwriting Synthesis Engine
 
-This document details Inkflow's core handwriting rendering algorithm — the unified layout engine, per-character transformation loop, glyph variation system, ink bleed simulation, Indic script support, rich study syntax, and word-wrap calculations.
+This document details InkForge's core handwriting rendering algorithm — the unified layout engine, per-character transformation loop, glyph variation system, ink bleed simulation, Indic script support, rich study syntax, and word-wrap calculations.
 
 ---
 
 ## Overview
 
-Inkflow uses a character-by-character render loop on standard 2D canvas contexts rather than rendering unified, static text lines. Each letter has custom variations applied, introducing the minor imperfections that make real handwriting look authentic.
+InkForge uses a character-by-character render loop on standard 2D canvas contexts rather than rendering unified, static text lines. Each letter has custom variations applied, introducing the minor imperfections that make real handwriting look authentic.
 
 The entire layout computation is centralized in the **`layoutText(text)`** function, which is shared by both static rendering and animation playback. It delegates to `layoutTextTemplated()`, which uses a zone-based template system via `window.templateManager.resolveTemplate()` to position text within the active layout zones (standard, two-column, Cornell, meeting).
 
@@ -131,7 +131,7 @@ if (glyphImg) {
 ## Pen Pressure & Ink Bleed Simulation
 
 ### Pressure Modulation
-True pen handwriting shows varied thickness depending on velocity and pressure. Inkflow models this by scaling the active font-size for each character by a dynamic `pressureMod`:
+True pen handwriting shows varied thickness depending on velocity and pressure. InkForge models this by scaling the active font-size for each character by a dynamic `pressureMod`:
 
 $$\text{Size}_{\text{px}} = \text{FontSize} \times \left(1 - \text{random}(0, \text{Pressure} \times 1.4)\right)$$
 

@@ -1,6 +1,6 @@
 # 🚀 Getting Started
 
-This guide covers everything you need to set up and run Inkflow locally.
+This guide covers everything you need to set up and run InkForge locally.
 
 ---
 
@@ -16,8 +16,8 @@ This guide covers everything you need to set up and run Inkflow locally.
 
 ### 1. Download or Clone
 ```bash
-git clone https://github.com/VIPHACKER100/inkflow.git
-cd inkflow
+git clone https://github.com/VIPHACKER100/inkforge.git
+cd inkforge
 ```
 
 Or simply download and extract the ZIP archive.
@@ -51,10 +51,10 @@ npx -y http-server -p 8000
 ## Project Structure
 
 ```
-inkflow/
+inkforge/
 index.html              # App shell — loads ONE <script type="module" src="index.js">
 about.html / about.css  # Standalone About page (playground, docs directory)
-inkflow_logo.jpeg       # Brand emblem (toolbar, favicon, PWA, About)
+inkforge_logo.jpeg       # Brand emblem (toolbar, favicon, PWA, About)
 index.css               # Design tokens, components, layouts, light/dark themes
 index.js                # Boot + initApp + prediction + page-editor focus + error hook
 state.js                # Shared state: S, pages, PAGE_W/PAGE_H, draftedGlyphs, fontSwitcher

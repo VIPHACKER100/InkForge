@@ -1,6 +1,6 @@
 # ⚙️ Configuration Guide
 
-Complete reference for all user-configurable controls in Inkflow.
+Complete reference for all user-configurable controls in InkForge.
 
 ---
 
@@ -147,4 +147,4 @@ Drag-and-drop is supported on the upload zone.
 | Control | Where | Values / Behavior |
 | :--- | :--- | :--- |
 | **🌐 language toggle** | Toolbar (1.20.0) | Switches the interface between English and हिंदी (toolbar, section headers, primary actions, paper styles, export actions). Persisted per browser. |
-| **Flashcard grading** | Study Mode (1.16.0) | After flipping: **1 Again / 2 Hard / 3 Good / 4 Easy** (buttons or number keys). SM-2-lite scheduling per card, persisted under `inkflow-srs`; the header badge shows `📅 N due`. |
+| **Flashcard grading** | Study Mode (1.16.0) | After flipping: **1 Again / 2 Hard / 3 Good / 4 Easy** (buttons or number keys). SM-2-lite scheduling per card, persisted under `inkforge-srs`; the header badge shows `📅 N due`. |
