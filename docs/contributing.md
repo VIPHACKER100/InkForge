@@ -40,25 +40,47 @@ Inkflow is a **single-page, zero-dependency-install** application. Contributions
 ## File Structure
 
 ```
-index.html              # Structure and CDN imports
-index.css               # All styles — design tokens, components, layouts
-index.js                # Core: UI, state, AI, animation (3,765 lines)
-font-compilation.js     # Contour tracing, RDP, OpenType (198 lines)
-paper-renderer.js       # 10 paper styles, smudge effects (341 lines)
-text-layout.js          # sanitizeText, parseBlocks, getGraphemes (40 lines)
-export-renderers.js     # Queue item rendering on canvas (107 lines)
-diagram-engine.js       # 6 diagram types, Mermaid rendering (169 lines)
-cursive-connector.js    # Cursive exit/entry points, Bezier (260 lines)
-template-manager.js     # Cornell/Two-Column/Meeting layouts (242 lines)
-markdown-parser.js      # Markdown tokenization (405 lines)
-collaborative-engine.js # WebSocket collaboration (300 lines)
-contextual-jitter-engine.js # Per-character transforms (149 lines)
-stroke-prediction-engine.js # Stroke prediction (160 lines)
-layer-compositor.js     # Multi-layer canvas (248 lines)
-audio-recorder.js       # Audio recording (158 lines)
-script-detector.js      # Unicode detection (119 lines)
-server.js               # Node.js proxy (162 lines)
-docs/                   # Documentation (19 markdown files)
+index.html              # App shell — loads ONE <script type="module" src="index.js">
+about.html / about.css  # Standalone About page (playground, docs directory)
+inkflow_logo.jpeg       # Brand emblem (toolbar, favicon, PWA, About)
+index.css               # Design tokens, components, layouts, light/dark themes
+index.js                # Boot + initApp + prediction + page-editor focus + error hook
+state.js                # Shared state: S, pages, PAGE_W/PAGE_H, draftedGlyphs, fontSwitcher
+render-pipeline.js      # renderText / renderSpecificPage / animation / page DOM
+layout-engine.js        # layoutText + zone-chaining templates + sticky/callout painters
+ui-bindings.js          # Per-panel binders — every control wired via addEventListener
+persistence.js          # autosave / restoreState + serialization whitelist
+settings-sync.js        # Sidebar control-sync helpers (shared with persistence)
+paper-renderer.js       # 10 paper styles (LRU-cached backgrounds), smudge effects
+text-layout.js          # sanitizeText, parseBlocks, getGraphemes, parseRichSyntax
+template-manager.js     # 8 built-in layouts (gallery) + custom templates
+export-manager.js       # PNG/JPG/transparent/PDF/SVG/clipboard pipelines
+export-renderers.js     # Queue item rendering + cursive connections on canvas
+margin-labels.js        # Margin Q/Ans clustering + drawing
+flashcards.js           # Flashcards, study mode, SM-2 lite spaced repetition
+ai-assistant.js         # Provider router: OpenRouter/Anthropic/Gemini/Ollama (SSE)
+ai-postprocess.js       # sanitizeAiResponse, resequenceQA, smartArrangeLocal
+handfonted-studio.js    # Sketch/template glyph capture, aligner, TTF build
+inkfont-format.js       # .inkfont community-share wrap/parse
+font-compilation.js     # Contour tracing, RDP, OpenType compilation
+diagram-engine.js       # Diagram layout algorithms, Mermaid rendering
+shape-drawing.js        # drawArrowhead / drawShapeOrEdge (rough.js)
+cursive-connector.js    # Cursive exit/entry points, Bezier connections
+collaborative-engine.js # WebSocket real-time collaboration (OT client)
+layer-compositor.js     # Multi-layer canvas compositing
+markdown-parser.js      # Markdown tokenization for AI output
+stroke-prediction-engine.js # Stroke completion prediction
+audio-recorder.js       # Voice-to-notes audio recording
+script-detector.js      # Unicode script detection + FontSwitcher
+notebooks.js            # IndexedDB notebook CRUD + sidebar UI
+i18n.js                 # EN/हिंदी string tables + language toggle
+voice-notes.js          # Web Speech voice-to-notes
+server.js               # Hardened collaboration relay (room token, rate limits)
+sw.js                   # Service worker — build-generated precache
+manifest.json           # PWA manifest (shortcuts, logo, share targets)
+e2e/                    # 17 Playwright specs
+scripts/                # check-version, contrast-audit tooling
+docs/                   # This documentation
 ```
 
 Do NOT split JS/CSS into additional files without discussion. The single-file architecture is intentional.

@@ -46,11 +46,14 @@ Open the printed URL, type notes in the sidebar, and press **✦ Render**.
 | :--- | :--- |
 | `npm run dev` | Start the Vite dev server |
 | `npm run build` | Production build to `dist/` |
-| `npm test` | Run the Vitest suite (130 tests) |
+| `npm test` | Run the Vitest suite (264 tests) |
+| `npm run test:coverage` | Vitest with the coverage ratchet (fails below thresholds) |
 | `npm run lint` / `npm run lint:fix` | ESLint |
 | `npm run format` / `npm run format:check` | Prettier |
 | `npm run check:version` | Verify `sw.js` cache version matches `package.json` |
-| `npm run server` | Collaboration WebSocket server |
+| `npm run lhci` | Lighthouse audits against the production build |
+| `npx playwright test` | End-to-end suite (17 specs) |
+| `npm run server` | Collaboration WebSocket relay (optional `INKFLOW_ROOM_TOKEN`) |
 
 ## 📚 Documentation
 

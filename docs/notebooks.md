@@ -19,7 +19,7 @@ The notebooks system provides CRUD operations for persisting complete note state
 | `id` | String | Unique ID (`nb-{timestamp}-{random}`) |
 | `title` | String | User-provided notebook title |
 | `text` | String | Full textarea content |
-| `state` | Object | Snapshot of `window.S` (all settings) |
+| `state` | Object | Snapshot of the shared state `S` (all settings, imported from state.js) |
 | `pages` | Array | Canvas page data (reserved) |
 | `createdAt` | Number | Creation timestamp (ms) |
 | `updatedAt` | Number | Last save timestamp (ms) |

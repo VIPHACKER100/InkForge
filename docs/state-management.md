@@ -2,6 +2,11 @@
 
 This document describes Inkflow's global state schema, the hydration/persistence lifecycle, and the debounced autosave mechanism.
 
+> **Module ownership (v1.20.1):** the state object `S` and shared page state live in
+> `state.js`; `autosave()`/`restoreState()` and the serialization whitelist live in
+> `persistence.js`; the control-sync helpers live in `settings-sync.js`. index.js
+> imports all three.
+
 ---
 
 ## System Configuration Schema (`S`)
@@ -116,7 +121,8 @@ function autosave() {
       inkColor: S.inkColor, bleed: S.bleed, pressure: S.pressure,
       paperStyle: S.paperStyle, noteLayout: S.noteLayout,
     };
-    localStorage.setItem('inkflow-state', JSON.stringify(state));
+    // persistence.js: buildAutosavePayload() → saveSrsState-free whitelist serialization
+    localStorage.setItem('inkflow-state', JSON.stringify(buildAutosavePayload(S, textarea.value)));
   }, 1000);
 }
 ```

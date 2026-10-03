@@ -1,6 +1,9 @@
 # 📚 API Reference
 
-Complete reference for all public JavaScript functions in `index.js`.
+Complete reference for the public JavaScript surface. Since the v1.20.1 ES-module
+conversion, functions live in their owning modules (see the module map in
+`docs/system-architecture.md`) — this page groups them by feature area and notes
+the owning module for each entry.
 
 ---
 
@@ -188,7 +191,9 @@ Renders the notebook list in the sidebar section.
 ## PWA
 
 ### `sw.js`
-Service worker with cache-first strategy for static assets and network-first for API calls. Precaches all JS modules on install.
+Service worker with cache-first strategy for static assets; never intercepts AI
+provider endpoints. The precache list is **generated at build time** from the actual
+dist output (hashed bundle + CSS + shell) — see docs/pwa.md.
 
 ## State Management
 

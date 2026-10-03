@@ -126,7 +126,7 @@ Drag-and-drop is supported on the upload zone.
 
 ---
 
-## 1.7.0 Additions
+## Additions since 1.7.0
 
 | Control | Where | Values / Behavior |
 | :--- | :--- | :--- |
@@ -138,3 +138,13 @@ Drag-and-drop is supported on the upload zone.
 | **Theme Packs** | Paper Style | Six one-click buttons (Default, Forest, Sunset, Ocean, Lavender, Charcoal) applying accent/paper/ink colors. |
 | **Fonts** | Font selector | Full 48-font suite in four groups: Print Handwriting (20), Cursive & Script (20), Devanagari (8), Clean (2). |
 | **Smart Arrange** | AI Features | Now fully **offline** — no API key or provider needed. Reports the number of fixes via toast. |
+| **Blue Ink Pen** | Ink presets row (1.8.0) | Deep royal-blue `#000F55` ballpoint preset, first in the row; the accent ring follows the live ink color. |
+| **Realism transforms** | (1.8.0) | Anisotropic scale jitter + per-glyph micro-shear + pressure-correlated ink bleed, neutralised in Clean mode and scaled ×0.3 for Devanagari. |
+| **Template gallery** | Note Layout (1.17.0) | Lecture Notes, Lab Report, Vocabulary (Term / Definition), Reading Notes — see the layouts above. |
+
+## Additions since 1.16.0
+
+| Control | Where | Values / Behavior |
+| :--- | :--- | :--- |
+| **🌐 language toggle** | Toolbar (1.20.0) | Switches the interface between English and हिंदी (toolbar, section headers, primary actions, paper styles, export actions). Persisted per browser. |
+| **Flashcard grading** | Study Mode (1.16.0) | After flipping: **1 Again / 2 Hard / 3 Good / 4 Easy** (buttons or number keys). SM-2-lite scheduling per card, persisted under `inkflow-srs`; the header badge shows `📅 N due`. |

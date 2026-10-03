@@ -27,7 +27,7 @@ Inkflow renders text on `<canvas>` elements rather than DOM text nodes:
 - **Export-ready**: Canvas directly exports to image/PDF via `toBlob()`/`toDataURL()`
 
 ### Paper Grain Shader
-The 2,200-iteration paper grain noise loop runs once per background paint (not per frame). Cost: ~2-5ms per page.
+The 2,200-iteration paper grain noise loop runs once per **background-style + layout combination** — the result is cached on an offscreen canvas (LRU, 6 entries, see paper-renderer.js) and every subsequent page/style draw is a single `drawImage` blit (v1.14.0). Cost: ~2-5ms on cache miss, <1ms on hit.
 
 ---
 
@@ -99,7 +99,7 @@ AI responses use Server-Sent Events streaming, rendering text incrementally rath
 | :--- | :--- | :--- |
 | Initial render (1 page) | 15-30ms | Including paper background |
 | Re-render (text change) | 10-25ms | Debounced, single page |
-| Paper grain shader | 2-5ms | 2,200 iterations |
+| Paper grain shader (cache miss) | 2-5ms | 2,200 iterations; hits are a drawImage blit |
 | Font compilation | 200-500ms | 64 glyphs, one-time cost |
 | PDF export (5 pages) | 300-800ms | JPEG encoding + jsPDF |
 | Image export (PNG) | 50-150ms | Native canvas.toBlob() |
@@ -110,7 +110,7 @@ AI responses use Server-Sent Events streaming, rendering text incrementally rath
 ## Known Limitations
 
 - **Large documents (50+ pages)**: Canvas memory may exceed 150MB on low-RAM devices
-- **Paper grain noise**: Re-randomizes on each repaint (cosmetic, not a bug)
+- **Paper grain noise**: deterministic per style (seeded), cached per (style, size, fontSize, lineHeight, margin, noteLayout) key and re-blitted — identical noise on every repaint
 - **AI latency**: API response time is network-dependent (1-5 seconds typical)
 - **Custom font tracing**: Complex handwriting may produce >1000 path points per glyph
 
@@ -140,3 +140,13 @@ node diagram-engine.test.js       # Standalone (23 tests)
 ```
 
 **Current pass rate: 178/178 (100%)**
+
+---
+
+## Font Loading (v1.14.0 — Phase E2)
+
+The 50-family Google Fonts stylesheet loads **non-blocking** (`media="print"`
+swapped to `all` on load, plus a `<noscript>` fallback), so first paint never
+waits on ~45 `@font-face` rules. Canvas correctness is preserved by the app
+re-rendering after `document.fonts.ready` at boot and after
+`document.fonts.load()` whenever a handwriting font is selected.

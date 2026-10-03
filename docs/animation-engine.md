@@ -112,7 +112,7 @@ When the queue is exhausted, the engine:
 
 ## Key Design Decisions
 
-- **Unified `layoutText()`**: Both `renderText()` and `startAnimation()` call the same layout engine, guaranteeing identical character positions.
+- **Unified `layoutText()`**: Both `renderText()` and `startAnimation()` (render-pipeline.js) call the same layout engine, guaranteeing identical character positions.
 - **requestAnimationFrame** is used instead of `setInterval` for smooth, GPU-synced 60fps rendering with automatic throttling when the tab is backgrounded.
 - **Character queue pre-computation** calculates all coordinates before animation starts, avoiding mid-animation layout recalculations.
 - **Absolute positioning** for the pen cursor avoids CSS transform conflicts and ensures pixel-perfect tracking.

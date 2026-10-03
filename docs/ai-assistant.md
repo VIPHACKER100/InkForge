@@ -6,7 +6,7 @@ This document covers Inkflow's `ai-assistant.js` module — provider routing, st
 
 ## Overview
 
-`ai-assistant.js` is an extracted module (~440 lines) that encapsulates all AI provider logic. It exposes `window.AIAssistant` and is loaded before `index.js` in `index.html`.
+`ai-assistant.js` is an ES module (~550 lines) that encapsulates all AI provider logic. It exposes `window.AIAssistant` (kept for ui-bindings.js and console/debug use) and is imported by `index.js` (v1.20.1 module graph).
 
 **File**: `ai-assistant.js`
 
@@ -16,7 +16,8 @@ This document covers Inkflow's `ai-assistant.js` module — provider routing, st
 
 ```javascript
 window.AIAssistant = {
-  callClaude,           // Cloud AI streaming (OpenRouter/Anthropic)
+  callClaude,           // Provider router (OpenRouter/Anthropic/Gemini)
+  callGemini,           // Google AI Studio direct streaming (SSE)
   callOllama,           // Local AI streaming (Ollama)
   setAiStatus,          // Status bar updater
   aiAction,             // Workflow dispatcher
@@ -35,13 +36,14 @@ window.AIAssistant = {
 
 Routes to the selected cloud provider based on `#ai-provider` dropdown value.
 
-| Provider | Endpoint | Auth Header |
-|----------|----------|-------------|
+| Provider | Endpoint | Auth |
+|----------|----------|------|
 | `openrouter` | `https://openrouter.ai/api/v1/chat/completions` | `Authorization: Bearer {key}` |
 | `anthropic` | `https://api.anthropic.com/v1/messages` | `x-api-key: {key}` + `anthropic-dangerous-direct-browser-access: true` |
+| `gemini` | `https://generativelanguage.googleapis.com/v1beta/models/{model}:streamGenerateContent?alt=sse` (v1.15.0) | `?key={key}` query param (Google's browser-recommended pattern) |
 | `ollama` | `http://localhost:11434/api/chat` | None (local) |
 
-If provider is `ollama`, `callClaude` delegates to `callOllama()`.
+If provider is `ollama`, `callClaude` delegates to `callOllama()`; if `gemini`, to `callGemini()`.
 
 ### `callOllama(prompt, systemPrompt, onChunk)`
 
@@ -217,9 +219,7 @@ User clicks AI action
 
 ## Dependencies
 
-- `window.S` — global state
-- `window.renderText` — canvas renderer
-- `window.autosave` — state persistence
-- `window.debounceRender` — throttled re-render
-
-All accessed via `window.*` globals — no ES module imports.
+- `import { S } from './state.js'` — shared state (live binding)
+- `window.renderText` / `window.autosave` / `window.debounceRender` — published by index.js's
+  bridge for the lazy-read pattern this module uses at call time (see docs/system-architecture.md)
+- `window.showExportToast` — toast feedback (export-manager.js self-publishes it)

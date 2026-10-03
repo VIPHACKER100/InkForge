@@ -53,6 +53,9 @@ Welcome to the **Inkflow** documentation hub. This folder contains all technical
 | [Accessibility](./accessibility.md) | WCAG considerations, keyboard navigation, screen reader support |
 | [Performance](./performance.md) | Optimization techniques, benchmarks, rendering budget |
 | [Contributing](./contributing.md) | Code style, PR workflow, issue templates |
+| [Roadmap & Progress Log](./roadmap.md) | Phase plan and the pass-by-pass progress record |
+| [Upgrade Plan](./upgrade-plan.md) | v1.9.0 → v1.20.1 plan, marked complete with milestone table |
+| [Feature Gap Analysis](./feature-gap-analysis.md) | Historical fork-vs-upstream analysis (all gaps closed as of v1.7.0) |
 | [Changelog](./changelog.md) | Version history and release notes |
 | [Upgrade Plan](./upgrade-plan.md) | v1.9 → v2.0 upgrade roadmap: measured health snapshot, phased plan, milestones |
 
@@ -61,7 +64,7 @@ Welcome to the **Inkflow** documentation hub. This folder contains all technical
 ## 🔗 Quick Links
 
 - **Live App**: Open `index.html` in any modern browser
-- **Source Code**: `index.js` (~4,280 lines) + 19 modules (~4,800 lines) = ~9,080 total JS lines
+- **Source Code**: `index.js` (~900 lines) + 30 modules — one ES-module graph bundled by Vite (166 kB / 54 kB gzip)
 - **Modules**: `font-compilation.js` · `paper-renderer.js` · `text-layout.js` · `export-renderers.js` · `diagram-engine.js` · `cursive-connector.js` · `template-manager.js` · `markdown-parser.js` · `collaborative-engine.js` · `contextual-jitter-engine.js` · `stroke-prediction-engine.js` · `layer-compositor.js` · `audio-recorder.js` · `script-detector.js` · `ai-assistant.js` · `notebooks.js` · `server.js` · `sw.js`
 - **Creator**: Aryan Ahirwar (VIPHACKER.100)
 

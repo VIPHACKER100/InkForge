@@ -85,33 +85,47 @@ The visible DOM elements the user interacts with directly. These include the sid
 A centralized global configuration object `S` acts as the single source of truth. Changes to any UI control update `S`, which triggers re-rendering. A debounced autosave module serializes the state to `localStorage` after a 1000ms idle delay. Custom handwriting glyph data is stored in **IndexedDB** (`InkflowDB` → `draftedGlyphs` store) to bypass the 5MB `localStorage` quota limit.
 
 ### 3. Core Execution Engines
-The rendering pipeline that transforms state data into visual canvas output. As of v1.5.0, the codebase is split into 16 JS modules:
+The rendering pipeline that transforms state data into visual canvas output. As of v1.20.1, the codebase is one **ES-module graph**: `index.html` loads a single `<script type="module" src="index.js">` and every cross-module dependency is an explicit `import` — no `window.*` glue, no inline handlers.
 
 | Module | Lines | Purpose |
 |--------|------:|---------|
-| `index.js` | ~4,280 | Core: UI, state, AI, animation, study mode, themes, boot |
-| `markdown-parser.js` | 405 | Markdown tokenization for AI output |
-| `paper-renderer.js` | 341 | 10 paper styles, smudge effects |
-| `collaborative-engine.js` | 300 | WebSocket real-time collaboration |
-| `cursive-connector.js` | 260 | Cursive exit/entry points, Bezier strokes |
-| `layer-compositor.js` | 248 | Multi-layer canvas compositing |
-| `template-manager.js` | 242 | Cornell/Two-Column/Meeting layouts |
-| `font-compilation.js` | 198 | Contour tracing, RDP, OpenType compilation |
-| `diagram-engine.js` | 169 | 6 diagram types, Mermaid rendering |
-| `stroke-prediction-engine.js` | 160 | Stroke completion prediction |
-| `audio-recorder.js` | 158 | Audio recording, waveform |
-| `contextual-jitter-engine.js` | 149 | Per-character randomized transforms |
-| `script-detector.js` | 119 | Unicode script detection |
-| `export-renderers.js` | 107 | Queue item rendering on canvas |
-| `text-layout.js` | ~120 | sanitizeText, parseBlocks, getGraphemes, splitRawTextIntoPages, parseStructuredContent, parseRichSyntax |
-| `ai-assistant.js` | ~430 | callClaude, callOllama, aiAction, GrammarCorrector, initApiKeyPersistence |
-| `notebooks.js` | ~150 | IndexedDB CRUD, notebook sidebar UI |
-| `sw.js` | ~60 | Service worker for PWA offline caching |
+| `index.js` | ~900 | Boot, initApp, stroke prediction, page-editor focus, collaboration glue, AI registry, theme packs, error hook |
+| `handfonted-studio.js` | 1,266 | HandFonted Studio: sketch/template glyph capture, aligner, TTF build |
+| `ui-bindings.js` | 808 | Per-panel binder functions wiring every control (no inline handlers) |
+| `render-pipeline.js` | 668 | renderText / renderSpecificPage / animation / page DOM + drafted-glyph image cache |
+| `layout-engine.js` | 634 | layoutText + zone-chaining templated engine, sticky/callout painters, margin labels |
+| `template-manager.js` | 560 | 8 built-in layouts (template gallery) + custom templates |
+| `ai-assistant.js` | 552 | Provider router (OpenRouter / Anthropic / Gemini / Ollama), aiAction, GrammarCorrector |
+| `paper-renderer.js` | 529 | 10 paper styles (LRU-cached backgrounds), smudge effects |
+| `markdown-parser.js` | 442 | Markdown tokenization for AI output |
+| `collaborative-engine.js` | 388 | WebSocket real-time collaboration (OT client) |
+| `layer-compositor.js` | 375 | Multi-layer canvas compositing |
+| `diagram-engine.js` | 370 | 6 diagram types, Mermaid rendering |
+| `persistence.js` | 306 | autosave / restoreState, autosave whitelist + serialization |
+| `export-manager.js` | 294 | PNG / JPG / transparent / PDF / SVG / clipboard pipelines |
+| `font-compilation.js` | 287 | Contour tracing, RDP, OpenType compilation |
+| `cursive-connector.js` | 283 | Cursive exit/entry points, Bezier strokes |
+| `flashcards.js` | 279 | Flashcards, study mode, SM-2 lite spaced repetition |
+| `ai-postprocess.js` | 230 | sanitizeAiResponse, resequenceQA, smartArrangeLocal |
+| `stroke-prediction-engine.js` | 209 | Stroke completion prediction |
+| `state.js` | 205 | Shared state: S, pages, PAGE_W/PAGE_H, cursiveConnector, draftedGlyphs, fontSwitcher |
+| `export-renderers.js` | 191 | Queue item rendering on canvas |
+| `audio-recorder.js` | 182 | Audio recording, waveform |
+| `shape-drawing.js` | 178 | drawArrowhead / drawShapeOrEdge (rough.js) |
+| `notebooks.js` | 167 | IndexedDB CRUD, notebook sidebar UI |
+| `script-detector.js` | 154 | Unicode script detection + FontSwitcher |
+| `text-layout.js` | 143 | sanitizeText, parseBlocks, getGraphemes, parseRichSyntax |
+| `i18n.js` | 143 | EN/हिंदी string tables, language toggle |
+| `margin-labels.js` | 118 | Margin Q/Ans clustering + drawing |
+| `voice-notes.js` | 87 | Web Speech voice-to-notes |
+| `sw.js` | 69 | Service worker (build-generated precache) |
+| `settings-sync.js` | 53 | Sidebar control-sync helpers shared with persistence.js |
+| `inkfont-format.js` | 19 | .inkfont share format wrap/parse |
 
-The **unified `layoutText()` engine** performs all word-wrap, page-break, and character queue computation in a single pass, ensuring layout parity between static rendering and animation. All modules expose globals via `window.*` for browser use.
+The **unified `layoutText()` engine** (layout-engine.js) performs all word-wrap, page-break, and character queue computation in a single pass, ensuring layout parity between static rendering and animation. Shared state (S, pages, PAGE_W/PAGE_H, cursiveConnector, draftedGlyphs, fontSwitcher) lives in `state.js` and is imported as live bindings; index.js keeps only boot/init and the pieces nothing else owns.
 
 ### 4. Integration & Export Services
-External integrations for AI text generation (OpenRouter + Anthropic, with SSE streaming), native canvas image exports (Blob URL-based PNG/JPG/SVG), multi-page PDF compilation (jsPDF), clipboard copy (Clipboard API), and native OS print dialog access.
+External integrations for AI text generation (OpenRouter, Anthropic, Google Gemini, and local Ollama — all with SSE streaming), native canvas image exports (Blob URL-based PNG/JPG/SVG), multi-page PDF compilation (jsPDF), clipboard copy (Clipboard API), and native OS print dialog access.
 
 ---
 

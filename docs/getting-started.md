@@ -52,49 +52,47 @@ npx -y http-server -p 8000
 
 ```
 inkflow/
-├── index.html              # Main HTML structure and CDN imports
-├── index.css               # Complete stylesheet with design tokens
-├── index.js                # Application core (UI, state, AI, animation)
-├── font-compilation.js     # Contour tracing, RDP simplification, OpenType compilation
-├── paper-renderer.js       # 10 paper styles, smudge effects, layout decorations
-├── text-layout.js          # sanitizeText, parseBlocks, getGraphemes
-├── export-renderers.js     # Queue item rendering, cursive connections on canvas
-├── diagram-engine.js       # Diagram layout algorithms, Mermaid rendering
-├── cursive-connector.js    # Cursive mode exit/entry points, Bezier connections
-├── template-manager.js     # Cornell/Two-Column layout templates
-├── markdown-parser.js      # Markdown tokenization for AI output
-├── collaborative-engine.js # WebSocket real-time collaboration
-├── contextual-jitter-engine.js # Per-character randomized transforms
-├── stroke-prediction-engine.js # Stroke completion prediction
-├── layer-compositor.js     # Multi-layer canvas compositing
-├── ai-assistant.js         # AI provider routing, Ollama, key persistence
-├── audio-recorder.js       # Audio recording, waveform visualization
-├── script-detector.js      # Unicode script detection
-├── notebooks.js            # IndexedDB notebook CRUD + sidebar UI
-├── sw.js                   # Service worker for PWA offline support
-├── manifest.json           # PWA manifest
-├── server.js               # Node.js proxy server (optional)
-├── LICENSE                 # Project license
-└── docs/                   # Documentation (you are here)
-    ├── README.md           # Documentation index
-    ├── system-architecture.md
-    ├── state-management.md
-    ├── handwriting-engine.md
-    ├── paper-rendering.md
-    ├── animation-engine.md
-    ├── ai-integration.md
-    ├── export-pipelines.md
-    ├── custom-font-suite.md
-    ├── ui-design-system.md
-    ├── ux-interactions.md
-    ├── getting-started.md
-    ├── configuration-guide.md
-    ├── api-reference.md
-    ├── deployment.md
-    ├── accessibility.md
-    ├── performance.md
-    ├── contributing.md
-    └── changelog.md
+index.html              # App shell — loads ONE <script type="module" src="index.js">
+about.html / about.css  # Standalone About page (playground, docs directory)
+inkflow_logo.jpeg       # Brand emblem (toolbar, favicon, PWA, About)
+index.css               # Design tokens, components, layouts, light/dark themes
+index.js                # Boot + initApp + prediction + page-editor focus + error hook
+state.js                # Shared state: S, pages, PAGE_W/PAGE_H, draftedGlyphs, fontSwitcher
+render-pipeline.js      # renderText / renderSpecificPage / animation / page DOM
+layout-engine.js        # layoutText + zone-chaining templates + sticky/callout painters
+ui-bindings.js          # Per-panel binders — every control wired via addEventListener
+persistence.js          # autosave / restoreState + serialization whitelist
+settings-sync.js        # Sidebar control-sync helpers (shared with persistence)
+paper-renderer.js       # 10 paper styles (LRU-cached backgrounds), smudge effects
+text-layout.js          # sanitizeText, parseBlocks, getGraphemes, parseRichSyntax
+template-manager.js     # 8 built-in layouts (gallery) + custom templates
+export-manager.js       # PNG/JPG/transparent/PDF/SVG/clipboard pipelines
+export-renderers.js     # Queue item rendering + cursive connections on canvas
+margin-labels.js        # Margin Q/Ans clustering + drawing
+flashcards.js           # Flashcards, study mode, SM-2 lite spaced repetition
+ai-assistant.js         # Provider router: OpenRouter/Anthropic/Gemini/Ollama (SSE)
+ai-postprocess.js       # sanitizeAiResponse, resequenceQA, smartArrangeLocal
+handfonted-studio.js    # Sketch/template glyph capture, aligner, TTF build
+inkfont-format.js       # .inkfont community-share wrap/parse
+font-compilation.js     # Contour tracing, RDP, OpenType compilation
+diagram-engine.js       # Diagram layout algorithms, Mermaid rendering
+shape-drawing.js        # drawArrowhead / drawShapeOrEdge (rough.js)
+cursive-connector.js    # Cursive exit/entry points, Bezier connections
+collaborative-engine.js # WebSocket real-time collaboration (OT client)
+layer-compositor.js     # Multi-layer canvas compositing
+markdown-parser.js      # Markdown tokenization for AI output
+stroke-prediction-engine.js # Stroke completion prediction
+audio-recorder.js       # Voice-to-notes audio recording
+script-detector.js      # Unicode script detection + FontSwitcher
+notebooks.js            # IndexedDB notebook CRUD + sidebar UI
+i18n.js                 # EN/हिंदी string tables + language toggle
+voice-notes.js          # Web Speech voice-to-notes
+server.js               # Hardened collaboration relay (room token, rate limits)
+sw.js                   # Service worker — build-generated precache
+manifest.json           # PWA manifest (shortcuts, logo, share targets)
+e2e/                    # 17 Playwright specs
+scripts/                # check-version, contrast-audit tooling
+docs/                   # This documentation
 ```
 
 ---
@@ -110,8 +108,13 @@ inkflow/
 | opentype.js | 1.3.4 | Custom font compilation (lazy-loaded) |
 | pdf.js | 3.4.120 | PDF text extraction for file upload (lazy-loaded) |
 | Rough.js | 4.6.6 | Hand-drawn diagram shapes |
+| Mammoth | 1.6.0 | DOCX text extraction for file upload |
+| Mermaid | 11.4.1 | ```mermaid fenced diagram rendering |
+| TensorFlow.js | 4.20.0 | Smart stroke prediction |
 
-All dependencies are loaded via CDN — no `npm install` required. `html2canvas` is no longer required as of v1.2.0.
+The app itself runs from the CDN — `npm install` is only needed for the dev
+tooling (Vite, Vitest, Playwright, ESLint). `html2canvas` is no longer required
+as of v1.2.0.
 
 ---
 
