@@ -7,20 +7,20 @@
   --bg-primary: #f6f3eb;
   --bg-secondary: #eee9dc;
   --card-bg: rgba(255, 255, 255, 0.75);
-  --card-border: rgba(192, 98, 42, 0.18);
-  --card-hover-border: rgba(211, 97, 53, 0.45);
+  --card-border: rgba(163, 79, 30, 0.18);
+  --card-hover-border: rgba(163, 79, 30, 0.45);
   --card-shadow: 0 10px 30px rgba(70, 50, 20, 0.08);
   --text-main: #1c2340;
   --text-muted: #645a4a;
-  --accent: #c0622a;
+  --accent: #a34f1e;
   --accent-glow: rgba(192, 98, 42, 0.25);
-  --accent-hover: #a34e1c;
-  --badge-bg: rgba(192, 98, 42, 0.12);
+  --accent-hover: #8f4118;
+  --badge-bg: rgba(192, 98, 42, 0.09);
   --badge-border: rgba(192, 98, 42, 0.25);
   --nav-bg: rgba(246, 243, 235, 0.88);
-  --nav-border: rgba(192, 98, 42, 0.15);
+  --nav-border: rgba(163, 79, 30, 0.15);
   --code-bg: rgba(230, 222, 205, 0.6);
-  --code-border: rgba(192, 98, 42, 0.15);
+  --code-border: rgba(163, 79, 30, 0.15);
   --canvas-bg: #faf9f5;
   --radius-sm: 8px;
   --radius-md: 14px;
@@ -214,6 +214,16 @@ body {
   color: #ffffff;
 }
 
+/* Phase D4 — dark-mode CTA ink: the dark accent (#e08050) cannot carry
+   white text at WCAG AA (2.85:1); dark ink on it is ≈ 6.2:1. */
+html.dark .btn-cta {
+  color: #1a1626;
+}
+
+html.dark .btn-cta:hover {
+  color: #1a1626;
+}
+
 .btn-secondary {
   display: inline-flex;
   align-items: center;
@@ -269,7 +279,9 @@ body {
 }
 
 .hero-title .gradient-text {
-  background: linear-gradient(135deg, var(--accent) 0%, #d87040 50%, #7c6af7 100%);
+  /* D4: mid-stop darkened from #d87040 (3.0006:1 on the light hero bg —
+     no margin against the 3:1 large-text floor) to #cc683a (3.38:1) */
+  background: linear-gradient(135deg, var(--accent) 0%, #cc683a 50%, #7c6af7 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
@@ -589,7 +601,7 @@ body {
 
 /* ── Privacy Box ── */
 .privacy-banner {
-  background: linear-gradient(135deg, var(--card-bg) 0%, rgba(192, 98, 42, 0.08) 100%);
+  background: linear-gradient(135deg, var(--card-bg) 0%, rgba(163, 79, 30, 0.08) 100%);
   border: 1.5px solid var(--accent);
   border-radius: var(--radius-lg);
   padding: 38px;

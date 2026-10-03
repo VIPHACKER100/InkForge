@@ -7,14 +7,19 @@
  * working unchanged. They resolve shared state (S, pages, PAGE_W/PAGE_H, cursiveConnector)
  * through the global lexical environment at CALL time — index.js always loads first.
  * Rendering helpers come from window.ExportRenderers (export-renderers.js).
+ * A3 conversion: shared state is imported from index.js (live bindings, read at
+ * call time), and the inline-handler entry points are bridged onto window at the
+ * end of this file.
  */
+import { S, pages, PAGE_W, PAGE_H, cursiveConnector } from './state.js';
+import { renderQueueItems, renderCursiveConnectionsOn } from './export-renderers.js';
 
 /* ───────────────────────────────────────────
    PHASE 8.1–8.2 — IMAGE EXPORT (PNG / JPG)
    Reads directly from the canvas elements at full native resolution.
    For single-page docs: one file. For multi-page: one file per page.
 ─────────────────────────────────────────── */
-async function exportImage(format) {
+export async function exportImage(format) {
   if (!pages || pages.length === 0) {
     showExportToast('Nothing to export — add some text first.', 'warn');
     return;
@@ -75,7 +80,7 @@ async function exportImage(format) {
   }
 }
 
-async function exportTransparentPNG() {
+export async function exportTransparentPNG() {
   if (!pages || pages.length === 0) {
     showExportToast('Nothing to export — add some text first.', 'warn');
     return;
@@ -98,12 +103,10 @@ async function exportTransparentPNG() {
       const tmpCtx = tmpCanvas.getContext('2d');
 
       const pageItems = queue.filter((item) => item.pageIdx === i);
-      if (S.cursiveMode && cursiveConnector && window.ExportRenderers) {
-        window.ExportRenderers.renderCursiveConnectionsOn(tmpCtx, tmpCanvas, pageItems);
+      if (S.cursiveMode && cursiveConnector) {
+        renderCursiveConnectionsOn(tmpCtx, tmpCanvas, pageItems);
       }
-      if (window.ExportRenderers) {
-        window.ExportRenderers.renderQueueItems(tmpCtx, tmpCanvas, pageItems);
-      }
+      renderQueueItems(tmpCtx, tmpCanvas, pageItems);
 
       await new Promise((resolve) => {
         tmpCanvas.toBlob(
@@ -130,7 +133,7 @@ async function exportTransparentPNG() {
   }
 }
 
-async function exportPDF() {
+export async function exportPDF() {
   if (!pages || pages.length === 0) {
     showExportToast('Nothing to export — add some text first.', 'warn');
     return;
@@ -178,7 +181,7 @@ async function exportPDF() {
   }
 }
 
-async function exportSVG() {
+export async function exportSVG() {
   if (!pages || pages.length === 0) {
     showExportToast('Nothing to export — add some text first.', 'warn');
     return;
@@ -213,7 +216,7 @@ async function exportSVG() {
   }
 }
 
-async function copyToClipboard() {
+export async function copyToClipboard() {
   if (!pages || pages.length === 0) {
     showExportToast('Nothing to copy — add some text first.', 'warn');
     return;
@@ -260,7 +263,7 @@ function announceToScreenReader(message) {
   });
 }
 
-function showExportToast(msg, type = 'info') {
+export function showExportToast(msg, type = 'info') {
   announceToScreenReader(msg);
   let toast = document.getElementById('export-toast');
   if (!toast) {
@@ -278,3 +281,14 @@ function showExportToast(msg, type = 'info') {
     }, 3000);
   }
 }
+
+// A3 conversion: these were classic-script globals; inline onclick handlers in
+// index.html reach them through window, so bridge them explicitly.
+Object.assign(window, {
+  exportImage,
+  exportTransparentPNG,
+  exportPDF,
+  exportSVG,
+  copyToClipboard,
+  showExportToast,
+});

@@ -5,13 +5,13 @@
  * Run with: node stroke-prediction-engine.test.js
  */
 
-const assert = require('assert');
+import assert from 'node:assert';
+import { StrokePredictionEngine } from './stroke-prediction-engine.js';
 
 // Mock window object for node execution
 global.window = {};
 
 // Load the engine class
-require('./stroke-prediction-engine.js');
 const StrokePredictionEngine = global.window.StrokePredictionEngine;
 
 function runTests() {
@@ -62,7 +62,7 @@ function runTests() {
   console.log("\n🎉 All Smart Stroke Prediction tests passed successfully!\n");
 }
 
-if (typeof global.it === 'function' && typeof process !== 'undefined' && require.main !== module) {
+if (typeof global.it === 'function' && typeof process !== 'undefined') {
   global.it('runs stroke prediction tests', () => runTests());
 } else {
   try {

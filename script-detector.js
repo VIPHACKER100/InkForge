@@ -143,4 +143,12 @@ if (typeof module !== 'undefined' && module.exports) {
 function containsDevanagari(text) {
   return ScriptDetector.isIndicScript(text);
 }
-window.containsDevanagari = containsDevanagari;
+// Guarded like diagram-engine.js's window export: state.js imports this module,
+// and vitest's node environment (persistence.test.js → persistence.js →
+// state.js) has no window at module-evaluation time.
+if (typeof window !== 'undefined') {
+  window.containsDevanagari = containsDevanagari;
+}
+
+// ES module exports (A3 conversion)
+export { ScriptDetector, FontSwitcher, containsDevanagari };

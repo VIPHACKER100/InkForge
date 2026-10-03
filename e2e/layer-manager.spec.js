@@ -26,10 +26,10 @@ test('layer manager expands, adds presets, reorders, and duplicates layers', asy
   const activeLayer = page.locator('#layer-list .layer-item.active');
   await expect(activeLayer).toBeVisible();
 
-  // Test adding Highlighter preset
-  await page.evaluate(() => {
-    window.addNewLayerPreset('highlighter');
-  });
+  // Test adding Highlighter preset (via the Add-Layer dropdown — the
+  // window.addNewLayerPreset publication was retired with the inline handlers)
+  await page.locator('#btn-add-layer-dropdown').click();
+  await page.locator('#layer-preset-highlighter').click();
 
   await expect(layerItems).toHaveCount(3);
   const highlighterLayer = page.locator('#layer-list .layer-item', { hasText: 'Highlighter' });

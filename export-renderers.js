@@ -3,8 +3,8 @@
  * Functions: renderQueueItems, renderCursiveConnectionsOn
  * Extracted from index.js (lines 2231–2332). Reads globals: S, cursiveConnector.
  */
-(function () {
-  'use strict';
+import { S, cursiveConnector } from './state.js';
+import { getDiagramImage } from './diagram-engine.js';
 
   function renderCursiveConnectionsOn(ctx, canvas, pageItems) {
     if (typeof cursiveConnector === 'undefined' || !cursiveConnector) return;
@@ -185,5 +185,7 @@
     high: { label: 'High', scale: 2, format: 'image/png', quality: 1.0, jspdfFormat: 'PNG', compression: 'NONE' },
   };
 
-  window.ExportRenderers = { renderQueueItems, renderCursiveConnectionsOn, _upscaleCanvas, PDF_SIZE_PRESETS };
-})();
+export { renderQueueItems, renderCursiveConnectionsOn, _upscaleCanvas, PDF_SIZE_PRESETS };
+
+// Browser namespace kept for console/debug access and existing window.* consumers.
+window.ExportRenderers = { renderQueueItems, renderCursiveConnectionsOn, _upscaleCanvas, PDF_SIZE_PRESETS };

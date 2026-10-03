@@ -2,7 +2,7 @@ import { describe, it, expect } from 'vitest';
 import { createRequire } from 'node:module';
 
 const require = createRequire(import.meta.url);
-const { sanitizeAiResponse, trigramSimilarity, resequenceQA, smartArrangeLocal } = require('./ai-postprocess.js');
+import { sanitizeAiResponse, trigramSimilarity, resequenceQA, smartArrangeLocal } from './ai-postprocess.js';
 
 describe('sanitizeAiResponse', () => {
   it('strips code fences but keeps the body', () => {

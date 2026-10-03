@@ -3,7 +3,7 @@ import { createRequire } from 'node:module';
 
 const require = createRequire(import.meta.url);
 const { hashString, mulberry32, createPRNG, getCharVariationWithContext, CharacterVariationContext } =
-  require('./contextual-jitter-engine.js');
+  await import('./contextual-jitter-engine.js');
 
 describe('hashString (FNV-1a)', () => {
   it('returns the FNV-1a offset basis for empty input', () => {

@@ -371,3 +371,5 @@ function initLayerCompositor(width, height) {
   window.layerCompositor = new LayerCompositor(width, height);
   return window.layerCompositor;
 }
+
+export { LayerCompositor, initLayerCompositor };

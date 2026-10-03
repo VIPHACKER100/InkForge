@@ -123,7 +123,11 @@ class CollaborativeEngine {
     this._reconnectAttempts = 0;
     this.url = url;
     this.onStatusChange('Connecting…', false);
-    this.ws = new WebSocket(url);
+    // Phase F4: attach the shared room token if one is configured
+    // (localStorage 'inkflow-collab-token' — set it to match the server's
+    // INKFLOW_ROOM_TOKEN when the relay runs token-gated).
+    const token = typeof localStorage !== 'undefined' ? localStorage.getItem('inkflow-collab-token') : null;
+    this.ws = new WebSocket(token ? url + '?token=' + encodeURIComponent(token) : url);
 
     this.ws.onopen = () => {};
 
@@ -136,7 +140,14 @@ class CollaborativeEngine {
       }
     };
 
-    this.ws.onclose = () => {
+    this.ws.onclose = (event) => {
+      // Phase F4: a token-gated relay closes with 4401 — retrying can't succeed
+      // until the token is set, so stop the reconnect loop and say why.
+      if (event.code === 4401) {
+        this.onStatusChange('Room token required', false);
+        this._disconnectRequested = true;
+        return;
+      }
       this.onStatusChange('Offline', false);
       // ponytail: simple reconnection with backoff, max 3 attempts
       if (!this._disconnectRequested && this._reconnectAttempts < 3) {
@@ -373,3 +384,5 @@ class CollaborativeEngine {
     return cursorPos;
   }
 }
+
+export { CollaborativeEngine };

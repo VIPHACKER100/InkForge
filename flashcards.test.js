@@ -4,7 +4,7 @@ import { createRequire } from 'node:module';
 // flashcards.js is an IIFE that attaches to window in the browser and exports
 // its pure helpers via module.exports under Node/Vitest.
 const require = createRequire(import.meta.url);
-const { extractFlashcards } = require('./flashcards.js');
+import { extractFlashcards } from './flashcards.js';
 
 describe('extractFlashcards', () => {
   it('extracts a simple Q:/A: pair', () => {

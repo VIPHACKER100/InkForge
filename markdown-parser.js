@@ -439,7 +439,4 @@ class MarkdownParser {
   }
 }
 
-// Export for use in Node.js or as global in browser
-if (typeof module !== 'undefined' && module.exports) {
-  module.exports = MarkdownParser;
-}
+export { MarkdownParser };

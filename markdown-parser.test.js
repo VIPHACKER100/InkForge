@@ -4,7 +4,7 @@
  */
 
 // Import MarkdownParser (works in both Node.js and browser)
-const MarkdownParser = typeof module !== 'undefined' && module.exports ? require('./markdown-parser.js') : window.MarkdownParser;
+import { MarkdownParser } from './markdown-parser.js';
 
 // Simple test framework
 class TestRunner {
@@ -16,7 +16,7 @@ class TestRunner {
 
   test(name, fn) {
     this.tests.push({ name, fn });
-    if (typeof global.it === 'function' && typeof process !== 'undefined' && require.main !== module) {
+    if (typeof global.it === 'function' && typeof process !== 'undefined') {
       global.it(name, () => fn.call(this));
     }
   }
@@ -46,7 +46,7 @@ class TestRunner {
   }
 
   run() {
-    if (typeof global.it === 'function' && typeof process !== 'undefined' && require.main !== module) {
+    if (typeof global.it === 'function' && typeof process !== 'undefined') {
       return true;
     }
     console.log('Starting MarkdownParser tests...\n');

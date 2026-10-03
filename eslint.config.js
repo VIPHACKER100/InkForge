@@ -4,7 +4,10 @@ module.exports = [
     ignores: ['node_modules/**', 'dist/**', 'vite.config.js', '*.test.js', 'sw.js', 'layer-tests.js'],
     languageOptions: {
       ecmaVersion: 'latest',
-      sourceType: 'script',
+      // App scripts are ES modules (upgrade plan A3): explicit imports replace the
+      // old window.* glue. no-undef now verifies every cross-file reference is
+      // imported — project names are deliberately NOT declared as globals below.
+      sourceType: 'module',
       globals: {
         window: 'readonly',
         document: 'readonly',
@@ -110,58 +113,22 @@ module.exports = [
         WebSocket: 'readonly',
         Path2D: 'readonly',
         DOMParser: 'readonly',
-        CursiveConnector: 'readonly',
-        MarkdownParser: 'readonly',
-        FontSwitcher: 'readonly',
-        StrokePredictionEngine: 'readonly',
-        DiagramEngine: 'readonly',
-        ScriptDetector: 'readonly',
-        FontCompilation: 'readonly',
-        PaperRenderer: 'readonly',
-        TextLayout: 'readonly',
-        ExportRenderers: 'readonly',
-        showExportToast: 'readonly',
-        templateManager: 'readonly',
-        layerCompositor: 'readonly',
-        collaborativeEngine: 'readonly',
-        contextualJitterEngine: 'readonly',
-        strokePredictionEngine: 'readonly',
-        toggleAudioRecording: 'readonly',
-        renderSpecificPage: 'readonly',
-        undoSketchStroke: 'readonly',
-        updateBrushSize: 'readonly',
-        clearSketchCanvas: 'readonly',
-        pageObserver: 'readonly',
-        currentRenderQueue: 'readonly',
-        currentRcCache: 'readonly',
-        _rcCache: 'readonly',
         rough: 'readonly',
-        cursiveConnector: 'readonly',
-        getDiagramImage: 'readonly',
-        initLayerCompositor: 'readonly',
-        positionDiagramNodes: 'readonly',
-        getCharVariation: 'readonly',
-        CharacterVariationContext: 'readonly',
-        getCharVariationWithContext: 'readonly',
-        hashString: 'readonly',
-        mulberry32: 'readonly',
-        createPRNG: 'readonly',
-        renderCursiveConnections: 'readonly',
-        CollaborativeEngine: 'readonly',
         screen: 'readonly',
-        PAGE_W: 'readonly',
-        PAGE_H: 'readonly',
-        pages: 'readonly',
-        S: 'readonly',
+        // NOTE: cross-module project names (S, pages, PAGE_W/PAGE_H, cursiveConnector,
+        // getDiagramImage, showExportToast, CursiveConnector, MarkdownParser, …) are
+        // intentionally NOT global — they are ES-module imports since the A3 conversion.
       },
     },
     rules: {
       'no-unused-vars': [
         'warn',
         {
+          // Phase B4: all 113 inline handlers are addEventListener-bound
+          // (ui-bindings.js / layer-panel.js), so the former 40-name
+          // varsIgnorePattern allowlist is gone — every binding target is
+          // either imported, exported, or deleted.
           argsIgnorePattern: '^_',
-          varsIgnorePattern:
-            '^(pageTexts|pageCount|queue|toggleSection|triggerRender|clearText|insertDiagramTemplate|autoFitFontSize|setTextAlignment|resetToDefaults|toggleCollaboration|setPaper|addNewLayer|flattenAllLayers|setInkPreset|toggleAudioRecording|aiAction|exportImage|exportTransparentPNG|exportPDF|exportSVG|copyToClipboard|startAnimation|stopAnimation|navigatePage|closeHandFontedModal|switchFontTab|switchSheet|undoSketchStroke|clearSketchCanvas|saveActiveCharacter|advanceActiveCharacter|exportFontProject|generateDownloadTemplate|buildCustomFont|closeGrammarModal|acceptGrammarCorrection|onSmudgeEffectsToggle|GrammarCorrector|callClaude|setAiStatus|getOptimalAnimationSettings|buildCharQueue)$',
         },
       ],
       'no-undef': 'error',

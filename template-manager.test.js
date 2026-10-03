@@ -163,4 +163,48 @@ describe('TemplateManager', () => {
       expect(all.some((t) => t.id === 'project_brief')).toBe(true);
     });
   });
+
+  describe('Template Gallery (Phase F3)', () => {
+    const GALLERY = ['lecture', 'labreport', 'vocabulary', 'reading'];
+
+    it('registers all four gallery templates', () => {
+      GALLERY.forEach((id) => {
+        expect(tm.getTemplate(id).id).toBe(id);
+      });
+    });
+
+    it('resolves every gallery template to finite, non-negative zones', () => {
+      GALLERY.forEach((id) => {
+        const t = tm.resolveTemplate(id, 794, 1123, 80);
+        expect(t.zones.length).toBeGreaterThan(0);
+        t.zones.forEach((z) => {
+          [z.x, z.y, z.width, z.height].forEach((v) => {
+            expect(Number.isFinite(v)).toBe(true);
+            expect(v).toBeGreaterThanOrEqual(0);
+          });
+        });
+      });
+    });
+
+    it('gallery templates carry labels and guides for decoration', () => {
+      GALLERY.forEach((id) => {
+        const t = tm.getTemplate(id);
+        expect(t.labels.length).toBeGreaterThan(0);
+        expect(t.guides.length).toBeGreaterThan(0);
+      });
+    });
+
+    it('lecture chains header → notes → terms', () => {
+      const zones = tm.getTemplate('lecture').zones;
+      expect(zones.map((z) => z.nextZone)).toEqual(['notes', 'terms', null]);
+    });
+
+    it('vocabulary columns stay inside the page', () => {
+      const t = tm.resolveTemplate('vocabulary', 794, 1123, 80);
+      expect(t.zones).toHaveLength(2);
+      t.zones.forEach((z) => {
+        expect(z.x + z.width).toBeLessThanOrEqual(794);
+      });
+    });
+  });
 });

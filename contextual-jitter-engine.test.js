@@ -6,7 +6,7 @@
  */
 
 // Import the implementation
-const jitterEngine = require('./contextual-jitter-engine.js');
+import * as jitterEngine from './contextual-jitter-engine.js';
 const { CharacterVariationContext, getCharVariation, getCharVariationWithContext } = jitterEngine;
 
 // Simple test framework
@@ -19,7 +19,7 @@ class TestRunner {
 
   test(name, fn) {
     this.tests.push({ name, fn });
-    if (typeof global.it === 'function' && typeof process !== 'undefined' && require.main !== module) {
+    if (typeof global.it === 'function' && typeof process !== 'undefined') {
       global.it(name, () => fn.call(this));
     }
   }
@@ -55,7 +55,7 @@ class TestRunner {
   }
 
   run() {
-    if (typeof global.it === 'function' && typeof process !== 'undefined' && require.main !== module) {
+    if (typeof global.it === 'function' && typeof process !== 'undefined') {
       return true;
     }
     console.log('Starting Contextual Jitter Engine tests...\n');

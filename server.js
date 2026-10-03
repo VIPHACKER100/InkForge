@@ -2,16 +2,19 @@ const WebSocket = require('ws');
 const http = require('http');
 
 const PORT = 8080;
-const server = http.createServer();
-const wss = new WebSocket.Server({ server });
 
-// Server state
-let documentText = '';
-let serverRevision = 0;
-const operationHistory = []; // Array of { revision, op }
-const MAX_HISTORY = 1000;
-let historyOffset = 0; // tracks how many entries have been discarded from front
-const connectedClients = new Map();
+/* Phase F4 — collaboration hardening:
+   - optional shared room token (INKFLOW_ROOM_TOKEN env): connections without
+     ?token=<match> are closed with 4401 before joining;
+   - per-connection message rate limit and per-IP concurrent-connection cap;
+   - 64 KB payload cap (ws closes oversized frames with 1009 itself).
+   With no token configured the relay behaves exactly as before (LAN mode). */
+const HARDENING = {
+  MESSAGE_RATE_WINDOW: 10000,
+  MESSAGE_RATE_MAX: 240,
+  MAX_CONNECTIONS_PER_IP: 5,
+  MAX_PAYLOAD_BYTES: 64 * 1024,
+};
 
 function generateColor() {
   const colors = [
@@ -92,14 +95,57 @@ function transform(op1, op2) {
   return op1;
 }
 
-wss.on('connection', (ws) => {
-  const userId = 'user_' + Math.random().toString(36).substr(2, 9);
-  const color = generateColor();
 
-  const clientInfo = { ws, userId, color, cursor: 0 };
-  connectedClients.set(userId, clientInfo);
+function createCollabServer({ port = PORT, token = null } = {}) {
+  const server = http.createServer();
+  const wss = new WebSocket.Server({ server, maxPayload: HARDENING.MAX_PAYLOAD_BYTES });
+  server.listen(port);
 
-  console.log(`Client connected: ${userId}`);
+// Server state
+let documentText = '';
+let serverRevision = 0;
+const operationHistory = []; // Array of { revision, op }
+const MAX_HISTORY = 1000;
+let historyOffset = 0; // tracks how many entries have been discarded from front
+const connectedClients = new Map();
+
+  const ipConnections = new Map(); // ip -> count
+
+  wss.on('connection', (ws, req) => {
+    // Room token gate (Phase F4)
+    if (token) {
+      const url = new URL(req.url, 'http://localhost');
+      if (url.searchParams.get('token') !== token) {
+        ws.close(4401, 'Room token required');
+        return;
+      }
+    }
+
+    // Per-IP concurrent-connection cap (Phase F4)
+    const ip = req.socket.remoteAddress || 'unknown';
+    const concurrent = ipConnections.get(ip) || 0;
+    if (concurrent >= HARDENING.MAX_CONNECTIONS_PER_IP) {
+      ws.close(1013, 'Too many connections');
+      return;
+    }
+    ipConnections.set(ip, concurrent + 1);
+
+    const userId = 'user_' + Math.random().toString(36).substr(2, 9);
+    const color = generateColor();
+
+    const clientInfo = { ws, userId, color, cursor: 0 };
+    connectedClients.set(userId, clientInfo);
+
+    // Per-connection message rate limit (Phase F4): sliding 10 s window
+    let messageTimestamps = [];
+    function rateLimited() {
+      const now = Date.now();
+      messageTimestamps = messageTimestamps.filter((t) => now - t < HARDENING.MESSAGE_RATE_WINDOW);
+      messageTimestamps.push(now);
+      return messageTimestamps.length > HARDENING.MESSAGE_RATE_MAX;
+    }
+
+    console.log(`Client connected: ${userId}`);
 
   // Send initial state to the client
   ws.send(
@@ -123,7 +169,15 @@ wss.on('connection', (ws) => {
     userId
   );
 
-  ws.on('message', (message) => {
+  ws.on('message', (message, isBinary) => {
+    if (rateLimited()) {
+      ws.close(1008, 'Message rate limit exceeded');
+      return;
+    }
+    if (isBinary) {
+      ws.close(1003, 'Binary messages not supported');
+      return;
+    }
     try {
       const msg = JSON.parse(message);
 
@@ -213,6 +267,9 @@ wss.on('connection', (ws) => {
   ws.on('close', () => {
     console.log(`Client disconnected: ${userId}`);
     connectedClients.delete(userId);
+    const count = ipConnections.get(ip) || 1;
+    if (count <= 1) ipConnections.delete(ip);
+    else ipConnections.set(ip, count - 1);
     broadcast({
       type: 'USER_LEFT',
       userId,
@@ -220,15 +277,36 @@ wss.on('connection', (ws) => {
   });
 });
 
-function broadcast(data, excludeUserId = null) {
-  const message = JSON.stringify(data);
-  for (const [userId, client] of connectedClients.entries()) {
-    if (userId !== excludeUserId && client.ws.readyState === WebSocket.OPEN) {
-      client.ws.send(message);
+  function broadcast(data, excludeUserId = null) {
+    const message = JSON.stringify(data);
+    for (const [userId, client] of connectedClients.entries()) {
+      if (userId !== excludeUserId && client.ws.readyState === WebSocket.OPEN) {
+        client.ws.send(message);
+      }
     }
   }
+
+  return {
+    server,
+    wss,
+    close: () =>
+      new Promise((resolve) => {
+        for (const client of connectedClients.values()) client.ws.terminate();
+        connectedClients.clear();
+        server.close(resolve);
+      }),
+  };
 }
 
-server.listen(PORT, () => {
-  console.log(`WebSocket Collaborative Server running on ws://localhost:${PORT}`);
-});
+module.exports = { createCollabServer, transform, HARDENING };
+
+/* Run directly: node server.js — set INKFLOW_ROOM_TOKEN to require a room token. */
+if (require.main === module) {
+  const token = process.env.INKFLOW_ROOM_TOKEN || null;
+  createCollabServer({ port: PORT, token });
+  console.log(
+    `WebSocket Collaborative Server running on ws://localhost:${PORT}` +
+      (token ? ' (room token required)' : ' (open — LAN only)')
+  );
+}
+

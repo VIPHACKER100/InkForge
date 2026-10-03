@@ -252,14 +252,13 @@ function getCharVariation(rotMax, pressure, fontSize) {
   return getCharVariationWithContext(rotMax, pressure, fontSize, null);
 }
 
-// Export for Node.js/test environments
-if (typeof module !== 'undefined' && module.exports) {
-  module.exports = {
-    CharacterVariationContext,
-    getCharVariation,
-    getCharVariationWithContext,
-    hashString,
-    mulberry32,
-    createPRNG,
-  };
-}
+// ES module exports (the CJS `module.exports` guard was removed in the A3
+// conversion; tests import these bindings directly).
+export {
+  CharacterVariationContext,
+  getCharVariation,
+  getCharVariationWithContext,
+  hashString,
+  mulberry32,
+  createPRNG,
+};

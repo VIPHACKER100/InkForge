@@ -280,7 +280,4 @@ class CursiveConnector {
   }
 }
 
-// Export for Node.js/test environments
-if (typeof module !== 'undefined' && module.exports) {
-  module.exports = { CursiveConnector };
-}
+export { CursiveConnector };

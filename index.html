@@ -9,9 +9,11 @@
   <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link
-    href="https://fonts.googleapis.com/css2?family=Caveat:wght@400..700&family=Crimson+Pro:ital,wght@0,200..900;1,200..900&family=Delius&family=Homemade+Apple&family=Indie+Flower&family=Patrick+Hand&family=Roboto:wght@300;400;500;700&family=Shadows+Into+Light&family=Architects+Daughter&family=Gochi+Hand&family=Just+Another+Hand&family=Nanum+Pen+Script&family=Pangolin&family=reey:wght@400&family=Gloria+Hallelujah&family=Schoolbell&family=Neucha&family=Covered+By+Your+Grace&family=The+Girl+Next+Door&family=Waiting+for+the+Sunrise&family=Permanent+Marker&family=Coming+Soon&family=Short+Stack&family=Handlee&family=Rancho&family=Amatic+SC&family=Fuzzy+Bubbles&family=Dancing+Script:wght@400..700&family=Great+Vibes&family=Satisfy&family=Sacramento&family=Cedarville+Cursive&family=Zeyada&family=La+Belle+Aurore&family=Nothing+You+Could+Do&family=Reenie+Beanie&family=Nanum+Brush+Script&family=Pacifico&family=Parisienne&family=Yellowtail&family=Charm:wght@400;700&family=Aladin&family=Kalam:wght@300;400;700&family=Amita:wght@400;700&family=Noto+Sans+Devanagari:wght@400;500;600;700&family=Noto+Serif+Devanagari:wght@400;500;600;700&family=Hind:wght@300;400;500;600;700&family=Tiro+Devanagari+Hindi:ital@0;1&family=Baloo+2:wght@400;500;600;700;800&family=Martel:wght@200;300;400;600;700;800;900&display=swap"
-    rel="stylesheet" />
+  <!-- Phase E2: the 50-family handwriting suite loads non-blocking (print-media swap)
+       so first paint never waits on ~45 @font-face rules. display=swap + the app's
+       document.fonts.ready re-render keep canvas text correct once fonts land. -->
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400..700&family=Crimson+Pro:ital,wght@0,200..900;1,200..900&family=Delius&family=Homemade+Apple&family=Indie+Flower&family=Patrick+Hand&family=Roboto:wght@300;400;500;700&family=Shadows+Into+Light&family=Architects+Daughter&family=Gochi+Hand&family=Just+Another+Hand&family=Nanum+Pen+Script&family=Pangolin&family=reey:wght@400&family=Gloria+Hallelujah&family=Schoolbell&family=Neucha&family=Covered+By+Your+Grace&family=The+Girl+Next+Door&family=Waiting+for+the+Sunrise&family=Permanent+Marker&family=Coming+Soon&family=Short+Stack&family=Handlee&family=Rancho&family=Amatic+SC&family=Fuzzy+Bubbles&family=Dancing+Script:wght@400..700&family=Great+Vibes&family=Satisfy&family=Sacramento&family=Cedarville+Cursive&family=Zeyada&family=La+Belle+Aurore&family=Nothing+You+Could+Do&family=Reenie+Beanie&family=Nanum+Brush+Script&family=Pacifico&family=Parisienne&family=Yellowtail&family=Charm:wght@400;700&family=Aladin&family=Kalam:wght@300;400;700&family=Amita:wght@400;700&family=Noto+Sans+Devanagari:wght@400;500;600;700&family=Noto+Serif+Devanagari:wght@400;500;600;700&family=Hind:wght@300;400;500;600;700&family=Tiro+Devanagari+Hindi:ital@0;1&family=Baloo+2:wght@400;500;600;700;800&family=Martel:wght@200;300;400;600;700;800;900&display=swap" rel="stylesheet" media="print" onload="this.media='all'" />
+  <noscript><link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400..700&family=Crimson+Pro:ital,wght@0,200..900;1,200..900&family=Delius&family=Homemade+Apple&family=Indie+Flower&family=Patrick+Hand&family=Roboto:wght@300;400;500;700&family=Shadows+Into+Light&family=Architects+Daughter&family=Gochi+Hand&family=Just+Another+Hand&family=Nanum+Pen+Script&family=Pangolin&family=reey:wght@400&family=Gloria+Hallelujah&family=Schoolbell&family=Neucha&family=Covered+By+Your+Grace&family=The+Girl+Next+Door&family=Waiting+for+the+Sunrise&family=Permanent+Marker&family=Coming+Soon&family=Short+Stack&family=Handlee&family=Rancho&family=Amatic+SC&family=Fuzzy+Bubbles&family=Dancing+Script:wght@400..700&family=Great+Vibes&family=Satisfy&family=Sacramento&family=Cedarville+Cursive&family=Zeyada&family=La+Belle+Aurore&family=Nothing+You+Could+Do&family=Reenie+Beanie&family=Nanum+Brush+Script&family=Pacifico&family=Parisienne&family=Yellowtail&family=Charm:wght@400;700&family=Aladin&family=Kalam:wght@300;400;700&family=Amita:wght@400;700&family=Noto+Sans+Devanagari:wght@400;500;600;700&family=Noto+Serif+Devanagari:wght@400;500;600;700&family=Hind:wght@300;400;500;600;700&family=Tiro+Devanagari+Hindi:ital@0;1&family=Baloo+2:wght@400;500;600;700;800&family=Martel:wght@200;300;400;600;700;800;900&display=swap" rel="stylesheet" /></noscript>
 
   <!-- jsPDF for PDF export -->
   <script defer src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"
@@ -64,17 +66,18 @@
     </a>
 
     <div class="toolbar-group">
-      <button class="btn sm" id="btn-animate" title="Watch notes write themselves" aria-label="Animate handwriting">✍ <span class="btn-label">Animate</span></button>
-      <button class="btn sm" id="btn-clear" title="Clear all pages" aria-label="Clear all pages">✕ <span class="btn-label">Clear</span></button>
-      <button class="btn sm" onclick="toggleStudyMode()" title="Study Mode: Flashcards & Quiz" aria-label="Study mode: flashcards and quiz">📖 <span class="btn-label">Study</span></button>
-      <button class="btn sm" onclick="startVoiceRecording()" id="btn-voice" title="Voice to Notes" aria-label="Voice to notes">🎤 <span class="btn-label">Voice</span></button>
+      <button class="btn sm" id="btn-animate" title="Watch notes write themselves" aria-label="Animate handwriting">✍ <span class="btn-label" data-i18n="toolbar.animate">Animate</span></button>
+      <button class="btn sm" id="btn-clear" title="Clear all pages" aria-label="Clear all pages">✕ <span class="btn-label" data-i18n="toolbar.clear">Clear</span></button>
+      <button id="btn-study" class="btn sm" title="Study Mode: Flashcards & Quiz" aria-label="Study mode: flashcards and quiz">📖 <span class="btn-label" data-i18n="toolbar.study">Study</span></button>
+      <button id="btn-voice" class="btn sm" title="Voice to Notes" aria-label="Voice to notes">🎤 <span class="btn-label" data-i18n="toolbar.voice">Voice</span></button>
     </div>
 
     <div class="toolbar-spacer"></div>
 
     <div class="toolbar-group">
       <span id="page-indicator-toolbar" class="btn-label">Page 1 of 1</span>
-      <a href="./about.html" class="btn sm" id="btn-about" title="About Inkflow" aria-label="About Inkflow" style="text-decoration: none;">ℹ️ <span class="btn-label">About</span></a>
+      <a href="./about.html" class="btn sm" id="btn-about" title="About Inkflow" aria-label="About Inkflow" style="text-decoration: none;">ℹ️ <span class="btn-label" data-i18n="toolbar.about">About</span></a>
+      <button id="lang-toggle" class="dark-toggle" aria-label="Toggle language / भाषा बदलें" title="Language / भाषा">हिं</button>
       <button class="dark-toggle" id="dark-toggle" aria-label="Toggle dark mode">
         <span id="dark-icon">☀️</span>
       </button>
@@ -91,9 +94,8 @@
 
       <!-- ── TEXT INPUT SECTION ── -->
       <div class="sb-section" id="sec-text">
-        <button class="sb-section-header" onclick="toggleSection('sec-text')" aria-expanded="true" aria-controls="sec-text">
-          ✏️ &nbsp;Text Input
-          <span class="sb-arrow">▾</span>
+        <button class="sb-section-header" aria-expanded="true" aria-controls="sec-text">
+          ✏️ &nbsp;<span data-i18n="section.textInput">Text Input</span><span class="sb-arrow">▾</span>
         </button>
         <div class="sb-body">
           <textarea id="text-input" aria-label="Note content" placeholder="Start typing your notes here…
@@ -102,17 +104,17 @@ The handwriting engine will render each character with natural variation, baseli
 
 Try pasting a paragraph of lecture notes!"></textarea>
           <div class="action-buttons-row">
-            <button class="btn accent btn-render" onclick="triggerRender()" aria-label="Render handwriting onto canvas">✦ Render</button>
-            <button class="btn" onclick="clearText()" title="Clear text" aria-label="Clear text">✕</button>
+            <button id="btn-render" class="btn accent btn-render" aria-label="Render handwriting onto canvas"><span data-i18n="action.render">Render</span></button>
+            <button id="btn-clear-text" class="btn" title="Clear text" aria-label="Clear text">✕</button>
             <div class="dropdown">
               <button class="btn" title="Insert Diagram template" aria-label="Insert Diagram template" aria-haspopup="true" aria-expanded="false">📊 Diagram ▾</button>
               <div class="dropdown-content">
-                <a href="#" onclick="insertDiagramTemplate('flowchart'); return false;">Flowchart</a>
-                <a href="#" onclick="insertDiagramTemplate('cycle'); return false;">Cycle</a>
-                <a href="#" onclick="insertDiagramTemplate('hierarchy'); return false;">Hierarchy (Tree)</a>
-                <a href="#" onclick="insertDiagramTemplate('pipeline'); return false;">Pipeline</a>
-                <a href="#" onclick="insertDiagramTemplate('pyramid'); return false;">Pyramid</a>
-                <a href="#" onclick="insertDiagramTemplate('mermaid'); return false;">Mermaid (Logic)</a>
+                <a href="#" id="diagram-flowchart">Flowchart</a>
+                <a href="#" id="diagram-cycle">Cycle</a>
+                <a href="#" id="diagram-hierarchy">Hierarchy (Tree)</a>
+                <a href="#" id="diagram-pipeline">Pipeline</a>
+                <a href="#" id="diagram-pyramid">Pyramid</a>
+                <a href="#" id="diagram-mermaid">Mermaid (Logic)</a>
               </div>
             </div>
           </div>
@@ -138,9 +140,8 @@ Try pasting a paragraph of lecture notes!"></textarea>
 
       <!-- ── FONT SETTINGS SECTION ── -->
       <div class="sb-section" id="sec-font">
-        <button class="sb-section-header" onclick="toggleSection('sec-font')" aria-expanded="true" aria-controls="sec-font">
-          𝒜 &nbsp;Font &amp; Style
-          <span class="sb-arrow">▾</span>
+        <button class="sb-section-header" aria-expanded="true" aria-controls="sec-font">
+          𝒜 &nbsp;<span data-i18n="section.fontStyle">Font &amp; Style</span><span class="sb-arrow">▾</span>
         </button>
         <div class="sb-body">
           <!-- Phase 3.1 — Font selector -->
@@ -207,7 +208,7 @@ Try pasting a paragraph of lecture notes!"></textarea>
           </select>
 
           <label class="checkbox-label mt-8">
-            <input type="checkbox" id="auto-switch-devanagari" checked title="Automatically switch to Devanagari fonts for Hindi text" onchange="onHinglishToggle()" />
+            <input type="checkbox" id="auto-switch-devanagari" checked title="Automatically switch to Devanagari fonts for Hindi text" />
             <span class="checkbox-custom"></span>
             <span class="checkbox-text">A/अ Auto-switch Script</span>
           </label>
@@ -224,30 +225,35 @@ Try pasting a paragraph of lecture notes!"></textarea>
           <!-- Phase 5.1 — Font size -->
           <div class="sb-label">
             Font Size <span class="val" id="fs-val">22</span>
-            <button class="btn sm link-btn" onclick="autoFitFontSize()" title="Auto-scale font to fit current text on page">Auto-Fit</button>
+            <button id="btn-auto-fit" class="btn sm link-btn" title="Auto-scale font to fit current text on page">Auto-Fit</button>
           </div>
           <input type="range" id="font-size-slider" min="14" max="52" value="22" step="1" title="Font Size" />
+          <div class="slider-hints" aria-hidden="true"><span>14</span><span>52</span></div>
 
           <!-- Phase 5.2 — Line spacing -->
           <div class="sb-label">Line Spacing <span class="val" id="ls-val">1.5</span></div>
           <input type="range" id="line-spacing" min="1.2" max="3.0" step="0.1" value="1.5" title="Line Spacing" />
+          <div class="slider-hints" aria-hidden="true"><span>1.2</span><span>3.0</span></div>
 
           <!-- Phase 5.3 — Word spacing -->
           <div class="sb-label">Word Spacing <span class="val" id="ws-val">1</span></div>
           <input type="range" id="word-spacing" min="-2" max="14" step="1" value="1" title="Word Spacing" />
+          <div class="slider-hints" aria-hidden="true"><span>-2</span><span>14</span></div>
 
           <!-- Phase 5.4 — Margin -->
           <div class="sb-label">Margin <span class="val" id="mg-val">80</span></div>
           <input type="range" id="margin-slider" min="20" max="100" step="2" value="80" title="Margin" />
+          <div class="slider-hints" aria-hidden="true"><span>20</span><span>100</span></div>
 
           <!-- Phase 5.5 — Rotation randomness -->
           <div class="sb-label">Rotation Chaos <span class="val" id="rot-val">1</span></div>
           <input type="range" id="rotation-slider" min="0" max="12" step="0.5" value="1" title="Rotation Chaos" />
+          <div class="slider-hints" aria-hidden="true"><span>0</span><span>12</span></div>
 
           <!-- Vertical Alignment Control -->
           <div class="sb-label">Text Alignment <span class="val" id="align-val">Middle</span></div>
           <div class="alignment-selector">
-            <button class="align-btn" data-align="top" onclick="setTextAlignment('top')" title="Text touches upper line" aria-label="Text alignment: Upper">
+            <button class="align-btn" data-align="top" title="Text touches upper line" aria-label="Text alignment: Upper">
               <div class="align-preview">
                 <div class="align-line"></div>
                 <div class="align-text align-top">Aa</div>
@@ -255,7 +261,7 @@ Try pasting a paragraph of lecture notes!"></textarea>
               </div>
               <span>Upper</span>
             </button>
-            <button class="align-btn active" data-align="middle" onclick="setTextAlignment('middle')" title="Text centered between lines" aria-label="Text alignment: Middle">
+            <button class="align-btn active" data-align="middle" title="Text centered between lines" aria-label="Text alignment: Middle">
               <div class="align-preview">
                 <div class="align-line"></div>
                 <div class="align-text align-middle">Aa</div>
@@ -263,7 +269,7 @@ Try pasting a paragraph of lecture notes!"></textarea>
               </div>
               <span>Middle</span>
             </button>
-            <button class="align-btn" data-align="bottom" onclick="setTextAlignment('bottom')" title="Text sits on lower line" aria-label="Text alignment: Lower">
+            <button class="align-btn" data-align="bottom" title="Text sits on lower line" aria-label="Text alignment: Lower">
               <div class="align-preview">
                 <div class="align-line"></div>
                 <div class="align-text align-bottom">Aa</div>
@@ -275,23 +281,22 @@ Try pasting a paragraph of lecture notes!"></textarea>
 
           <!-- Cursive Mode Toggle -->
           <label class="checkbox-label mt-12">
-            <input type="checkbox" id="cursive-mode-toggle" title="Enable cursive mode with connected letters" onchange="onCursiveModeToggle()" />
+            <input type="checkbox" id="cursive-mode-toggle" title="Enable cursive mode with connected letters" />
             <span class="checkbox-custom"></span>
             <span class="checkbox-text">🔗 Cursive Mode</span>
           </label>
 
           <!-- Reset Defaults Button -->
-          <button class="btn sm" id="btn-reset-defaults" onclick="resetToDefaults()" aria-label="Reset all parameters to default values">
-            <i class="fa-solid fa-rotate-left"></i> &nbsp;Reset Defaults
+          <button class="btn sm" id="btn-reset-defaults" aria-label="Reset all parameters to default values">
+            <i class="fa-solid fa-rotate-left"></i> &nbsp;<span data-i18n="action.resetDefaults">Reset Defaults</span>
           </button>
         </div>
       </div>
 
       <!-- ── COLLABORATION SECTION ── -->
       <div class="sb-section" id="sec-collab">
-        <button class="sb-section-header" onclick="toggleSection('sec-collab')" aria-expanded="true" aria-controls="sec-collab">
-          👥 &nbsp;Collaboration
-          <span class="sb-arrow">▾</span>
+        <button class="sb-section-header" aria-expanded="true" aria-controls="sec-collab">
+          👥 &nbsp;<span data-i18n="section.collab">Collaboration</span><span class="sb-arrow">▾</span>
         </button>
         <div class="sb-body">
           <div class="collab-controls">
@@ -299,7 +304,7 @@ Try pasting a paragraph of lecture notes!"></textarea>
               <span id="collab-status-indicator" class="status-indicator offline"></span>
               <span id="collab-status-text">Offline</span>
             </div>
-            <button class="btn sm primary" id="btn-collab-connect" onclick="toggleCollaboration()">Connect to Session</button>
+            <button class="btn sm primary" id="btn-collab-connect"><span data-i18n="action.connect">Connect to Session</span></button>
           </div>
           
           <div id="collab-users-container" class="hidden">
@@ -313,42 +318,40 @@ Try pasting a paragraph of lecture notes!"></textarea>
 
       <!-- ── PAPER STYLE SECTION ── -->
       <div class="sb-section" id="sec-paper">
-        <button class="sb-section-header" onclick="toggleSection('sec-paper')" aria-expanded="true" aria-controls="sec-paper">
-          📄 &nbsp;Paper Style
-          <span class="sb-arrow">▾</span>
+        <button class="sb-section-header" aria-expanded="true" aria-controls="sec-paper">
+          📄 &nbsp;<span data-i18n="section.paper">Paper Style</span><span class="sb-arrow">▾</span>
         </button>
         <div class="sb-body">
           <div class="paper-grid">
-            <button class="paper-btn active" data-style="ruled" onclick="setPaper(this)" aria-label="Paper style: Ruled">📏 Ruled</button>
-            <button class="paper-btn" data-style="clean" onclick="setPaper(this)" aria-label="Paper style: Clean">✨ Clean</button>
-            <button class="paper-btn" data-style="plain" onclick="setPaper(this)" aria-label="Paper style: Plain">⬜ Plain</button>
-            <button class="paper-btn" data-style="grid" onclick="setPaper(this)" aria-label="Paper style: Grid">⊞ Grid</button>
-            <button class="paper-btn" data-style="legal" onclick="setPaper(this)" aria-label="Paper style: Legal Pad">🟡 Legal Pad</button>
-            <button class="paper-btn" data-style="vintage" onclick="setPaper(this)" aria-label="Paper style: Vintage">📜 Vintage</button>
-            <button class="paper-btn" data-style="dark" onclick="setPaper(this)" aria-label="Paper style: Dark">🌙 Dark</button>
-            <button class="paper-btn" data-style="dot_grid" onclick="setPaper(this)" aria-label="Paper style: Dot Grid">🟢 Dot Grid</button>
-            <button class="paper-btn" data-style="engineering" onclick="setPaper(this)" aria-label="Paper style: Engineering">📐 Engineering</button>
-            <button class="paper-btn" data-style="music" onclick="setPaper(this)" aria-label="Paper style: Music Staff">🎼 Music Staff</button>
-            <button class="paper-btn" data-style="dated" onclick="setPaper(this)" aria-label="Paper style: Dated">📅 Dated</button>
+            <button class="paper-btn active" data-style="ruled" aria-label="Paper style: Ruled">📏 <span data-i18n="paper.ruled">Ruled</span></button>
+            <button class="paper-btn" data-style="clean" aria-label="Paper style: Clean">✨ <span data-i18n="paper.clean">Clean</span></button>
+            <button class="paper-btn" data-style="plain" aria-label="Paper style: Plain">⬜ <span data-i18n="paper.plain">Plain</span></button>
+            <button class="paper-btn" data-style="grid" aria-label="Paper style: Grid">⊞ <span data-i18n="paper.grid">Grid</span></button>
+            <button class="paper-btn" data-style="legal" aria-label="Paper style: Legal Pad">🟡 <span data-i18n="paper.legal">Legal Pad</span></button>
+            <button class="paper-btn" data-style="vintage" aria-label="Paper style: Vintage">📜 <span data-i18n="paper.vintage">Vintage</span></button>
+            <button class="paper-btn" data-style="dark" aria-label="Paper style: Dark">🌙 <span data-i18n="paper.dark">Dark</span></button>
+            <button class="paper-btn" data-style="dot_grid" aria-label="Paper style: Dot Grid">🟢 <span data-i18n="paper.dot_grid">Dot Grid</span></button>
+            <button class="paper-btn" data-style="engineering" aria-label="Paper style: Engineering">📐 <span data-i18n="paper.engineering">Engineering</span></button>
+            <button class="paper-btn" data-style="music" aria-label="Paper style: Music Staff">🎼 <span data-i18n="paper.music">Music Staff</span></button>
+            <button class="paper-btn" data-style="dated" aria-label="Paper style: Dated">📅 <span data-i18n="paper.dated">Dated</span></button>
           </div>
 
           <div class="sb-label sb-label-mt">Theme Pack</div>
           <div class="theme-pack-row">
-            <button class="btn sm" onclick="applyThemePack('default')" aria-label="Default theme">Default</button>
-            <button class="btn sm" onclick="applyThemePack('forest')" aria-label="Forest theme">Forest</button>
-            <button class="btn sm" onclick="applyThemePack('sunset')" aria-label="Sunset theme">Sunset</button>
-            <button class="btn sm" onclick="applyThemePack('ocean')" aria-label="Ocean theme">Ocean</button>
-            <button class="btn sm" onclick="applyThemePack('lavender')" aria-label="Lavender theme">Lavender</button>
-            <button class="btn sm" onclick="applyThemePack('charcoal')" aria-label="Charcoal theme">Charcoal</button>
+            <button class="btn sm" id="theme-default" aria-label="Default theme">Default</button>
+            <button class="btn sm" id="theme-forest" aria-label="Forest theme">Forest</button>
+            <button class="btn sm" id="theme-sunset" aria-label="Sunset theme">Sunset</button>
+            <button class="btn sm" id="theme-ocean" aria-label="Ocean theme">Ocean</button>
+            <button class="btn sm" id="theme-lavender" aria-label="Lavender theme">Lavender</button>
+            <button class="btn sm" id="theme-charcoal" aria-label="Charcoal theme">Charcoal</button>
           </div>
         </div>
       </div>
 
       <!-- ── NOTE LAYOUT SECTION ── -->
       <div class="sb-section" id="sec-layout">
-        <button class="sb-section-header" onclick="toggleSection('sec-layout')" aria-expanded="true" aria-controls="sec-layout">
-          📋 &nbsp;Page Layout
-          <span class="sb-arrow">▾</span>
+        <button class="sb-section-header" aria-expanded="true" aria-controls="sec-layout">
+          📋 &nbsp;<span data-i18n="section.layout">Page Layout</span><span class="sb-arrow">▾</span>
         </button>
         <div class="sb-body">
           <div class="sb-label">Note Layout Template</div>
@@ -357,6 +360,10 @@ Try pasting a paragraph of lecture notes!"></textarea>
             <option value="twocolumn">Two-Column Grid</option>
             <option value="cornell">Cornell Study Notes</option>
             <option value="meeting">Meeting Notes</option>
+            <option value="lecture">Lecture Notes</option>
+            <option value="labreport">Lab Report</option>
+            <option value="vocabulary">Vocabulary (Term / Definition)</option>
+            <option value="reading">Reading Notes</option>
           </select>
           <label class="checkbox-label mt-8">
             <input type="checkbox" id="margin-labels-toggle" checked title="Show Q/Ans numbers in the left margin" />
@@ -367,18 +374,17 @@ Try pasting a paragraph of lecture notes!"></textarea>
       </div>
       <!-- ── LAYER MANAGER SECTION ── -->
       <div class="sb-section" id="sec-layers">
-        <button class="sb-section-header" onclick="toggleSection('sec-layers')" aria-expanded="true" aria-controls="sec-layers">
-          📚 &nbsp;Layer Manager
-          <span class="sb-arrow">▾</span>
+        <button class="sb-section-header" aria-expanded="true" aria-controls="sec-layers">
+          📚 &nbsp;<span data-i18n="section.layers">Layer Manager</span><span class="sb-arrow">▾</span>
         </button>
         <div class="sb-body">
           <div class="layer-header-bar">
             <span id="layer-page-label" class="layer-page-label">Page 1</span>
             <div class="layer-quick-tools">
-              <button class="btn sm icon-btn" onclick="moveActiveLayer('up')" title="Move Layer Up (Higher Z-Index)" aria-label="Move Layer Up">▲</button>
-              <button class="btn sm icon-btn" onclick="moveActiveLayer('down')" title="Move Layer Down (Lower Z-Index)" aria-label="Move Layer Down">▼</button>
-              <button class="btn sm icon-btn" onclick="duplicateActiveLayer()" title="Duplicate Selected Layer" aria-label="Duplicate Selected Layer">📑</button>
-              <button class="btn sm icon-btn" onclick="clearActiveLayer()" title="Clear Active Layer Content" aria-label="Clear Active Layer Content">🧹</button>
+              <button class="btn sm icon-btn" id="btn-layer-move-up" title="Move Layer Up (Higher Z-Index)" aria-label="Move Layer Up">▲</button>
+              <button class="btn sm icon-btn" id="btn-layer-move-down" title="Move Layer Down (Lower Z-Index)" aria-label="Move Layer Down">▼</button>
+              <button class="btn sm icon-btn" id="btn-layer-duplicate" title="Duplicate Selected Layer" aria-label="Duplicate Selected Layer">📑</button>
+              <button class="btn sm icon-btn" id="btn-layer-clear" title="Clear Active Layer Content" aria-label="Clear Active Layer Content">🧹</button>
             </div>
           </div>
           <div id="layer-list" class="layer-list">
@@ -386,24 +392,23 @@ Try pasting a paragraph of lecture notes!"></textarea>
           </div>
           <div class="layer-controls-row">
             <div class="dropdown flex-1" id="layer-add-dropdown">
-              <button class="btn sm primary" id="btn-add-layer-dropdown" style="width:100%" onclick="toggleLayerAddDropdown(event)" title="Add new layer">➕ Add Layer ▾</button>
+              <button class="btn sm primary" id="btn-add-layer-dropdown" style="width:100%" title="Add new layer">➕ Add Layer ▾</button>
               <div class="dropdown-content" id="layer-dropdown-menu">
-                <a href="#" onclick="addNewLayerPreset('standard'); closeLayerAddDropdown(); return false;">Standard Layer</a>
-                <a href="#" onclick="addNewLayerPreset('highlighter'); closeLayerAddDropdown(); return false;">🖍️ Highlighter (Multiply 75%)</a>
-                <a href="#" onclick="addNewLayerPreset('draft'); closeLayerAddDropdown(); return false;">📐 Draft Sketch (50%)</a>
-                <a href="#" onclick="addNewLayerPreset('watermark'); closeLayerAddDropdown(); return false;">💧 Watermark (Overlay 25%)</a>
+                <a href="#" id="layer-preset-standard">Standard Layer</a>
+                <a href="#" id="layer-preset-highlighter">🖍️ Highlighter (Multiply 75%)</a>
+                <a href="#" id="layer-preset-draft">📐 Draft Sketch (50%)</a>
+                <a href="#" id="layer-preset-watermark">💧 Watermark (Overlay 25%)</a>
               </div>
             </div>
-            <button class="btn sm" onclick="flattenAllLayers()" title="Flatten All" aria-label="Flatten all layers">⬇️ Flatten</button>
+            <button class="btn sm" id="btn-flatten-layers" title="Flatten All" aria-label="Flatten all layers">⬇️ Flatten</button>
           </div>
         </div>
       </div>
 
       <!-- ── EFFECTS SECTION ── -->
       <div class="sb-section" id="sec-effects">
-        <button class="sb-section-header" onclick="toggleSection('sec-effects')" aria-expanded="true" aria-controls="sec-effects">
-          🎨 &nbsp;Ink Effects
-          <span class="sb-arrow">▾</span>
+        <button class="sb-section-header" aria-expanded="true" aria-controls="sec-effects">
+          🎨 &nbsp;<span data-i18n="section.effects">Ink Effects</span><span class="sb-arrow">▾</span>
         </button>
         <div class="sb-body">
           <!-- Phase 5.6 — Ink color picker -->
@@ -413,23 +418,26 @@ Try pasting a paragraph of lecture notes!"></textarea>
             <span id="ink-color-label">#1c2340 — Navy</span>
           </div>
           <div class="ink-presets-row">
-            <button class="btn sm" onclick="setInkPreset('#000F55','Blue Ink Pen')" data-ink="#000F55" data-ink-name="Blue Ink Pen" title="Blue Ink Pen (#000F55)" aria-label="Ink color: Blue Ink Pen">🖊️</button>
-            <button class="btn sm" onclick="setInkPreset('#1c2340','Navy')" data-ink="#1c2340" data-ink-name="Navy" title="Navy" aria-label="Ink color: Navy">🔵</button>
-            <button class="btn sm" onclick="setInkPreset('#1a1a1a','Black')" data-ink="#1a1a1a" data-ink-name="Black" title="Black" aria-label="Ink color: Black">⚫</button>
-            <button class="btn sm" onclick="setInkPreset('#0a3d62','Blue')" data-ink="#0a3d62" data-ink-name="Blue" title="Blue Ink" aria-label="Ink color: Blue">💙</button>
-            <button class="btn sm" onclick="setInkPreset('#6d2177','Purple')" data-ink="#6d2177" data-ink-name="Purple" title="Purple" aria-label="Ink color: Purple">🟣</button>
-            <button class="btn sm" onclick="setInkPreset('#8b0000','Red')" data-ink="#8b0000" data-ink-name="Red" title="Red" aria-label="Ink color: Red">🔴</button>
-            <button class="btn sm" onclick="setInkPreset('#2d6a4f','Green')" data-ink="#2d6a4f" data-ink-name="Green" title="Green" aria-label="Ink color: Green">🟢</button>
+            <button class="btn sm" data-ink="#000F55" data-ink-name="Blue Ink Pen" title="Blue Ink Pen (#000F55)" aria-label="Ink color: Blue Ink Pen">🖊️</button>
+            <button class="btn sm" data-ink="#1c2340" data-ink-name="Navy" title="Navy" aria-label="Ink color: Navy">🔵</button>
+            <button class="btn sm" data-ink="#1a1a1a" data-ink-name="Black" title="Black" aria-label="Ink color: Black">⚫</button>
+            <button class="btn sm" data-ink="#0a3d62" data-ink-name="Blue" title="Blue Ink" aria-label="Ink color: Blue">💙</button>
+            <button class="btn sm" data-ink="#6d2177" data-ink-name="Purple" title="Purple" aria-label="Ink color: Purple">🟣</button>
+            <button class="btn sm" data-ink="#8b0000" data-ink-name="Red" title="Red" aria-label="Ink color: Red">🔴</button>
+            <button class="btn sm" data-ink="#2d6a4f" data-ink-name="Green" title="Green" aria-label="Ink color: Green">🟢</button>
           </div>
 
           <div class="sb-label sb-label-mt">Ink Bleed <span class="val" id="bleed-val">0.5</span></div>
           <input type="range" id="bleed-slider" min="0" max="2.5" step="0.1" value="0.5" title="Ink Bleed" />
+          <div class="slider-hints" aria-hidden="true"><span>0</span><span>2.5</span></div>
 
           <div class="sb-label">Pressure Variation <span class="val" id="pressure-val">0.12</span></div>
           <input type="range" id="pressure-slider" min="0" max="0.3" step="0.01" value="0.12" title="Pressure Variation" />
+          <div class="slider-hints" aria-hidden="true"><span>0</span><span>0.3</span></div>
 
           <div class="sb-label">Realism / Human Jitter <span class="val" id="realism-val">0.5</span></div>
           <input type="range" id="realism-slider" min="0" max="1" step="0.05" value="0.5" title="Realism / Human Jitter" />
+          <div class="slider-hints" aria-hidden="true"><span>0</span><span>1</span></div>
 
           <div class="sb-label sb-label-mt">Rare Imperfections</div>
           <label class="checkbox-label">
@@ -473,7 +481,7 @@ Try pasting a paragraph of lecture notes!"></textarea>
 
           <div class="sb-label sb-label-mt">Smudge Effects</div>
           <label class="checkbox-label">
-            <input type="checkbox" id="smudge-effects-toggle" title="Enable smudge and eraser effects" onchange="onSmudgeEffectsToggle()" />
+            <input type="checkbox" id="smudge-effects-toggle" title="Enable smudge and eraser effects" />
             <span class="checkbox-custom"></span>
             <span class="checkbox-text">Enable smudge marks</span>
           </label>
@@ -482,16 +490,16 @@ Try pasting a paragraph of lecture notes!"></textarea>
 
       <!-- ── AI TOOLS SECTION ── -->
       <div class="sb-section" id="sec-ai">
-        <button class="sb-section-header" onclick="toggleSection('sec-ai')" aria-expanded="true" aria-controls="sec-ai">
-          ✦ &nbsp;AI Features
-          <span class="sb-arrow">▾</span>
+        <button class="sb-section-header" aria-expanded="true" aria-controls="sec-ai">
+          ✦ &nbsp;<span data-i18n="section.ai">AI Features</span><span class="sb-arrow">▾</span>
         </button>
         <div class="sb-body">
           <!-- Provider selector -->
           <div class="sb-label">AI Provider</div>
-          <select id="ai-provider" onchange="onProviderChange()" title="AI Provider">
+          <select id="ai-provider" title="AI Provider">
             <option value="openrouter" selected>🌐 OpenRouter</option>
             <option value="anthropic">🔑 Anthropic (Direct)</option>
+                <option value="gemini">🔑 Google Gemini (Direct)</option>
             <option value="ollama">🏠 Ollama (Local)</option>
           </select>
 
@@ -515,14 +523,14 @@ Try pasting a paragraph of lecture notes!"></textarea>
 
           <!-- AI action buttons -->
           <div class="ai-btn-group">
-            <button class="btn accent" onclick="toggleAudioRecording()" id="btn-record-lecture" title="Record Audio Lecture">🎙️ Record Lecture</button>
-            <button class="btn" onclick="aiAction('doubt')">🧩 Doubt Solver</button>
-            <button class="btn" onclick="aiAction('diagram')">🔀 Generate Diagram</button>
-            <button class="btn" onclick="aiAction('arrange')">🪄 Smart Arrange</button>
-            <button class="btn" onclick="aiAction('summarize')">📋 Summarize Notes</button>
-            <button class="btn" onclick="aiAction('grammar')">✏️ Improve Grammar</button>
-            <button class="btn" onclick="aiAction('lecture')">🎓 Lecture → Notes</button>
-            <button class="btn" onclick="aiAction('assignment')">📝 Generate Assignment</button>
+            <button class="btn accent" id="btn-record-lecture" title="Record Audio Lecture">🎙️ Record Lecture</button>
+            <button class="btn" id="btn-ai-doubt">🧩 Doubt Solver</button>
+            <button class="btn" id="btn-ai-diagram">🔀 Generate Diagram</button>
+            <button class="btn" id="btn-ai-arrange">🪄 Smart Arrange</button>
+            <button class="btn" id="btn-ai-summarize">📋 Summarize Notes</button>
+            <button class="btn" id="btn-ai-grammar">✏️ Improve Grammar</button>
+            <button class="btn" id="btn-ai-lecture">🎓 Lecture → Notes</button>
+            <button class="btn" id="btn-ai-assignment">📝 Generate Assignment</button>
           </div>
           
           <div id="recording-status-panel" class="hidden recording-status">
@@ -535,9 +543,8 @@ Try pasting a paragraph of lecture notes!"></textarea>
 
       <!-- ── EXPORT SECTION ── -->
       <div class="sb-section" id="sec-export">
-        <button class="sb-section-header" onclick="toggleSection('sec-export')" aria-expanded="true" aria-controls="sec-export">
-          ⬇ &nbsp;Export
-          <span class="sb-arrow">▾</span>
+        <button class="sb-section-header" aria-expanded="true" aria-controls="sec-export">
+          ⬇ &nbsp;<span data-i18n="section.export">Export</span><span class="sb-arrow">▾</span>
         </button>
         <div class="sb-body">
           <div class="sb-label">PDF Output Size</div>
@@ -548,19 +555,19 @@ Try pasting a paragraph of lecture notes!"></textarea>
           </select>
           <div class="export-grid">
             <!-- Phase 8.1 — PNG -->
-            <button class="btn" onclick="exportImage('png')" aria-label="Export as PNG image">🖼 PNG</button>
+            <button class="btn" id="btn-export-png" aria-label="Export as PNG image">🖼 PNG</button>
 
-            <button class="btn" onclick="exportTransparentPNG()" aria-label="Export as PNG with transparent background">✨ Transparent</button>
+            <button class="btn" id="btn-export-transparent" aria-label="Export as PNG with transparent background">✨ Transparent</button>
             <!-- Phase 8.2 — JPG -->
-            <button class="btn" onclick="exportImage('jpg')" aria-label="Export as JPG image">📷 JPG</button>
+            <button class="btn" id="btn-export-jpg" aria-label="Export as JPG image">📷 JPG</button>
             <!-- Phase 8.3/8.4 — PDF -->
-            <button class="btn" onclick="exportPDF()" aria-label="Export as PDF document">📄 PDF</button>
+            <button class="btn" id="btn-export-pdf" aria-label="Export as PDF document">📄 PDF</button>
             <!-- Phase 8.5 — SVG -->
-            <button class="btn" onclick="exportSVG()" aria-label="Export as SVG vector">🎨 SVG</button>
+            <button class="btn" id="btn-export-svg" aria-label="Export as SVG vector">🎨 SVG</button>
             <!-- Phase 8.6 — Copy -->
-            <button class="btn" onclick="copyToClipboard()" aria-label="Copy current page to clipboard">📋 Copy</button>
+            <button class="btn" id="btn-export-copy" aria-label="Copy current page to clipboard"><span data-i18n="export.copy">Copy</span></button>
             <!-- Phase 8.7 — Print -->
-            <button class="btn" onclick="window.print()" aria-label="Print notes">🖨 Print</button>
+            <button class="btn" id="btn-export-print" aria-label="Print notes"><span data-i18n="export.print">Print</span></button>
           </div>
         </div>
       </div>
@@ -568,28 +575,27 @@ Try pasting a paragraph of lecture notes!"></textarea>
 
       <!-- ── NOTEBOOKS SECTION ── -->
       <div class="sb-section collapsed" id="sec-notebooks">
-        <button class="sb-section-header" onclick="toggleSection('sec-notebooks')" aria-expanded="false" aria-controls="sec-notebooks">
-          📓 &nbsp;Notebooks
-          <span class="sb-arrow">▾</span>
+        <button class="sb-section-header" aria-expanded="false" aria-controls="sec-notebooks">
+          📓 &nbsp;<span data-i18n="section.notebooks">Notebooks</span><span class="sb-arrow">▾</span>
         </button>
         <div class="sb-body">
-          <button class="btn sm primary" onclick="NotebooksUI.saveCurrentNotebook()" style="width:100%;margin-bottom:8px;">💾 Save Current</button>
+          <button id="btn-save-notebook" class="btn sm primary" style="width:100%;margin-bottom:8px;">💾 Save Current</button>
           <div id="notebooks-list"></div>
         </div>
       </div>
 
       <!-- ── ANIMATION SECTION ── -->
       <div class="sb-section" id="sec-anim">
-        <button class="sb-section-header" onclick="toggleSection('sec-anim')" aria-expanded="true" aria-controls="sec-anim">
-          ▶ &nbsp;Animation
-          <span class="sb-arrow">▾</span>
+        <button class="sb-section-header" aria-expanded="true" aria-controls="sec-anim">
+          ▶ &nbsp;<span data-i18n="section.animation">Animation</span><span class="sb-arrow">▾</span>
         </button>
         <div class="sb-body">
           <div class="sb-label">Writing Speed <span class="val" id="spd-val">8</span></div>
           <input type="range" id="speed-slider" min="1" max="30" step="1" value="8" title="Writing Speed" />
+          <div class="slider-hints" aria-hidden="true"><span>1</span><span>30</span></div>
           <div class="animation-buttons-row">
-            <button class="btn accent btn-start" onclick="startAnimation()" aria-label="Start writing animation">▶ Start</button>
-            <button class="btn" onclick="stopAnimation()" aria-label="Stop writing animation">■ Stop</button>
+            <button id="btn-anim-start" class="btn accent btn-start" aria-label="Start writing animation"><span data-i18n="action.start">Start</span></button>
+            <button id="btn-anim-stop" class="btn" aria-label="Stop writing animation"><span data-i18n="action.stop">Stop</span></button>
           </div>
         </div>
       </div>
@@ -607,7 +613,7 @@ Try pasting a paragraph of lecture notes!"></textarea>
     <div id="sidebar-backdrop" aria-hidden="true"></div>
 
     <!-- PHASE 2.4 — CANVAS AREA -->
-    <main id="canvas-area" tabindex="-1">
+    <main id="canvas-area" tabindex="0">
       <div id="page-container"></div>
     </main>
 
@@ -623,13 +629,13 @@ Try pasting a paragraph of lecture notes!"></textarea>
      PHASE 8.8 — PAGE NAVIGATION BAR
 ════════════════════════════════════════ -->
   <div id="page-nav">
-    <button class="btn sm icon-btn" id="nav-prev" onclick="navigatePage(-1)" aria-label="Previous page">◀</button>
+    <button class="btn sm icon-btn" id="nav-prev" aria-label="Previous page">◀</button>
     <span id="page-indicator">Page 1 of 1</span>
-    <button class="btn sm icon-btn" id="nav-next" onclick="navigatePage(1)" aria-label="Next page">▶</button>
+    <button class="btn sm icon-btn" id="nav-next" aria-label="Next page">▶</button>
   </div>
 
   <!-- Study Mode Floating Exit Button -->
-  <button id="exit-study-btn" class="exit-study-btn hidden" onclick="toggleStudyMode()" title="Exit Study Mode (or press Esc)" aria-label="Exit Study Mode">
+  <button id="exit-study-btn" class="exit-study-btn hidden" title="Exit Study Mode (or press Esc)" aria-label="Exit Study Mode">
     🚪 Exit Study Mode
   </button>
 
@@ -640,12 +646,12 @@ Try pasting a paragraph of lecture notes!"></textarea>
     <div class="modal-card">
       <div class="modal-header">
         <h3>✨ HandFonted Studio</h3>
-        <button class="modal-close" onclick="closeHandFontedModal()" aria-label="Close HandFonted Studio">✕</button>
+        <button id="btn-close-handfonted" class="modal-close" aria-label="Close HandFonted Studio">✕</button>
       </div>
       
       <div class="modal-tabs">
-        <button class="tab-btn active" id="tab-btn-sketchpad" onclick="switchFontTab('sketchpad')">🎨 Live Sketchpad</button>
-        <button class="tab-btn" id="tab-btn-template" onclick="switchFontTab('template')">📸 Upload Template</button>
+        <button class="tab-btn active" id="tab-btn-sketchpad">🎨 Live Sketchpad</button>
+        <button class="tab-btn" id="tab-btn-template">📸 Upload Template</button>
       </div>
 
       <!-- Live Sketchpad Panel -->
@@ -667,8 +673,8 @@ Try pasting a paragraph of lecture notes!"></textarea>
           <div class="sketch-sidebar">
             <div class="sb-label">Select Character</div>
             <div class="sheet-tabs">
-              <button class="sheet-tab active" id="sheet-tab-letters" onclick="switchSheet('letters')">Letters</button>
-              <button class="sheet-tab" id="sheet-tab-symbols" onclick="switchSheet('symbols')">Symbols</button>
+              <button class="sheet-tab active" id="sheet-tab-letters">Letters</button>
+              <button class="sheet-tab" id="sheet-tab-symbols">Symbols</button>
             </div>
             <div class="char-grid" id="sketch-char-grid"></div>
           </div>
@@ -676,15 +682,15 @@ Try pasting a paragraph of lecture notes!"></textarea>
             <div class="sketch-header">
               <span class="active-char-label">Current: <strong id="current-char-display">A</strong></span>
               <div class="flex-gap-4">
-                <button class="btn sm" onclick="undoSketchStroke()" title="Undo last stroke">↶ Undo</button>
-                <button class="btn sm" onclick="clearSketchCanvas()" title="Clear canvas">🗑️ Clear</button>
+                <button id="btn-undo-stroke" class="btn sm" title="Undo last stroke">↶ Undo</button>
+                <button id="btn-clear-sketch" class="btn sm" title="Clear canvas">🗑️ Clear</button>
               </div>
             </div>
             
             <!-- Brush Size Control -->
             <div class="brush-control">
               <label class="brush-label">Brush Size: <span id="brush-size-val">3</span>px</label>
-              <input type="range" id="brush-size-slider" min="1" max="8" value="3" step="0.5" oninput="updateBrushSize()" title="Brush Size" />
+              <input type="range" id="brush-size-slider" min="1" max="8" value="3" step="0.5" title="Brush Size" />
             </div>
             
             <div class="canvas-wrapper">
@@ -693,10 +699,10 @@ Try pasting a paragraph of lecture notes!"></textarea>
               <div id="canvas-guide-letter">A</div>
             </div>
             <div class="sketch-actions">
-              <button class="btn primary" id="btn-save-char" onclick="saveActiveCharacter()">
+              <button class="btn primary" id="btn-save-char">
                 💾 Save Character
               </button>
-              <button class="btn secondary" id="btn-next-char" onclick="advanceActiveCharacter()">
+              <button class="btn secondary" id="btn-next-char">
                 Next ➡️
               </button>
             </div>
@@ -705,15 +711,17 @@ Try pasting a paragraph of lecture notes!"></textarea>
             <div class="char-preview d-none" id="char-preview-container">
               <div class="preview-label">Saved Preview:</div>
               <canvas id="char-preview-canvas" width="48" height="48"></canvas>
+              <div class="preview-label mt-8">In Your Notes (live jitter):</div>
+              <canvas id="char-jitter-canvas" width="220" height="64"></canvas>
             </div>
           </div>
         </div>
         
         <!-- Save/Load Project -->
         <div class="project-actions">
-          <button class="btn sm" onclick="exportFontProject()">💾 Save Progress (JSON)</button>
-          <button class="btn sm" onclick="document.getElementById('import-font-project').click()">📂 Load Progress</button>
-          <input type="file" id="import-font-project" accept=".json" class="d-none" onchange="importFontProject(event)" title="Import Font Project" />
+          <button id="btn-export-font-project" class="btn sm">💾 Save Progress (.inkfont)</button>
+          <button id="btn-load-font-project" class="btn sm">📂 Load Progress</button>
+          <input type="file" id="import-font-project" accept=".json" class="d-none" title="Import Font Project" />
         </div>
       </div>
 
@@ -721,7 +729,7 @@ Try pasting a paragraph of lecture notes!"></textarea>
       <div id="panel-template" class="tab-panel hidden">
         <p class="modal-desc">Download the template package (instructions + 2 sheets), write your letters clearly, scan/photo them, and align the grid overlay below.</p>
         <div class="template-actions template-actions-extended">
-          <button class="btn sm primary" onclick="generateDownloadTemplate()">📦 Download Template Package (3 sheets)</button>
+          <button id="btn-download-template" class="btn sm primary">📦 Download Template Package (3 sheets)</button>
           <div class="flex-align-center-gap-6">
             <span class="sb-label sheet-label">Upload Sheet:</span>
             <select id="upload-template-sheet-select" class="sheet-select" title="Select template sheet type">
@@ -746,22 +754,22 @@ Try pasting a paragraph of lecture notes!"></textarea>
               
               <div class="control-group">
                 <label>Grid X Offset <span class="val" id="val-grid-x">22</span>px</label>
-                <input type="range" id="slider-grid-x" min="-100" max="200" value="22" oninput="updateAlignerGrid()" title="Grid X Offset" />
+                <input type="range" id="slider-grid-x" min="-100" max="200" value="22" title="Grid X Offset" />
               </div>
 
               <div class="control-group">
                 <label>Grid Y Offset <span class="val" id="val-grid-y">36</span>px</label>
-                <input type="range" id="slider-grid-y" min="-100" max="200" value="36" oninput="updateAlignerGrid()" title="Grid Y Offset" />
+                <input type="range" id="slider-grid-y" min="-100" max="200" value="36" title="Grid Y Offset" />
               </div>
 
               <div class="control-group">
                 <label>Grid Width <span class="val" id="val-grid-w">315</span>px</label>
-                <input type="range" id="slider-grid-w" min="100" max="800" value="315" oninput="updateAlignerGrid()" title="Grid Width" />
+                <input type="range" id="slider-grid-w" min="100" max="800" value="315" title="Grid Width" />
               </div>
 
               <div class="control-group">
                 <label>Grid Height <span class="val" id="val-grid-h">315</span>px</label>
-                <input type="range" id="slider-grid-h" min="100" max="800" value="315" oninput="updateAlignerGrid()" title="Grid Height" />
+                <input type="range" id="slider-grid-h" min="100" max="800" value="315" title="Grid Height" />
               </div>
             </div>
           </div>
@@ -774,10 +782,10 @@ Try pasting a paragraph of lecture notes!"></textarea>
           <span class="font-name-label">Font Name:</span>
           <input type="text" id="custom-font-name" value="MyHandwriting" title="Custom Font Name" />
         </div>
-        <button class="btn primary" id="btn-build-font" onclick="buildCustomFont()">
+        <button class="btn primary" id="btn-build-font">
           🚀 Generate & Apply Font
         </button>
-        <button class="btn sm" onclick="exportCustomFontTTF()" style="margin-left:8px;">📥 Export .ttf</button>
+        <button id="btn-export-ttf" class="btn sm" style="margin-left:8px;">📥 Export .ttf</button>
       </div>
 
       <div id="font-build-progress" class="hidden">
@@ -794,7 +802,7 @@ Try pasting a paragraph of lecture notes!"></textarea>
     <div class="modal-card modal-card-lg">
       <div class="modal-header">
         <h3>✨ AI Grammar Correction <span id="grammar-lang-badge" class="badge">English</span></h3>
-        <button class="modal-close" onclick="closeGrammarModal()" aria-label="Close grammar correction">✕</button>
+        <button id="btn-close-grammar" class="modal-close" aria-label="Close grammar correction">✕</button>
       </div>
       <div class="modal-body modal-body-flex">
         <div class="flex-1">
@@ -807,8 +815,8 @@ Try pasting a paragraph of lecture notes!"></textarea>
         </div>
       </div>
       <div class="modal-footer modal-footer-flex">
-        <button class="btn" onclick="closeGrammarModal()">Cancel</button>
-        <button class="btn primary" onclick="acceptGrammarCorrection()">✅ Accept Changes</button>
+        <button id="btn-grammar-cancel" class="btn">Cancel</button>
+        <button id="btn-grammar-accept" class="btn primary">✅ Accept Changes</button>
       </div>
     </div>
   </div>
@@ -817,21 +825,27 @@ Try pasting a paragraph of lecture notes!"></textarea>
   <div id="flashcards-modal" class="modal-overlay hidden">
     <div class="modal-card modal-card-study">
       <div class="modal-header">
-        <h3>🃏 Flashcards Review</h3>
-        <button class="modal-close" onclick="closeFlashcardsModal()" aria-label="Close flashcards">✕</button>
+        <h3>🃏 <span data-i18n="flashcards.title">Flashcards Review</span> <span id="flashcard-due-badge" class="flashcard-due-badge hidden"></span></h3>
+        <button id="btn-close-flashcards" class="modal-close" aria-label="Close flashcards">✕</button>
       </div>
       <div class="modal-body flashcards-body">
         <div id="flashcard-counter" class="flashcard-counter">1 / 1</div>
-        <div id="flashcard-card" class="flashcard-card" onclick="flipFlashcard()" role="button" tabindex="0" aria-label="Flashcard, click or press space to flip">
+        <div id="flashcard-card" class="flashcard-card" role="button" tabindex="0" aria-label="Flashcard, click or press space to flip">
           <div id="flashcard-inner" class="flashcard-inner">
             <div id="flashcard-front" class="flashcard-face flashcard-front"></div>
             <div id="flashcard-back" class="flashcard-face flashcard-back"></div>
           </div>
         </div>
         <div id="flashcard-hint" class="flashcard-hint">Click card to flip (or Space / Enter)</div>
+        <div id="flashcard-grade-row" class="flashcard-grade-row hidden">
+          <button class="grade-btn grade-again" data-grade="again" aria-label="Grade: again">1 Again</button>
+          <button class="grade-btn grade-hard" data-grade="hard" aria-label="Grade: hard">2 Hard</button>
+          <button class="grade-btn grade-good" data-grade="good" aria-label="Grade: good">3 Good</button>
+          <button class="grade-btn grade-easy" data-grade="easy" aria-label="Grade: easy">4 Easy</button>
+        </div>
         <div class="flashcard-nav-row">
-          <button class="btn" onclick="prevFlashcard()" aria-label="Previous card">← Prev</button>
-          <button class="btn primary" onclick="nextFlashcard()" aria-label="Next card">Next →</button>
+          <button id="btn-flashcard-prev" class="btn" aria-label="Previous card">← Prev</button>
+          <button id="btn-flashcard-next" class="btn primary" aria-label="Next card">Next →</button>
         </div>
       </div>
     </div>
@@ -843,80 +857,15 @@ Try pasting a paragraph of lecture notes!"></textarea>
   <!-- Screen reader live region — receives AI status and export toasts -->
   <div id="status-announcer" class="sr-only" role="status" aria-live="polite"></div>
 
-  <!-- Diagram Engine (layout algorithms + mermaid rendering) -->
-  <script src="diagram-engine.js"></script>
-
-  <!-- Contextual Jitter Engine for advanced character variation -->
-  <script src="contextual-jitter-engine.js"></script>
-
-  <!-- Cursive Connector for ligatures and connected strokes -->
-  <script src="cursive-connector.js"></script>
-
-  <!-- Markdown parser for segment-aware styling -->
-  <script src="markdown-parser.js"></script>
-
-  <!-- Audio Recorder for Voice-to-Notes -->
-  <script src="audio-recorder.js"></script>
-
-  <!-- Script detector for Hinglish support -->
-  <script src="script-detector.js"></script>
-
-  <!-- Collaborative Writing Engine (Task 13) -->
-  <script src="collaborative-engine.js"></script>
-
   <!-- TensorFlow.js for Smart Stroke Prediction (Task 14) -->
   <script defer src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.20.0/dist/tf.min.js"
     integrity="sha384-xc4sZTUOM2obsQR75Be0zGbt7Gb6mOVFJN4yBm30Xn0YQLDWIY+yrtFmLmIank6w" crossorigin="anonymous"></script>
-  <script src="stroke-prediction-engine.js"></script>
 
-  <!-- Multi-Layer Canvas Architecture (Task 16) -->
-  <script src="layer-compositor.js"></script>
-
-  <!-- Advanced Template System (Task 15) -->
-  <script src="template-manager.js"></script>
-
-  <!-- Font Compilation Pipeline (contour tracing, RDP, OpenType) -->
-  <script src="font-compilation.js"></script>
-
-  <!-- Paper Background Renderer (10 styles, smudge effects) -->
-  <script src="paper-renderer.js"></script>
-
-  <!-- Text Layout Helpers (sanitize, parse, graphemes) -->
-  <script src="text-layout.js"></script>
-
-  <!-- Export Renderers (queue items, cursive connections) -->
-  <script src="export-renderers.js"></script>
-
-  <!-- Export Manager (PNG/JPG/transparent/PDF/SVG/clipboard pipelines) -->
-  <script src="export-manager.js"></script>
-
-  <!-- AI Post-Processing (sanitize, resequence QA, offline Smart Arrange) -->
-  <script src="ai-postprocess.js"></script>
-
-  <!-- AI Assistant (callClaude, aiAction, GrammarCorrector) -->
-  <script src="ai-assistant.js"></script>
-
-  <!-- Notebooks (IndexedDB CRUD + sidebar UI) -->
-  <script src="notebooks.js"></script>
-
-  <!-- Margin Q/Ans question labels (queue line clustering) -->
-  <script src="margin-labels.js"></script>
-
-  <!-- Flashcards & Study Mode -->
-  <script src="flashcards.js"></script>
-
-  <!-- Voice to Notes (Web Speech API) -->
-  <script src="voice-notes.js"></script>
-
-  <!-- Custom Script -->
-  <script src="index.js"></script>
-
-  <!-- Service Worker Registration -->
-  <script>
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('sw.js').catch(() => {});
-    }
-  </script>
+  <!-- App entry: one ES-module graph. index.js imports every library module in the
+       classic load order (A3 conversion — docs/upgrade-plan.md). The service worker
+       is registered from index.js, production builds only. -->
+  <script type="module" src="index.js"></script>
+</body>
 </body>
 
 </html>

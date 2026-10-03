@@ -340,20 +340,19 @@ function positionDiagramNodes(data, activeZoneX, y, activeZoneWidth, dHeight) {
   return layoutCycle(nodes, r, { x: cx, y: cy });
 }
 
-// Export for Node.js/test environments
-if (typeof module !== 'undefined' && module.exports) {
-  module.exports = {
-    layoutCycle,
-    layoutFlowchart,
-    layoutHierarchy,
-    getDiagramImage,
-    parseDiagramJSON,
-    positionDiagramNodes,
-    getNodePerimeterPoint,
-    calculateDiagramEdges,
-    diagramCache,
-  };
-}
+// ES module exports (A3 conversion); window.DiagramEngine below stays for
+// console/debug access and the browser-side namespace consumers.
+export {
+  layoutCycle,
+  layoutFlowchart,
+  layoutHierarchy,
+  getDiagramImage,
+  parseDiagramJSON,
+  positionDiagramNodes,
+  getNodePerimeterPoint,
+  calculateDiagramEdges,
+  diagramCache,
+};
 
 // Export for browser
 if (typeof window !== 'undefined') {

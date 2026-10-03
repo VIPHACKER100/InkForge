@@ -1,8 +1,17 @@
+import { showExportToast } from './export-manager.js';
+
 /**
  * AI Assistant Module
- * Functions: callClaude, setAiStatus, aiAction, GrammarCorrector
- * Depends on: window.S (state), window.renderText, window.autosave, window.debounceRender
+ * Functions: callClaude (provider router), callGemini, callOllama, setAiStatus, aiAction, GrammarCorrector
+ * Depends on: state.js (S), render-pipeline.js (renderText, debounceRender),
+ * persistence.js (autosave). window.AIPostProcess / window.showExportToast
+ * remain namespace reads (self-published by ai-postprocess.js /
+ * export-manager.js).
  */
+import { S } from './state.js';
+import { renderText, debounceRender } from './render-pipeline.js';
+import { autosave } from './persistence.js';
+
 (function () {
   'use strict';
 
@@ -13,9 +22,28 @@
     if (live) live.textContent = msg;
   }
 
+  // Phase D (D1) — AI loading state. While an async AI action runs, every
+  // button in the AI section's action group is disabled, #sec-ai carries
+  // aria-busy="true" + the .ai-busy class (index.css dims the buttons and
+  // spins a marker beside the inline status line), and progress text reuses
+  // setAiStatus() so it lands in both #ai-status and #status-announcer.
+  function setAiBusy(busy, statusMsg) {
+    const section = document.getElementById('sec-ai');
+    if (section) {
+      section.classList.toggle('ai-busy', busy);
+      if (busy) section.setAttribute('aria-busy', 'true');
+      else section.removeAttribute('aria-busy');
+    }
+    document.querySelectorAll('.ai-btn-group .btn').forEach((b) => {
+      b.disabled = busy;
+    });
+    if (statusMsg) setAiStatus(statusMsg);
+  }
+
   async function callClaude(prompt, systemPrompt, onChunk) {
     const provider = document.getElementById('ai-provider')?.value;
     if (provider === 'ollama') return callOllama(prompt, systemPrompt, onChunk);
+    if (provider === 'gemini') return callGemini(prompt, systemPrompt, onChunk);
     const model = document.getElementById('ai-model')?.value;
     const key = document.getElementById('api-key')?.value?.trim();
 
@@ -147,18 +175,24 @@
 
   /* ── AI Action Dispatcher ───────────────────────────────────────────────── */
 
+  // Phase D (D1) — the public entry point owns the busy state: it is switched
+  // on before the flow starts and cleared in a finally, so every exit path
+  // (empty-input early returns, missing API key, API/network errors, unexpected
+  // throws) re-enables the buttons exactly once, in one place.
   async function aiAction(type) {
+    if (!document.getElementById('text-input')) return;
+    setAiBusy(true, '✦ AI working…');
+    try {
+      await runAiAction(type);
+    } finally {
+      setAiBusy(false);
+    }
+  }
+
+  async function runAiAction(type) {
     const textarea = document.getElementById('text-input');
     if (!textarea) return;
     const currentText = textarea.value.trim();
-
-    const S = window.S;
-    const renderText = window.renderText;
-    const autosave = window.autosave;
-    const debounceRender = window.debounceRender;
-
-    const btns = document.querySelectorAll('.ai-btn-group .btn');
-    btns.forEach((b) => (b.disabled = true));
 
     let result = null;
     let lastRenderTime = 0;
@@ -176,7 +210,6 @@
     if (type === 'doubt') {
       if (!currentText) {
         setAiStatus('⚠ Please enter a problem to solve');
-        btns.forEach((b) => (b.disabled = false));
         return;
       }
 
@@ -202,7 +235,6 @@ Focus on conceptual clarity and helping students understand the problem-solving 
       const topic = document.getElementById('ai-topic')?.value?.trim() || currentText;
       if (!topic) {
         setAiStatus('⚠ Enter a topic first.');
-        btns.forEach((b) => (b.disabled = false));
         return;
       }
 
@@ -232,7 +264,6 @@ Constraints:
     if (type === 'summarize') {
       if (!currentText) {
         setAiStatus('⚠ Add some text first.');
-        btns.forEach((b) => (b.disabled = false));
         return;
       }
       result = await callClaude(
@@ -245,7 +276,6 @@ Constraints:
     if (type === 'arrange') {
       if (!currentText) {
         setAiStatus('⚠ Add some text first.');
-        btns.forEach((b) => (b.disabled = false));
         return;
       }
       // Smart Arrange is fully offline — a deterministic tidy-up, no API key needed.
@@ -256,21 +286,17 @@ Constraints:
         renderText(S.text);
         autosave();
         setAiStatus('✓ Smart Arrange (offline) — ' + arranged.fixes + ' fixes');
-        if (typeof window.showExportToast === 'function') {
-          window.showExportToast('Smart Arrange: ' + arranged.fixes + ' fixes', 'success');
-        }
+        showExportToast('Smart Arrange: ' + arranged.fixes + ' fixes', 'success');
         setTimeout(() => setAiStatus(''), 3000);
       } catch (e) {
         setAiStatus('✗ Smart Arrange failed: ' + e.message);
       }
-      btns.forEach((b) => (b.disabled = false));
       return;
     }
 
     if (type === 'grammar') {
       if (!currentText) {
         setAiStatus('⚠ Add some text first.');
-        btns.forEach((b) => (b.disabled = false));
         return;
       }
 
@@ -288,14 +314,12 @@ Constraints:
         document.getElementById('grammar-corrected').value = text;
       });
 
-      btns.forEach((b) => (b.disabled = false));
       return;
     }
 
     if (type === 'lecture') {
       if (!currentText) {
         setAiStatus('⚠ Paste lecture text first.');
-        btns.forEach((b) => (b.disabled = false));
         return;
       }
       result = await callClaude(
@@ -309,7 +333,6 @@ Constraints:
       const topic = document.getElementById('ai-topic')?.value?.trim() || currentText;
       if (!topic) {
         setAiStatus('⚠ Enter a topic first.');
-        btns.forEach((b) => (b.disabled = false));
         return;
       }
       result = await callClaude(
@@ -329,8 +352,6 @@ Constraints:
       renderText(S.text);
       autosave();
     }
-
-    btns.forEach((b) => (b.disabled = false));
   }
 
   /* ── Accept Grammar Correction ──────────────────────────────────────────── */
@@ -342,9 +363,9 @@ Constraints:
       const textarea = document.getElementById('text-input');
       if (textarea) {
         textarea.value = clean;
-        window.S.text = clean;
-        window.renderText(window.S.text);
-        window.autosave();
+        S.text = clean;
+        renderText(S.text);
+        autosave();
       }
     }
     const modal = document.getElementById('grammar-modal');
@@ -363,6 +384,79 @@ Constraints:
 - Q: Question format for study review
 - A: Answer format for study review
 Keep responses concise and structured for handwritten note-taking.`;
+
+  /* Google Gemini (AI Studio direct) — SSE streaming via streamGenerateContent.
+     The key rides in the query string (Google's browser-recommended pattern);
+     chunks arrive as `data: {candidates:[{content:{parts:[{text}]}}]}`. */
+  async function callGemini(prompt, systemPrompt, onChunk) {
+    const model = document.getElementById('ai-model')?.value;
+    const key = document.getElementById('api-key')?.value?.trim();
+
+    if (!key) {
+      setAiStatus('⚠ Enter your Google AI Studio API key first.');
+      return null;
+    }
+
+    setAiStatus('✦ Generating via Google Gemini…');
+
+    try {
+      const res = await fetch(
+        `https://generativelanguage.googleapis.com/v1beta/models/${model}:streamGenerateContent?alt=sse&key=${encodeURIComponent(key)}`,
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            contents: [{ parts: [{ text: prompt }] }],
+            systemInstruction: { parts: [{ text: systemPrompt || 'You are a helpful assistant for a handwritten notes app.' }] },
+            generationConfig: { maxOutputTokens: 1500 },
+          }),
+        }
+      );
+
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}));
+        setAiStatus('✗ API Error: ' + (err.error?.message || res.status));
+        return null;
+      }
+
+      const reader = res.body.getReader();
+      const decoder = new TextDecoder();
+      let buffer = '';
+      let textContent = '';
+
+      while (true) {
+        const { value, done } = await reader.read();
+        if (done) break;
+        buffer += decoder.decode(value, { stream: true });
+        const lines = buffer.split('\n');
+        buffer = lines.pop();
+
+        for (const line of lines) {
+          const cleaned = line.trim();
+          if (!cleaned.startsWith('data: ')) continue;
+          try {
+            const dataObj = JSON.parse(cleaned.slice(6));
+            const delta = (dataObj.candidates?.[0]?.content?.parts || [])
+              .map((p) => p.text || '')
+              .join('');
+            if (delta) {
+              textContent += delta;
+              if (onChunk) onChunk(textContent);
+            }
+          } catch (_e) {
+            // Ignore incomplete chunks
+          }
+        }
+      }
+
+      setAiStatus('✓ Done — ' + model);
+      setTimeout(() => setAiStatus(''), 3000);
+      return textContent;
+    } catch (err) {
+      setAiStatus('✗ Gemini error: ' + (err.message || err));
+      return null;
+    }
+  }
 
   async function callOllama(prompt, systemPrompt, onChunk) {
     setAiStatus('✦ Generating via Ollama (local)…');
@@ -451,7 +545,7 @@ Keep responses concise and structured for handwritten note-taking.`;
   /* ── Export ─────────────────────────────────────────────────────────────── */
 
   window.AIAssistant = {
-    callClaude, callOllama, setAiStatus, aiAction,
+    callClaude, callGemini, callOllama, setAiStatus, aiAction,
     GrammarCorrector, acceptGrammarCorrection,
     AI_SYSTEM_BASE_PROMPT, initApiKeyPersistence,
   };

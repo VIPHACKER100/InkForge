@@ -1,6 +1,6 @@
 {
   "name": "inkflow",
-  "version": "1.8.0",
+  "version": "1.20.1",
   "description": "AI Handwritten Notes Generator",
   "main": "index.js",
   "scripts": {
@@ -12,6 +12,7 @@
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
     "check:version": "node scripts/check-version.js",
+    "lhci": "lhci autorun",
     "lint": "eslint index.js font-compilation.js paper-renderer.js text-layout.js export-renderers.js export-manager.js diagram-engine.js cursive-connector.js template-manager.js flashcards.js voice-notes.js ai-postprocess.js margin-labels.js markdown-parser.js collaborative-engine.js contextual-jitter-engine.js stroke-prediction-engine.js layer-compositor.js audio-recorder.js script-detector.js server.js",
     "lint:fix": "eslint --fix index.js font-compilation.js paper-renderer.js text-layout.js export-renderers.js export-manager.js diagram-engine.js cursive-connector.js template-manager.js flashcards.js voice-notes.js ai-postprocess.js margin-labels.js markdown-parser.js collaborative-engine.js contextual-jitter-engine.js stroke-prediction-engine.js layer-compositor.js audio-recorder.js script-detector.js server.js",
     "format": "prettier --write index.js font-compilation.js paper-renderer.js text-layout.js export-renderers.js export-manager.js diagram-engine.js cursive-connector.js template-manager.js flashcards.js voice-notes.js ai-postprocess.js margin-labels.js markdown-parser.js collaborative-engine.js contextual-jitter-engine.js stroke-prediction-engine.js layer-compositor.js audio-recorder.js script-detector.js server.js",
@@ -33,7 +34,9 @@
     "ws": "^8.21.0"
   },
   "devDependencies": {
+    "@lhci/cli": "^0.15.1",
     "@playwright/test": "^1.63.0",
+    "@vitest/coverage-v8": "^4.1.11",
     "eslint": "^10.9.1",
     "eslint-config-prettier": "^10.1.8",
     "prettier": "^3.9.6",
