@@ -4,24 +4,24 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com; font-src 'self' data: https://fonts.gstatic.com https://cdnjs.cloudflare.com; img-src 'self' data: blob:; connect-src 'self' https://openrouter.ai https://api.anthropic.com http://localhost:* http://127.0.0.1:* https://va.vercel-insights.com; object-src 'none'; base-uri 'self'; form-action 'none'" />
-  
-  <title>About InkForge — The AI Handwriting & Digital Scribe Studio</title>
-  <meta name="description" content="Learn about InkForge, the next-generation AI handwriting studio. Discover how physics-based jitter, artisanal paper simulation, and client-side privacy create lifelike handwritten notes." />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com; font-src 'self' data: https://fonts.gstatic.com https://cdnjs.cloudflare.com; img-src 'self' data: blob:; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'none'" />
+
+  <title>About Inkflow — The AI Handwriting & Digital Scribe Studio</title>
+  <meta name="description" content="Learn about Inkflow, the next-generation AI handwriting studio. Discover how physics-based jitter, artisanal paper simulation, and client-side privacy create lifelike handwritten notes." />
 
   <!-- Favicon & PWA Icons -->
-  <link rel="icon" type="image/jpeg" href="./inkforge_logo.jpeg" />
-  <link rel="apple-touch-icon" href="./inkforge_logo.jpeg" />
+  <link rel="icon" type="image/jpeg" href="./inkflow_logo.jpeg" />
+  <link rel="apple-touch-icon" href="./inkflow_logo.jpeg" />
   <link rel="manifest" href="./manifest.json" />
-  <meta name="theme-color" content="#7c6af7" />
-  <meta property="og:title" content="About InkForge — AI Handwriting Studio" />
+  <meta name="theme-color" content="#6C63FF" />
+  <meta property="og:title" content="About Inkflow — AI Handwriting Studio" />
   <meta property="og:description" content="Turn digital text into authentic handwritten notes with organic physics, custom fonts, and study tools." />
-  <meta property="og:image" content="./inkforge_logo.jpeg" />
+  <meta property="og:image" content="./inkflow_logo.jpeg" />
 
   <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400..700&family=Crimson+Pro:ital,wght@0,200..900;1,200..900&family=Indie+Flower&family=Patrick+Hand&family=Kalam:wght@300;400;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400..700&family=Crimson+Pro:ital,wght@0,200..900;1,200..900&family=Indie+Flower&family=Patrick+Hand&display=swap" rel="stylesheet" />
 
   <!-- Font Awesome -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" />
@@ -37,11 +37,11 @@
   ════════════════════════════════════════ -->
   <nav class="navbar">
     <div class="container nav-inner">
-      <a href="./index.html" class="brand" title="Return to InkForge Studio">
+      <a href="./index.html" class="brand" title="Return to Inkflow Studio">
         <div class="brand-logo-wrap">
-          <img src="./inkforge_logo.jpeg" alt="InkForge Logo" />
+          <img src="./inkflow_logo.jpeg" alt="Inkflow Logo" />
         </div>
-        <div class="brand-name">Ink<span>Forge</span></div>
+        <div class="brand-name">Ink<span>flow</span></div>
       </a>
 
       <ul class="nav-links">
@@ -56,7 +56,7 @@
         <button id="dark-toggle" class="theme-toggle-btn" aria-label="Toggle dark mode" title="Toggle theme">
           <span id="dark-icon">☀️</span>
         </button>
-        <a href="./index.html" class="btn-cta" title="Launch InkForge App">
+        <a href="./index.html" class="btn-cta" title="Launch Inkflow App">
           <i class="fa-solid fa-pen-nib"></i> Open Studio
         </a>
       </div>
@@ -69,23 +69,23 @@
   <header class="hero">
     <div class="container">
       <div class="hero-pill">
-        <i class="fa-solid fa-sparkles"></i> v1.6.24 • Pure Client-Side AI Scribe
+        <i class="fa-solid fa-sparkles"></i> v1.20.1 • Pure Client-Side AI Scribe
       </div>
-      
+
       <h1 class="hero-title">
         Handwriting, Re-imagined with <br />
         <span class="gradient-text">Physics &amp; Intelligence</span>
       </h1>
 
       <p class="hero-subtitle">
-        InkForge bridges the gap between digital efficiency and the soul of handwritten notes. Powered by a deterministic jitter engine, artisanal paper textures, custom font compilation, and zero-latency local privacy.
+        Inkflow bridges the gap between digital efficiency and the soul of handwritten notes. Powered by a deterministic jitter engine, artisanal paper textures, custom font compilation, and zero-latency local privacy.
       </p>
 
       <div class="hero-buttons">
         <a href="./index.html" class="btn-cta">
           <i class="fa-solid fa-arrow-right"></i> Launch Studio Editor
         </a>
-        <a href="https://github.com/VIPHACKER100/InkForge" target="_blank" rel="noopener noreferrer" class="btn-secondary">
+        <a href="https://github.com/VIPHACKER100/Inkflow" target="_blank" rel="noopener noreferrer" class="btn-secondary">
           <i class="fa-brands fa-github"></i> Star on GitHub
         </a>
         <a href="#docs" class="btn-secondary">
@@ -96,7 +96,7 @@
       <!-- Key Metrics -->
       <div class="metrics-grid">
         <div class="metric-card">
-          <div class="metric-number">35+</div>
+          <div class="metric-number">48+</div>
           <div class="metric-label">Curated Fonts</div>
           <div class="metric-sub">English, Cursive &amp; Devanagari</div>
         </div>
@@ -128,7 +128,7 @@
         <span class="section-tag">Interactive Simulation</span>
         <h2 class="section-title">The Physics of Realistic Ink</h2>
         <p class="section-desc">
-          Computer fonts look artificial because every character is identical. InkForge applies seeded random variations to simulate human muscle drift, pressure changes, and paper interaction.
+          Computer fonts look artificial because every character is identical. Inkflow applies seeded random variations to simulate human muscle drift, pressure changes, and paper interaction.
         </p>
       </div>
 
@@ -138,7 +138,7 @@
             <label for="demo-text-input" class="demo-label-row">
               <span>Sample Note Text</span>
             </label>
-            <input type="text" id="demo-text-input" class="demo-input" value="InkForge: Natural handwriting with AI precision." title="Demo text" />
+            <input type="text" id="demo-text-input" class="demo-input" value="Inkflow: Natural handwriting with AI precision." title="Demo text" />
           </div>
 
           <div class="demo-group">
@@ -225,7 +225,7 @@
           <div class="feature-icon-wrap">🤖</div>
           <h3>Generative AI Scribe</h3>
           <p>
-            Direct integration with OpenRouter, Anthropic Claude, Google Gemini, and local Ollama models. Instant one-click workflows: Smart Arrange, Lecture Summarizer, Grammar Improver, and interactive study flashcards.
+            Direct integration with OpenRouter, Anthropic Claude, Google Gemini, and local Ollama models. One-click workflows: offline Smart Arrange, Lecture Summarizer, Grammar Improver, voice-to-notes, and interactive study flashcards.
           </p>
           <div class="feature-tags">
             <span class="feature-tag">Multi-Provider</span>
@@ -253,12 +253,12 @@
           <div class="feature-icon-wrap">📄</div>
           <h3>Lossless Multi-Format Exports</h3>
           <p>
-            Export notes at crystal-clear 2× DPI for print or submission. Support for single/multi-page PDF documents, transparent PNG images, optimized JPG, scalable vector SVG, direct system printing, and one-click clipboard copying.
+            Export notes at crystal-clear 2× DPI for print or submission. Support for single/multi-page PDF documents with Compact/Standard/High presets, transparent PNG images, optimized JPG, scalable vector SVG, and one-click clipboard copying.
           </p>
           <div class="feature-tags">
             <span class="feature-tag">2× DPI Raster</span>
             <span class="feature-tag">Vector SVG</span>
-            <span class="feature-tag">Lossless PDF</span>
+            <span class="feature-tag">Size Presets</span>
           </div>
         </div>
 
@@ -267,12 +267,12 @@
           <div class="feature-icon-wrap">⚡</div>
           <h3>100% Offline-First PWA</h3>
           <p>
-            Installed to your home screen or desktop as a native app. All application assets, fonts, and scripts are cached by the Service Worker. Notes automatically persist in browser IndexedDB with real-time cloud-sync status simulation.
+            Installed to your home screen or desktop as a native app. All application assets, fonts, and scripts are cached by the Service Worker. Notes automatically persist in browser IndexedDB, and real-time WebSocket collaboration is built in.
           </p>
           <div class="feature-tags">
             <span class="feature-tag">PWA Standalone</span>
             <span class="feature-tag">Service Worker</span>
-            <span class="feature-tag">Auto-Save</span>
+            <span class="feature-tag">Collaboration</span>
           </div>
         </div>
       </div>
@@ -289,7 +289,7 @@
         <div class="privacy-content">
           <h3>Your Notes Are Strictly Yours</h3>
           <p>
-            InkForge has no backend servers storing your personal writings or journal entries. The text layout, handwriting synthesis, font compilation, and PDF generation occur 100% locally on your own machine. If you configure AI keys, they remain locked in your browser's private storage.
+            Inkflow has no backend servers storing your personal writings or journal entries. The text layout, handwriting synthesis, font compilation, and PDF generation occur 100% locally on your own machine. If you configure AI keys, they remain locked in your browser's private storage.
           </p>
         </div>
       </div>
@@ -313,7 +313,7 @@
             <span class="tech-icon">⚡</span>
             <h4>Vanilla ES2022</h4>
           </div>
-          <p>Zero heavy framework overhead (React/Vue/Angular). High-performance event loops, debounced renders, and buttery 60 FPS transitions.</p>
+          <p>Zero heavy framework overhead (React/Vue/Angular). A fully modular engine (23 focused scripts) with debounced renders and buttery 60 FPS transitions.</p>
         </div>
 
         <div class="tech-card">
@@ -322,6 +322,14 @@
             <h4>Canvas 2D Engine</h4>
           </div>
           <p>Sub-pixel coordinate positioning, custom transform matrices (<code>ctx.transform</code>), anisotropic scaling, and procedural noise generation.</p>
+        </div>
+
+        <div class="tech-card">
+          <div class="tech-card-header">
+            <span class="tech-icon">🧪</span>
+            <h4>Test-Synced Releases</h4>
+          </div>
+          <p>200+ Vitest unit tests and a Playwright E2E suite gate every release, with ESLint, Prettier, and version-drift checks enforced in CI.</p>
         </div>
 
         <div class="tech-card">
@@ -338,6 +346,14 @@
             <h4>OpenType.js Compilation</h4>
           </div>
           <p>In-browser TrueType Font (TTF) binary generator. Converts vector contours directly into standard font files ready for system-wide installation.</p>
+        </div>
+
+        <div class="tech-card">
+          <div class="tech-card-header">
+            <span class="tech-icon">👥</span>
+            <h4>WebSocket Collaboration</h4>
+          </div>
+          <p>Optional real-time co-editing sessions over a tiny Node relay — shared cursors and live note sync without ever storing notes server-side.</p>
         </div>
       </div>
     </div>
@@ -402,22 +418,22 @@
     <div class="container">
       <div class="creator-section">
         <div class="creator-avatar">
-          <img src="./inkforge_logo.jpeg" alt="Aryan Ahirwar — VIPHACKER100" />
+          <img src="./inkflow_logo.jpeg" alt="Aryan Ahirwar — VIPHACKER100" />
         </div>
         <h2 class="creator-name">Aryan Ahirwar</h2>
-        <div class="creator-role">Lead Architect &amp; Creator of InkForge (VIPHACKER100)</div>
+        <div class="creator-role">Lead Architect &amp; Creator of Inkflow (VIPHACKER100)</div>
         <p class="creator-bio">
-          Built with a passion for classical typography, digital craftsmanship, and privacy-first web software. InkForge is fully open-source and welcoming to community contributions, font additions, and paper styles.
+          Built with a passion for classical typography, digital craftsmanship, and privacy-first web software. Inkflow is fully open-source and welcoming to community contributions, font additions, and paper styles.
         </p>
         <div class="creator-links">
-          <a href="https://github.com/VIPHACKER100/InkForge" target="_blank" rel="noopener noreferrer" class="btn-cta">
+          <a href="https://github.com/VIPHACKER100/Inkflow" target="_blank" rel="noopener noreferrer" class="btn-cta">
             <i class="fa-brands fa-github"></i> GitHub Repository
           </a>
-          <a href="https://github.com/VIPHACKER100/InkForge/issues" target="_blank" rel="noopener noreferrer" class="btn-secondary">
+          <a href="https://github.com/VIPHACKER100/Inkflow/issues" target="_blank" rel="noopener noreferrer" class="btn-secondary">
             <i class="fa-solid fa-bug"></i> Report Issue / Suggest Feature
           </a>
           <a href="./LICENSE" target="_blank" class="btn-secondary">
-            <i class="fa-solid fa-scale-balanced"></i> ISC License
+            <i class="fa-solid fa-scale-balanced"></i> MIT License
           </a>
         </div>
       </div>
@@ -430,12 +446,12 @@
   <footer class="footer">
     <div class="container footer-inner">
       <div class="footer-text">
-        © 2026 <strong>InkForge</strong> — Created by Aryan Ahirwar. Licensed under ISC.
+        © 2026 <strong>Inkflow</strong> — Created by Aryan Ahirwar. Licensed under MIT.
       </div>
       <ul class="footer-links">
         <li><a href="./index.html">Studio Editor</a></li>
         <li><a href="./docs/README.md">Documentation</a></li>
-        <li><a href="https://github.com/VIPHACKER100/InkForge" target="_blank" rel="noopener noreferrer">GitHub</a></li>
+        <li><a href="https://github.com/VIPHACKER100/Inkflow" target="_blank" rel="noopener noreferrer">GitHub</a></li>
         <li><a href="#top">Back to top ↑</a></li>
       </ul>
     </div>
@@ -458,8 +474,8 @@
     const demoRetrace = document.getElementById('demo-retrace-toggle');
     const demoLines = document.getElementById('demo-lines-toggle');
 
-    /* ── Theme State ── */
-    let isDark = localStorage.getItem('inkforge-dark') === '1';
+    /* ── Theme State (synced with the main app's inkflow-dark key) ── */
+    let isDark = localStorage.getItem('inkflow-dark') === '1';
 
     function applyDark() {
       document.documentElement.classList.toggle('dark', isDark);
@@ -470,7 +486,7 @@
     if (darkToggle) {
       darkToggle.addEventListener('click', () => {
         isDark = !isDark;
-        localStorage.setItem('inkforge-dark', isDark ? '1' : '0');
+        localStorage.setItem('inkflow-dark', isDark ? '1' : '0');
         applyDark();
       });
     }
@@ -541,7 +557,7 @@
       }
 
       // Handwriting Rendering
-      const text = (demoInput && demoInput.value.trim()) ? demoInput.value : 'InkForge: Natural handwriting with AI precision.';
+      const text = (demoInput && demoInput.value.trim()) ? demoInput.value : 'Inkflow: Natural handwriting with AI precision.';
       const jitterMag = parseFloat(demoJitter ? demoJitter.value : 0.65);
       const driftMag = parseFloat(demoDrift ? demoDrift.value : 1.2);
       const doRetrace = demoRetrace ? demoRetrace.checked : true;

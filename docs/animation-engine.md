@@ -1,101 +1,119 @@
-<p align="center">
-  <img src="../inkforge_logo.jpeg" alt="InkForge Logo" width="80" style="border-radius: 50%; box-shadow: 0 4px 12px rgba(0,0,0,0.15);" />
-</p>
+# 🎬 Animation Engine
 
-# ✍️ Animation Engine
-
-This document explains the live handwriting animation that makes text appear as if it is being written by a human hand.
+This document describes Inkflow's live writing animation system — the unified layout engine integration, requestAnimationFrame loop, SVG pen tracking, viewport auto-scrolling, and coordinate calibration.
 
 ---
 
 ## Overview
 
-`startAnimation()` orchestrates the entire writing animation. The pipeline is:
+The **✍ Animate** button converts static text into a real-time handwriting demonstration, writing each character one by one with a floating pen cursor that tracks the writing position across canvas pages.
 
-```
-raw text → sanitizeText() → parseRichSyntax() → layoutText() → char queue
-    → paper + page setup → requestAnimationFrame draw loop
-    → character-by-character drawing with human variations
-    → pen cursor + auto-scroll → renderText() final pass
-```
-
-When animation finishes, the canvas is finalized through the normal `renderText()` path, guaranteeing WYSIWYG consistency between animation and exported output.
+In v1.2.0, the animation engine now uses the shared `layoutText()` function for all coordinate computation, ensuring pixel-perfect parity between static renders and animated playback.
 
 ---
 
-## Key Functions
+## Animation Sequence
 
-| Function | Role |
-| :--- | :--- |
-| `startAnimation()` | Entry point — builds the queue, sets up pages, launches the RAF loop |
-| `stopAnimation()` | Cancels the loop and hides the pen cursor |
-| `buildCharQueue(text)` | Thin wrapper returning the character queue from `layoutText()` |
-| `layoutText(text)` | Unified layout engine (routes to Two-Column / Cornell / Clean-Standard) |
-| `getCharVariation(rotMax, pressure, fontSize, isIndic, paperStyle)` | Generates per-character human variation (returns `tiltDeg`, `scaleX`, `scaleY`, `shearX`, `baselineOff`, `spacingExtra`, `pressureMod`, `opacity`, `isRetrace`) |
+```mermaid
+sequenceDiagram
+    participant User as User Click
+    participant Layout as layoutText — Unified Engine
+    participant Draw as Animation Loop (RAF)
+    participant Pen as SVG Pen Cursor
+    participant Page as Canvas Context
+    participant Scroll as Viewport Auto-Scroll
+
+    User->>Layout: Start Animation
+    Layout->>Layout: Compute queue[], pageTexts[], pageCount
+    Layout->>Draw: Start requestAnimationFrame Loop
+    loop Every Frame
+        Draw->>Page: Draw chunk of characters (S.animSpeed per frame)
+        Draw->>Pen: Update X,Y screen coordinates
+        Draw->>Scroll: Auto-scroll if pen near viewport edge
+    end
+    Draw->>User: Complete — renderText() for final state
+```
 
 ---
 
 ## Animation Pipeline
 
-### 1. Queue Construction
-The text is sanitized, run through `parseRichSyntax()` to strip study syntax and extract sticky notes, callouts, highlights, and flashcards, then passed to `layoutText()`. The result is a `queue` array of character render items — each carrying the character, coordinates, font, and per-character variation. Sticky/callout placeholder items and bare `Answer:` lines (v1.6.11, when margin labels are on) are skipped by the pen — they appear via their margin decorations in the final `renderText()` pass.
-
-### 2. Page Setup
-`clearPages()` removes existing pages; then each page is created with `createPage(pageNum)` — a full A4 canvas plus a `contenteditable` editor overlay for live editing. All pages are drawn with their paper background before animation begins.
-
-### 3. Frame Loop
-A `requestAnimationFrame` loop processes `S.animSpeed` characters per frame (1–30, default 8). For each character it:
-
-- Draws the glyph with the configured font, size, and ink color
-- Applies per-character variation (tilt, anisotropic scale X/Y, micro-shear via `ctx.transform()`, baseline offset, spacing, opacity) via `getCharVariation()`
-- Advances a pen-cursor element to the character position
-- Auto-scrolls the viewport to keep the writing line visible
-
-### 4. Sticky Notes & Callouts
-After the primary characters are placed, `paintStickyNotes()` and `paintCallouts()` run per page as post-passes, drawing the side-note elements into the margins.
-
-### 5. Completion
-On the last character the loop stops, the pen hides, `isAnimating` is cleared, and `renderText(S.text)` produces the final stable canvas.
+```mermaid
+graph TD
+    A[User triggers Start Animation] --> B[stopAnimation — cancel any active loop]
+    B --> C["layoutText(text) — build unified queue"]
+    C --> D[Create empty canvases with paper backgrounds]
+    D --> E[Initialize requestAnimationFrame Loop]
+    E --> F[Draw S.animSpeed characters on their target pages]
+    F --> G[Calculate pen position in A4 coordinates]
+    G --> H[Scale A4 coordinates to viewport client coordinates]
+    H --> I[Position floating pen SVG]
+    I --> J[Auto-scroll viewport if pen near edges]
+    J --> K{All queue characters drawn?}
+    K -->|Yes| L[Hide pen, call renderText for final state]
+    K -->|No| E
+```
 
 ---
 
-## Human Variation Model
+## Viewport Coordinate Calibration
 
-Each character is rendered slightly differently using randomized parameters from `getCharVariation()`:
+The floating absolute SVG pen (`#pen-cursor`) must perfectly match canvas rendering coordinates across different screen dimensions:
 
-| Parameter | Behavior |
-| :--- | :--- |
-| `tiltDeg` | Slight left/right rotation (±`rotationMax`°, default 1°) |
-| `scaleX` | Anisotropic horizontal scaling jitter (independent of `scaleY`) |
-| `scaleY` | Anisotropic vertical scaling jitter (±8% × `realism`) |
-| `shearX` | Horizontal micro-shear applied via `ctx.transform()` (±0.022 × `realism`), giving each letter a subtly different slant |
-| `baselineOff` | Tiny baseline wander for organic lines |
-| `spacingExtra` | Letter-spacing jitter |
-| `pressureMod` | Subtle opacity variation weighted by the pressure setting (0.12) |
-| `opacity` | Per-glyph alpha applied during drawing |
-| `isRetrace` | Whether this glyph gets a faint 1px double-stroke (Rare Imperfections mode) |
+```javascript
+const rect = canvas.getBoundingClientRect();
+const scaleX = rect.width / PAGE_W;
+const scaleY = rect.height / PAGE_H;
 
-The `Bleed` setting (`S.bleed`, 0–2.5, default 0.5) adds a drop-shadow offset below each glyph emulating ink spread into paper fibers. When **Rare Imperfections** is enabled the bleed radius is further modulated per character by `pressureMod` so heavier-pressure glyphs bleed slightly more, mirroring real pen dynamics.
+penEl.style.left = (rect.left + item.x * scaleX) + 'px';
+penEl.style.top = (rect.top + item.y * scaleY + window.scrollY) + 'px';
+```
 
----
+### Scale Calculations
 
-## Controls
-
-- **Animation Speed** (`#animSpeed`): 1 (slow/handwriting) to 30 (fast) — defaults to 8
-- **Start**: `startAnimation()` — animates whatever is currently in the text area
-- **Stop**: `stopAnimation()` — freezes the current frame instantly
+$$\text{scaleX} = \frac{\text{getBoundingClientRect().width}}{\text{PAGE\_W}}$$
+$$\text{scaleY} = \frac{\text{getBoundingClientRect().height}}{\text{PAGE\_H}}$$
 
 ---
 
-## Performance
+## Auto-Scroll During Animation (v1.2.0)
 
-- Uses a single `requestAnimationFrame` loop (no timers)
-- Characters are drawn directly onto the persistent A4 canvases — no per-frame buffer copies
-- `getOptimalAnimationSettings()` (index.js:4278) computes `{ useRAF, smoothing }` from screen refresh rate; defined for future use
-- Animating 500+ characters at speed 8 completes in ~2 seconds on typical hardware
+The viewport automatically scrolls to keep the pen cursor visible:
 
-## Edge Cases
+```javascript
+const targetScroll = rect.top + item.y * scaleY + window.scrollY - window.innerHeight / 2;
+if (rect.top + item.y * scaleY < 120 || rect.top + item.y * scaleY > window.innerHeight - 120) {
+  window.scrollTo({ top: Math.max(0, targetScroll), behavior: 'smooth' });
+}
+```
 
-- **Empty text**: `startAnimation()` shows a warning toast and returns without creating pages
-- **Single page**: no pagination nav is needed; the loop simply draws and stops
-- **Clean paper style**: neutralizes per-character jitter for a clean typographic look (see [Handwriting Engine](./handwriting-engine.md))
+The 120px threshold ensures the pen stays comfortably within the viewport center rather than hugging the edges.
+
+---
+
+## Animation Speed Control
+
+The `S.animSpeed` property (range: 1–30) controls how many characters are drawn per animation frame:
+
+- **1–3**: Slow, dramatic writing for presentations
+- **5–10**: Natural handwriting pace
+- **15–30**: Fast fill for long documents
+
+---
+
+## Animation Completion
+
+When the queue is exhausted, the engine:
+1. Hides the pen cursor (`display: none`)
+2. Sets `isAnimating = false`
+3. Calls `renderText(S.text)` to ensure the final static state includes all page editor syncing and exact layout consistency
+
+---
+
+## Key Design Decisions
+
+- **Unified `layoutText()`**: Both `renderText()` and `startAnimation()` (render-pipeline.js) call the same layout engine, guaranteeing identical character positions.
+- **requestAnimationFrame** is used instead of `setInterval` for smooth, GPU-synced 60fps rendering with automatic throttling when the tab is backgrounded.
+- **Character queue pre-computation** calculates all coordinates before animation starts, avoiding mid-animation layout recalculations.
+- **Absolute positioning** for the pen cursor avoids CSS transform conflicts and ensures pixel-perfect tracking.
+- **Auto-scroll** prevents the pen from writing off-screen during long document animations.

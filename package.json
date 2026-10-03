@@ -1,33 +1,46 @@
 {
-  "name": "inkforge",
-  "version": "1.6.24",
+  "name": "inkflow",
+  "version": "1.20.1",
   "description": "AI Handwritten Notes Generator",
   "main": "index.js",
-  "directories": {
-    "doc": "docs"
-  },
   "scripts": {
-    "test": "node scripts/smoke-test.mjs",
-    "lint": "eslint index.js sw.js scripts/check-versions.mjs scripts/smoke-test.mjs",
-    "check-versions": "node scripts/check-versions.mjs"
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "server": "node server.js",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
+    "check:version": "node scripts/check-version.js",
+    "lhci": "lhci autorun",
+    "lint": "eslint index.js font-compilation.js paper-renderer.js text-layout.js export-renderers.js export-manager.js diagram-engine.js cursive-connector.js template-manager.js flashcards.js voice-notes.js ai-postprocess.js margin-labels.js markdown-parser.js collaborative-engine.js contextual-jitter-engine.js stroke-prediction-engine.js layer-compositor.js audio-recorder.js script-detector.js server.js",
+    "lint:fix": "eslint --fix index.js font-compilation.js paper-renderer.js text-layout.js export-renderers.js export-manager.js diagram-engine.js cursive-connector.js template-manager.js flashcards.js voice-notes.js ai-postprocess.js margin-labels.js markdown-parser.js collaborative-engine.js contextual-jitter-engine.js stroke-prediction-engine.js layer-compositor.js audio-recorder.js script-detector.js server.js",
+    "format": "prettier --write index.js font-compilation.js paper-renderer.js text-layout.js export-renderers.js export-manager.js diagram-engine.js cursive-connector.js template-manager.js flashcards.js voice-notes.js ai-postprocess.js margin-labels.js markdown-parser.js collaborative-engine.js contextual-jitter-engine.js stroke-prediction-engine.js layer-compositor.js audio-recorder.js script-detector.js server.js",
+    "format:check": "prettier --check index.js font-compilation.js paper-renderer.js text-layout.js export-renderers.js export-manager.js diagram-engine.js cursive-connector.js template-manager.js flashcards.js voice-notes.js ai-postprocess.js margin-labels.js markdown-parser.js collaborative-engine.js contextual-jitter-engine.js stroke-prediction-engine.js layer-compositor.js audio-recorder.js script-detector.js server.js"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/VIPHACKER100/InkForge.git"
+    "url": "git+https://github.com/VIPHACKER100/Inkflow.git"
   },
-  "keywords": [
-    "handwriting",
-    "notes",
-    "ai",
-    "generator"
-  ],
+  "keywords": [],
   "author": "",
-  "license": "ISC",
+  "license": "MIT",
   "bugs": {
-    "url": "https://github.com/VIPHACKER100/InkForge/issues"
+    "url": "https://github.com/VIPHACKER100/Inkflow/issues"
   },
-  "homepage": "https://github.com/VIPHACKER100/InkForge#readme",
+  "homepage": "https://github.com/VIPHACKER100/Inkflow#readme",
   "dependencies": {
-    "@vercel/analytics": "^2.0.1"
+    "jsdom": "^30.0.1",
+    "ws": "^8.21.0"
+  },
+  "devDependencies": {
+    "@lhci/cli": "^0.15.1",
+    "@playwright/test": "^1.63.0",
+    "@vitest/coverage-v8": "^4.1.11",
+    "eslint": "^10.9.1",
+    "eslint-config-prettier": "^10.1.8",
+    "prettier": "^3.9.6",
+    "vite": "^6.3.5",
+    "vitest": "^4.1.11"
   }
 }

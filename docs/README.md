@@ -1,12 +1,8 @@
-<p align="center">
-  <img src="../inkforge_logo.jpeg" alt="InkForge Logo" width="90" style="border-radius: 50%; box-shadow: 0 4px 12px rgba(0,0,0,0.15);" />
-</p>
+# 📖 Inkflow Documentation
 
-# 📖 InkForge Documentation
+Welcome to the **Inkflow** documentation hub. This folder contains all technical, design, and operational documentation for the project.
 
-Welcome to the **InkForge** documentation hub. This folder contains all technical, design, and operational documentation for the project.
-
-**Current Version**: 1.6.26 — Brand Identity & Minimalist Scribe Flame Emblem (`inkforge_logo.jpeg`); Standalone About Page (`about.html` & `about.css`) with real-time interactive Realism Engine canvas simulator, feature breakdown, architecture cards, and privacy guarantee; Top toolbar and sidebar navigation enhancements in `index.html` (clickable logo, `ℹ️ About` button, sidebar drawer footer); PWA Manifest shortcut and Service Worker precache updates for complete offline support. Previous: 1.6.25 — Enhanced Realism Engine (anisotropic `scaleX`/`scaleY` jitter; micro-shear `shearX` via `ctx.transform()` in all draw paths; pressure-correlated ink bleed radius when Rare Imperfections is on; universal retrace double-stroke in all render contexts; Devanagari / Indic shear protection); Blue Ink Pen preset (`🖊️ #000F55` — deep royal-blue ballpoint/gel pen colour); `updateInkPresetActive()` helper; CSS `.active-ink` accent-ring with micro-animation.
+**Current Version**: 1.6.0 — Modular Architecture, Rich Syntax, PWA, 20 JS Files
 
 ---
 
@@ -16,49 +12,61 @@ Welcome to the **InkForge** documentation hub. This folder contains all technica
 
 | Document | Description |
 | :--- | :--- |
-| [System Architecture](./system-architecture.md) | High-level component map, data flow, rendering pipeline, and dual-page structure (`index.html` + `about.html`) |
-| [State Management](./state-management.md) | Global config schema, dual input paths, hydration loop, localStorage + IndexedDB |
-| [Handwriting Engine](./handwriting-engine.md) | Unified `layoutText()`, per-character transforms, Indic script support, rich study syntax |
-| [Paper Rendering](./paper-rendering.md) | Background styles, grain texture shader, ruling/grid math, header box |
+| [System Architecture](./system-architecture.md) | High-level component map, data flow, rendering pipeline |
+| [State Management](./state-management.md) | Global config schema, dual input paths, hydration loop, localStorage |
+| [Handwriting Engine](./handwriting-engine.md) | Unified `layoutText()`, per-character transforms, Indic script support |
+| [Paper Rendering](./paper-rendering.md) | Background styles, grain texture shader, ruling/grid math |
 | [Animation Engine](./animation-engine.md) | Live writing animation, auto-scroll, pen tracking |
-| [Export Pipelines](./export-pipelines.md) | 2×-upscaled Blob-based PNG/JPG/SVG, lossless PDF, clipboard copy, toast notifications |
+| [Export Pipelines](./export-pipelines.md) | Blob-based PNG/JPG/SVG, PDF, clipboard copy, toast notifications |
 
 ### 🤖 Integrations
 
 | Document | Description |
 | :--- | :--- |
-| [AI Integration](./ai-integration.md) | OpenRouter + Anthropic multi-provider, SSE streaming, dynamic models, 5 workflows |
-| [Custom Font Suite](./custom-font-suite.md) | HandFonted Studio: tracing, RDP smoothing, OpenType compilation, IndexedDB glyphs |
+| [AI Integration](./ai-integration.md) | OpenRouter + Anthropic multi-provider, SSE streaming, dynamic models |
+| [AI Assistant Module](./ai-assistant.md) | Provider routing, Ollama local AI, grammar correction, key persistence |
+| [Custom Font Suite](./custom-font-suite.md) | HandFonted Studio: tracing, RDP smoothing, OpenType compilation |
 
 ### 🎨 Design & UX
 
 | Document | Description |
 | :--- | :--- |
-| [UI Design System](./ui-design-system.md) | CSS custom properties, theme tokens, layout grid structure, theme packs, brand styling |
-| [UX Interactions](./ux-interactions.md) | Responsive layout, inline editing, collapsible panels, debounced rendering, study tools, navigation |
+| [UI Design System](./ui-design-system.md) | CSS custom properties, theme tokens, layout grid structure |
+| [UX Interactions](./ux-interactions.md) | Responsive layout, inline editing, collapsible panels, debounced rendering |
+
+### 📱 New in v1.6.0
+
+| Document | Description |
+| :--- | :--- |
+| [Study Mode & Flashcards](./study-mode.md) | Flashcard review, voice-to-notes, theme packs, rich syntax |
+| [Notebooks System](./notebooks.md) | IndexedDB CRUD for persistent multi-document management |
+| [PWA — Progressive Web App](./pwa.md) | Service worker, manifest, offline caching strategy |
 
 ### 📘 Guides & References
 
 | Document | Description |
 | :--- | :--- |
-| [Getting Started](./getting-started.md) | Setup, prerequisites, running the app locally, file structure |
+| [Getting Started](./getting-started.md) | Setup, prerequisites, running the app locally |
 | [Configuration Guide](./configuration-guide.md) | All user-facing controls, ranges, and defaults explained |
 | [API Reference](./api-reference.md) | Complete public JavaScript function reference |
 | [Deployment Guide](./deployment.md) | Hosting options, CDN setup, production checklist |
 | [Accessibility](./accessibility.md) | WCAG considerations, keyboard navigation, screen reader support |
 | [Performance](./performance.md) | Optimization techniques, benchmarks, rendering budget |
 | [Contributing](./contributing.md) | Code style, PR workflow, issue templates |
+| [Roadmap & Progress Log](./roadmap.md) | Phase plan and the pass-by-pass progress record |
+| [Upgrade Plan](./upgrade-plan.md) | v1.9.0 → v1.20.1 plan, marked complete with milestone table |
+| [Feature Gap Analysis](./feature-gap-analysis.md) | Historical fork-vs-upstream analysis (all gaps closed as of v1.7.0) |
 | [Changelog](./changelog.md) | Version history and release notes |
+| [Upgrade Plan](./upgrade-plan.md) | v1.9 → v2.0 upgrade roadmap: measured health snapshot, phased plan, milestones |
 
 ---
 
 ## 🔗 Quick Links
 
-- **Live Studio Editor**: Open `index.html` in any modern browser
-- **About & Feature Portal**: Open `about.html` for interactive realism engine playground & specs
-- **GitHub Repository**: [VIPHACKER100/InkForge](https://github.com/VIPHACKER100/InkForge)
-- **Source Code**: `index.html` · `index.css` · `index.js` · `about.html` · `about.css`
-- **Creator**: Aryan Ahirwar (VIPHACKER100)
+- **Live App**: Open `index.html` in any modern browser
+- **Source Code**: `index.js` (~900 lines) + 30 modules — one ES-module graph bundled by Vite (166 kB / 54 kB gzip)
+- **Modules**: `font-compilation.js` · `paper-renderer.js` · `text-layout.js` · `export-renderers.js` · `diagram-engine.js` · `cursive-connector.js` · `template-manager.js` · `markdown-parser.js` · `collaborative-engine.js` · `contextual-jitter-engine.js` · `stroke-prediction-engine.js` · `layer-compositor.js` · `audio-recorder.js` · `script-detector.js` · `ai-assistant.js` · `notebooks.js` · `server.js` · `sw.js`
+- **Creator**: Aryan Ahirwar (VIPHACKER.100)
 
 ---
 

@@ -1,388 +1,364 @@
-<p align="center">
-  <img src="../inkforge_logo.jpeg" alt="InkForge Logo" width="80" style="border-radius: 50%; box-shadow: 0 4px 12px rgba(0,0,0,0.15);" />
-</p>
-
 # 📋 Changelog
 
-All notable changes to InkForge are documented in this file.
-
-## [1.6.26] — 2026-10-02
-
-### 🖋️ Brand Identity & Minimalist Scribe Flame Logo
-
-- **New Brand Emblem (`inkforge_logo.jpeg`)**: Designed and integrated a bespoke brand mark for InkForge featuring a two-tone copper (`#d36135`) and midnight-indigo fountain pen nib emerging from forge flames with an ink droplet.
-- **Universal Asset Refreshes**: Updated the app toolbar header avatar, favicon, Apple touch icon, PWA manifests, and documentation headers with the new logo.
-
-### 🌐 Standalone About Page (`about.html` & `about.css`)
-
-- **Interactive Realism Engine Playground**: Built an interactive HTML5 Canvas simulator on `about.html` powered by an embedded deterministic `mulberry32` PRNG. Allows users to type text, tweak jitter magnitude, adjust baseline drift (wobble), toggle notebook guidelines, and toggle double-stroke retrace in real time.
-- **Deep-Dive Feature Showcases**: Detailed visual cards exploring the Physics-Based Realism Engine, Artisanal Paper & Multi-Page Layouts, Generative AI Scribe, HandFonted Studio, 2× Lossless Multi-Format Exports, and 100% Offline-First PWA capabilities.
-- **Privacy Guarantee**: Clearly documents the 100% on-device processing guarantee — zero cloud note telemetry, local font synthesis, and private client-side API storage.
-- **Architecture & System Specs**: Outlines Vanilla ES2022 performance, Canvas 2D matrix transforms, dual IndexedDB/LocalStorage persistence, and OpenType.js TTF compilation.
-- **Documentation & Creator Credits**: Comprehensive documentation directory cards plus author bio and links for Aryan Ahirwar (VIPHACKER100).
-- **Synchronized Theme System**: Dark/Light mode toggle directly on the About page synchronizing with `localStorage.getItem('inkforge-dark')`.
-
-### 🧭 App Navigation Overhaul (`index.html`)
-
-- **Interactive Header Logo**: Clickable brand logo in `#toolbar` linking directly to `about.html`.
-- **Dedicated About Button**: Added `ℹ️ About` button in top toolbar with responsive icon/label styling.
-- **Sidebar Drawer Footer**: Added quick-access footer links (`ℹ️ About InkForge`, `📖 Docs`, `⭐ GitHub`) pinned to the bottom of the sidebar drawer.
-
-### 📦 PWA & Offline Support
-
-- **PWA Manifest Shortcut**: Added an "About InkForge" shortcut and repository URL metadata to `manifest.json`.
-- **Service Worker Pre-Caching**: Added `./about.html` and `./about.css` to `SHELL_URLS` in `sw.js` for 100% offline availability.
+All notable changes to Inkflow are documented in this file.
 
 ---
 
-## [1.6.25] — 2026-10-01
+## [1.20.1] — 2026-10-03
 
-### ✨ Enhanced Realism Engine
-
-- **Anisotropic Scale Jitter**: `getCharVariation()` now returns independent `scaleX` and `scaleY` values (previously the same value was shared). `scaleX` is biased toward horizontal compression (`×0.9` coefficient) while `scaleY` allows slight vertical stretch (`×1.1` coefficient), reproducing how real pen strokes widen and shorten under varying hand pressure.
-- **Micro-Shear (`shearX`)**: Each glyph receives a subtle horizontal shear (±0.022 × `S.realism` × `scriptRotMult`) applied via `ctx.transform()` in all main draw loops (`renderText`, `renderSinglePage`, and the animation `step()` RAF loop). This gives individual letters a slightly different lean direction, breaking the "mechanical italic" look of uniform slant.
-- **Pressure-Correlated Ink Bleed**: When **Rare Imperfections** is enabled, the per-glyph bleed shadow radius is dynamically modulated by `pressureMod` — heavier pressure glyphs bleed slightly more, matching real fluid ink dynamics on paper fibers.
-- **Universal Retrace Rendering**: The retrace / double-stroke pass (`isRetrace`) now executes in every draw context (static render, single-page redraw, and animation loop), not only in `renderText`. This ensures all render paths produce identical retrace artefacts.
-- **Clean Style Guard**: All three new transforms (`shearX`, anisotropic scale, retrace bleed) are automatically neutralised when `paperStyle === 'clean'`, preserving the crisp typographic baseline for Clean Notes.
-- **Devanagari / Indic Protection**: `shearX` is scaled by `scriptRotMult` (0.3) for Indic script, preventing shear from breaking connected matras and shirorekha top lines.
-
-### 🖊️ Blue Ink Pen Preset
-
-- **New Ink Preset — Blue Ink Pen (`#000F55`)**: A deep royal-blue gel / ballpoint pen colour added as the first preset in the ink row (`🖊️`). The hex `#000F55` closely matches the authentic ink tone of common ball-point pens.
-- **`updateInkPresetActive()` Helper**: Centralises preset button active-state management. Compares `S.inkColor` (case-insensitively) against every `button[data-ink]` element and toggles the `.active-ink` CSS class (accent-ring highlight). Called by `setInkPreset()`, the freeform color-picker `input` handler, `restoreState()`, and `resetToDefaults()` so the ring always reflects the live ink color.
-- **CSS `.active-ink` Style**: Added transition-smooth accent ring (`outline: 2px solid var(--accent); outline-offset: 2px; transform: scale(1.12)`) with per-button hover/active micro-animations for all preset buttons.
-
-### ✅ Testing
-
-- **Smoke test suite**: Expanded to cover enhanced realism transforms:
-  - `getCharVariation` with full `paperStyle` parameter returns neutral values on `'clean'`
-  - Anisotropic `scaleX` ≠ `scaleY` when `realism > 0`
-  - `shearX` magnitude scales with `S.realism`
-  - `setInkPreset('#000F55', 'Blue Ink Pen')` updates `S.inkColor`, picker value, and label text
-  - `index.html` contains `data-ink="#000F55"` and `data-ink-name="Blue Ink Pen"` preset button
+### 🌐 Changed — i18n coverage growth
+- Hindi translations extended to the **11 paper-style buttons** (Ruled/साफ़/सादा/ग्रिड/कानूनी पैड/विंटेज/डार्क/डॉट ग्रिड/इंजीनियरिंग/म्यूज़िक स्टाफ/डेटेड) and the **Copy/Print** export actions — 38 tagged chrome strings total. Round-trip toggle verified in-browser (EN ⇄ हिंदी with persistence).
+- Removed two unused nav string keys (the page-nav buttons are icon-only).
 
 ---
 
-## [1.6.24] — 2026-09-08
+## [1.20.0] — 2026-10-03
 
-### ✒️ Expanded Free Handwriting Fonts Collection (OFL / Apache 2.0)
+### ✨ Added — Phase F6: UI localization (first slice)
+- **`i18n.js`**: a string-table engine with English + Hindi (हिंदी) translations for the most visible chrome — toolbar buttons, all 11 sidebar section headers, primary actions (Render/Start/Stop/Connect/Reset), and the Flashcards modal title. `t(key)` falls back to English, then the key.
+- **🌐 language toggle** in the toolbar (shows the other language's label): switches instantly, persists in `inkflow-lang`, updates `document.documentElement.lang`, and survives reload.
+- Elements declare `data-i18n="key"` (26 tagged); extending coverage = add table entries + attributes.
+- **6 new unit tests** (264 total): en/hi key parity, no empty strings, toggle-label consistency, English fallback, last-resort key fallback, default language.
 
-- **12 New Open-Source Google Fonts Handwriting Styles**: Expanded the built-in typography library with 12 copyright-free handwriting typefaces:
-  - **Print Handwriting**: `Permanent Marker` (bold felt-tip marker), `Coming Soon` (playful casual print), `Short Stack` (rounded clean print), `Handlee` (gentle everyday handwriting), `Rancho` (brush casual block), `Amatic SC` (narrow hand-drawn caps), `Fuzzy Bubbles` (rounded friendly lettering).
-  - **Cursive & Script**: `Pacifico` (retro casual brush script), `Parisienne` (flowing French cursive), `Yellowtail` (flat-brush signage script), `Charm` (delicate flourishes), `Aladin` (expressive decorative calligraphic script).
-- **Comprehensive Font Selector**: The dropdown now houses over 40 distinct handwriting and calligraphic choices categorized under Print Handwriting, Cursive & Script, Devanagari / Hindi, and Clean fallback options.
-- **PWA Service Worker Pre-Cache Synchronization**: Synchronized the bundled Google Fonts stylesheet link in `sw.js` with `index.html` so newly added handwriting fonts are reliably cached for offline PWA operation.
-
-### 📱 Mobile Canvas Layout Fix
-
-- **Responsive Canvas Sizing (`getResponsiveCanvasWidth`)**: Canvas display width was previously hardcoded to `min(794, 720)px` regardless of viewport width. On narrow phones the canvas overflowed and CSS `max-width: 100%` squished it visually while the JS coordinate system was still 720px wide, causing misalignment between the ruled lines, the worksheet header, and the editor overlay. A new `getResponsiveCanvasWidth()` function computes the correct CSS display width at page-creation time and on every `resize` / `orientationchange` event:
-  - ≤ 480 px phones: `min(794, vw − 24)px` (6px gutter each side)
-  - ≤ 768 px tablets / large phones: `min(794, vw − 32)px` (16px gutter each side)
-  - Desktop: `min(794, 720)px` (unchanged)
-
-- **Worksheet Header Repositioned Inside Canvas Container**: The Date / P. No. header overlay (`.worksheet-header`) was previously appended to `.page-wrapper`, so its `position: absolute; right: 8px` was measured against the outer flex wrapper rather than the actual canvas surface. On mobile, where the canvas is narrower than the wrapper, the box floated outside the paper area. It is now appended to `.canvas-container` (the `position: relative` element that wraps `<canvas>`, `.page-editor`, and `.margin-text-overlay`), keeping it anchored to the canvas top-right corner at all viewport sizes.
-
-- **`window.resize` Handler Updated**: The resize listener now updates `canvas.style.width` and `canvas.style.height` for every page before recalculating editor styles, so rotating the device or resizing the browser window immediately reflows all pages.
-
-- **CSS — Layout Width Constraints**: `#page-container` and `.page-wrapper` now carry `width: 100%; max-width: 720px` so the flexbox tree properly constrains child elements on narrow viewports instead of overflowing. `.canvas-container` switched from `display: inline-block` to `display: block`.
-
-- **CSS — Mobile Media Queries (≤768px and ≤480px)**:
-  - `#canvas-area`: `overflow-x: hidden; align-items: center`
-  - `.canvas-container`: `max-width: calc(100vw − 16px); width: 100%`
-  - `.canvas-page`: `width: 100% !important; height: auto !important` (preserves A4 aspect ratio)
-  - `.worksheet-header`: `right: 4px; top: 4px`
-  - `.worksheet-input-box`: `width: 56px; font-size: 10px`
-  - Smallest phones (≤480px) get `padding: 8px 6px 80px` on `#canvas-area` and `max-width: calc(100vw − 12px)` on `.canvas-container`
+> Phase F is now complete (F1 spaced repetition · F2 Gemini provider · F3 template gallery · F4 relay hardening · F5 HandFonted improvements · F6 localization).
 
 ---
 
-## [1.6.23] — 2026-09-07
+## [1.19.0] — 2026-10-03
 
-### 🐛 Fixed
+### ✨ Added — Phase F5: HandFonted improvements
+- **Live jitter preview**: after saving a glyph, a new "In Your Notes (live jitter)" strip draws it five times through the real handwriting pipeline — seeded tilt/scale/micro-shear via `getCharVariationWithContext` plus pressure-correlated ink bleed at the live `S.realism` — on a ruled baseline. What you see is exactly how the glyph behaves inside actual notes.
+- **`.inkfont` community-share format**: project export now downloads `<FontName>.inkfont` — the project payload wrapped with a `format: 'inkfont'` marker + `formatVersion: 1` for clean future migrations (`inkfont-format.js`, pure and node-safe). Import accepts both `.inkfont` and the legacy bare-project JSON; **4 new unit tests** (258 total) cover the round-trip, marker stripping, legacy acceptance and invalid-JSON rejection. Studio button labels updated to match.
 
-- **Markdown Leakage on Canvas** (`sanitizeAiResponse`): AI provider responses containing triple-backtick code fences (` ```python … ``` `), inline backtick spans (`` `term` ``), bold/italic markers (`**bold**`, `_italic_`, `__bold__`), and raw HTML tags (`<br>`, `<strong>`) were passed directly to the canvas renderer and appeared as literal handwritten characters. A `sanitizeAiResponse()` post-processing pass now runs on every AI result before it reaches the textarea or renderer. Code-fence body content is preserved (only the fence markers are stripped); InkForge's own markup (`==highlights==`, `[sticky:…]`, `[callout:…]`, `# headings`) is left completely intact.
+---
 
-- **Q&A Numbering Skips and Near-Duplicate Questions** (`resequenceQA`): AI-generated flashcard pairs were numbered by the model itself (e.g. `Q3:`, `Q7:`) rather than by InkForge, so skipped or duplicated model numbers produced gaps and merged content in the margin label system. Additionally, the same concept was occasionally generated twice with near-identical wording. `resequenceQA()` now runs after `sanitizeAiResponse()` and (a) renumbers every `Q:/A:` pair sequentially from `Q1` using a local counter, completely ignoring the model's own numbering, and (b) drops any question whose trigram Jaccard similarity to any previously accepted question meets or exceeds 0.72, also dropping the paired `A:` so the note is never left with a dangling answer.
+## [1.18.0] — 2026-10-03
 
-### ✨ Enhanced
+### 🔒 Added — Phase F4: collaboration relay hardening
+- **Room-token gate**: set `INKFLOW_ROOM_TOKEN` when running `node server.js` — connections without a matching `?token=` are closed with 4401 before joining. The client surfaces **"Room token required"** and stops its reconnect loop (set `localStorage.inkflow-collab-token` to match). Without the env var the relay behaves exactly as before (LAN mode).
+- **Per-connection message rate limit**: 240 messages / 10 s sliding window; flooding closes the socket with 1008.
+- **Per-IP concurrent-connection cap**: 5 per address; the 6th is closed with 1013.
+- **64 KB frame cap** on the WebSocket server (oversized frames close with 1009); binary frames close with 1003.
+- `server.js` refactored into a `createCollabServer({ port, token })` factory (the direct-run path is unchanged) — **7 new unit tests** (254 total) cover the token gate (none/wrong/correct), the per-IP cap, the rate limit and the payload cap on ephemeral ports.
 
-- **Offline Smart Arrange Upgrade** (`smartArrangeLocal`): Major upgrade to the offline, deterministic text formatting engine. In addition to bullet normalization and spacing cleanup, it now automatically formats:
-  - Markdown headers (`#Title` → `# Title`, `##   Heading` → `## Heading`)
-  - InkForge study tags (`[sticky : yellow]` → `[sticky:yellow]`, `[callout : info]` → `[callout:info]`)
-  - Highlight spacing (`== key ==` → `==key==`)
-  - Bullet capitalization & expanded markers (`*`, `•`, `‣`, `+`, `⁃`, `◦`, `▪`, `▫`, `–`, `—` → `- `, with preserved indentation)
-  - Q&A flashcard labels (`q 1 :` / `question 1:` → `Q1:`, `a 1 :` / `ans 1:` → `A1:`)
-  - Punctuation spacing (removes space before `,.;:!?` and adds space after `,;!?`)
-  - Indentation safety (collapses internal double spaces while preserving leading line indentation for code & nested lists)
-  - Structural line breaks before headers (`#`/`##`) and Q&A questions (`Q:`/`Q1:`)
+---
 
-### 📱 Mobile UX
+## [1.17.0] — 2026-10-03
 
-- **Compact Icon-Only Toolbar (≤768px)**: The top toolbar previously laid out at ~793px of content inside a 390px phone viewport — buttons ran off-screen and were untappable. Button wording (`Animate`, `Clear`, `Study Mode`, autosave text, page counter) is now wrapped in `.btn-label` spans and hidden on small screens, so the toolbar fits exactly (verified 390px = 390px). Emoji glyphs, `title` tooltips, and new `aria-label` attributes carry the meaning; on ≤480px the logo text hides as well.
-- **Proper Sidebar Drawer**: The hamburger toggle became `setSidebarOpen()`, which synchronously manages the drawer, a new `#sidebar-backdrop` scrim, body scroll-lock (`body.sidebar-open`), and `aria-expanded`/`aria-controls` state. The drawer closes on: scrim tap, `Escape`, or any tap on the note canvas (capture-phase listener, so the tap still reaches the page editor). Taps inside the drawer keep it open.
-- **Safe-Area & Stable Viewport**: `viewport-fit=cover` plus `env(safe-area-inset-*)` padding on the toolbar, drawer, bottom pagination, and modal sheets; `100dvh` replaces `100vh` so the layout no longer jumps when mobile browser chrome collapses.
-- **Full-Screen Mobile Modals**: `HandFonted Studio` and `Flashcards` modals render as edge-to-edge sheets on phones (100vw × 100dvh, zero radius, safe-area padding) instead of cramped 90vw cards.
-- **Touch Polish**: `touch-action: manipulation` on all interactive elements removes the 300ms double-tap-zoom delay; sidebar form inputs are forced to ≥16px so iOS Safari does not zoom on focus; the existing `@media (hover: none)` 44px touch-target rules remain in force.
+### ✨ Added — Phase F3: template gallery
+- **Four starter study layouts** registered in the template system and selectable from the Note Layout dropdown: **Lecture Notes** (topic/date header → main notes → Key Terms column), **Lab Report** (Objective → Method → Observations → Result / Conclusion, flowing in document order with section guide lines), **Vocabulary (Term / Definition)** (40/60 labeled columns), and **Reading Notes** (book/chapter header → main notes → Quotes & Page Refs column). Each carries zone labels and guide lines drawn by the layout-decoration pass.
+- All gallery templates resolve to finite, in-page zones at any page size/margin (validated by **5 new unit tests**, 247 total) and render verified in-browser.
 
-### ✅ Testing
+---
 
-- Smoke test suite expanded: **24 tests, 0 failures** (was 20 at 1.6.22). Covers `smartArrangeLocal` normalization (headers, bullets, tags, Q&A labels, indentation, punctuation), `layoutText()` pagination invariants (character conservation, page bounds, first-line skip), baseline-parity units, and the editor sync marker round-trip.
+## [1.16.0] — 2026-10-03
 
-## [1.6.22] — 2026-09-06
+### ✨ Added — Phase F1: spaced-repetition flashcards (SM-2 lite)
+- **Review scheduling**: flashcards now carry SM-2-lite review state — per-card `ease` (clamped 1.3–3.0), `interval`, `due` date and `reps`, persisted in localStorage (`inkflow-srs`). Card identity is an FNV-1a hash of the question text, so schedules survive answer edits and card reordering.
+- **Grade flow**: after flipping a card, four Anki-style grade buttons appear — **1 Again** (lapse: due now, ease −0.2), **2 Hard**, **3 Good**, **4 Easy** (ease boost + interval growth ×1.3) — with keyboard shortcuts 1–4. Grading auto-advances to the next card.
+- **Due badge**: the Flashcards Review header shows a live `📅 N due` badge (turns `✓ all reviewed` when clear), recomputed on open, render and grade.
+- Pure SRS engine (`cardId`, `gradeCard`, `isDue`, `countDue`, `loadSrsState`/`saveSrsState`) exported for tests — **15 new unit tests** (242 total) covering interval math, ease clamps, lapse resets and due counting.
+
+---
+
+## [1.15.0] — 2026-10-03
+
+### ⚡ Performance — Phase E complete (E1)
+- **Lighthouse CI budgets**: `lighthouserc.json` + a `lighthouse` CI job (chrome on ubuntu runners). `npm run lhci` audits both `dist/index.html` and `dist/about.html` per build. Assertions: **accessibility ≥ 0.9 (blocking)**; performance ≥ 0.4 and resource-size budgets are warn-level ratchets (headless perf scores vary ±0.09 run-to-run — raise the ratchet as optimizations land). Local: `npm run lhci`.
+
+### ✨ Added — Phase F first feature (F2)
+- **Google Gemini (AI Studio direct) provider**: new `🔑 Google Gemini (Direct)` option in the AI provider dropdown with 5 models (2.5 Flash/Flash Lite/Pro, 2.0 Flash/Flash Lite). `callGemini()` streams via `streamGenerateContent?alt=sse` with the browser-recommended key-in-query pattern, parses `candidates[].content.parts[].text` deltas, reuses the AI busy-state flow, per-provider key persistence (`inkflow-api-key-gemini`), and a friendly no-key path. The service worker never intercepts the Gemini endpoint.
+
+---
+
+## [1.14.0] — 2026-10-03
+
+### ⚡ Performance — Phase E (first slice)
+
+- **Paper-background cache hardened (E3)**: the static paper background (grain + ruling, ~2,200 noise iterations per page) was already cached per `(style, size, fontSize, lineHeight, margin, noteLayout)` key and blitted via `drawImage` — this pass added the missing **LRU cap (6 entries)**: each entry is a 794×1123 canvas (~3.5 MB), and a margin/size slider drag previously pinned every intermediate key (~140 MB worst case). Evicted keys simply redraw on demand.
+- **Non-blocking font suite (E2)**: the 50-family Google Fonts stylesheet now loads with the `media="print" onload` swap pattern — first paint no longer waits on ~45 `@font-face` rules (a `<noscript>` fallback keeps no-JS working). Canvas correctness is preserved by the existing `document.fonts.ready` re-render at boot and the per-selection `document.fonts.load()` re-render in the font picker. Service-worker precache URL unchanged.
+
+---
+
+## [1.13.1] — 2026-10-03
+
+### 🛠️ Fixed — Phase D4 accessibility audit (axe-core, WCAG 2.1 AA)
+- **Audit result**: light mode **zero violations**; dark mode's only remaining class is axe's glassmorphism artifact — it cannot composite the translucent sidebar/toolbar layers, computing light-mode backgrounds against dark text (manually verified: every flagged pair is ≥ 5:1 against the actual effective backgrounds; e.g. logo 12:1, sidebar labels 5.4:1). Theme tokens had already been hardened in a prior pass (light `--text-muted #6f6752` ≈ 4.7:1, dark `#948da9` ≈ 5.4:1).
+- **`role="textbox"` + `aria-multiline`** on the contentEditable page editor and margin-note overlays — their `aria-label`s were on a generic role (axe: aria-prohibited-attr, serious).
+- **`#canvas-area` is now keyboard-focusable** (`tabindex="0"`) — the scrollable canvas region previously wasn't reachable by keyboard (axe: scrollable-region-focusable, serious).
+- **about.css light `--accent` hardened** `#c0622a → #a34f1e` (matches index.css): small accent text (section tags, hero pill) was 3.79:1 — now 4.76:1 AA; white button text on accent improves to 5.7:1. Decorative glow/border tokens follow.
+- Audited: index.html light+dark and about.html (axe blocked by about.html's own CSP on injected scripts — verified by manual WCAG math over its token pairs; all pass with the accent fix).
+
+---
+
+## [1.13.0] — 2026-10-03
+
+**Window bridge fully retired** — the module architecture is complete (M2 epilogue).
+
+### ✨ Changed — Architecture
+- **`render-pipeline.js` extracted** (662 lines): `renderText`, `renderSpecificPage`, `debounceRender`/`triggerRender`, `startAnimation`/`stopAnimation`, page DOM management (`createPage`/`clearPages`/`updateEditorStyles`/`getGlobalTextFromEditors`/`getResponsiveCanvasWidth` + the resize reflow handler), `updatePageNav`/`navigatePage`, and the drafted-glyph image cache (moved from state.js — a draw-time concern). index.js: **1,461 → ~900 lines**.
+- **`settings-sync.js` extracted** (53 lines): the three sidebar control-sync helpers (`updateInkPresetActive`, `syncMarkdownPenControls`, `syncHinglishControls`) so persistence.js imports them instead of reading them off `window`.
+- **Every lazy `window.*` reader converted to real imports**: ai-assistant/notebooks/voice-notes/flashcards/handfonted-studio/persistence/layer-panel/ui-bindings now import `S`, `renderText`, `autosave`, `debounceRender`, and the sync helpers directly from state.js / render-pipeline.js / persistence.js / settings-sync.js / export-manager.js.
+- **The window bridge is gone**: no `window.S`, no `window.renderText`, no handler publications — the only remaining `window.*` reads are self-published module namespaces (console/debug + runtime-generated markup) and CDN globals. One documented exception: persistence.js's drafted-char highlight reads `window.ALL_TEMPLATE_CHARS` lazily (importing it would evaluate handfonted-studio's top-level window side effects in node-env tests).
+- index.js is now ~900 lines of pure app ownership: initApp/boot, prediction, page-editor focus logic, collaboration glue, AI registry, theme packs, error hook.
+
+### 🧪 Testing
+- 227/227 unit + 17/17 E2E + 0 lint errors; production bundle verified in-browser (render pipeline, ink presets, error-toast hook, collaboration UI) with the bridge confirmed absent (`typeof window.S === 'undefined'` while everything works).
+
+---
+
+## [1.12.0] — 2026-10-03
+
+**M2 exit criterion met + Phase D UX slice** — parallel-agent wave 4 plus the canvas a11y bridge.
+
+### ✨ Changed — Architecture (Phase B continuation)
+- **M2 exit criterion met: index.js is 1,461 lines** (< 1,500; was 2,253 at v1.11.0, 4,276 at the original audit).
+- **`layout-engine.js` extracted** (626 lines): `layoutText` (+ the private templated engine), the sticky/callout painters, and the margin-Q/Ans canvas drawing. `layoutText()` now takes `currentPrediction` as a parameter (owned by its callers).
+- **`shape-drawing.js` extracted** (178 lines): `drawArrowhead`/`drawShapeOrEdge` (rough.js shape painting, distinct from diagram-engine's layout/mermaid concern).
+- **`fontSwitcher`/`markdownParser` moved into `state.js`** (leaf-class instances, mirroring `cursiveConnector`); `script-detector.js`'s top-level `window` write gained a node-env guard so test imports of the state graph stay safe.
+- index.js's `getDiagramImage` delegating wrapper deleted — callers use `DiagramEngine.getDiagramImage` directly.
+
+### ✨ Added — Phase D UX
+- **D1 AI loading states**: AI actions set `aria-busy` + a busy style on the AI section, disable its buttons once, and restore them in a `finally` — every exit path (missing key, errors, offline arrange) recovers.
+- **D2 storage quota guard**: `autosave()` catches `QuotaExceededError` and shows a throttled (60 s) error toast with an export-and-clear rescue hint; non-quota errors still surface through the global error hook.
+- **D3 canvas a11y bridge**: each page canvas is `role="img"` with a descriptive `aria-label` pointing screen readers to the editable page overlay that carries the text.
+- **D5 slider limit hints**: all 9 sidebar sliders show min/max hint labels mirroring their input ranges.
+
+### 🧪 Testing
+- 227/227 unit + 17/17 E2E + 0 lint errors (12 warnings); production-verified in-browser (busy-state round-trip via offline Smart Arrange, hints, a11y labels).
+
+---
+
+## [1.11.0] — 2026-10-03
+
+**M2 completed + Phase C core quality** of `docs/upgrade-plan.md` — parallel-agent wave 3 plus follow-ups.
+
+### ✨ Changed — Architecture (M2 exit)
+- **All 113 inline HTML handlers migrated to `addEventListener`** (55 elements gained stable ids; compound `return false` links became `preventDefault()` calls) — the last reason for the ESLint `no-unused-vars` allowlist is gone: **the allowlist is deleted**.
+- **`ui-bindings.js` extracted** (805 lines, B4): 16 per-panel binders (`bindToolbar`, `bindTextPanel`, `bindFontStylePanel`, `bindEffectsPanel`, `bindPaperPanel`, `bindLayoutPanel`, `bindAIPanel`, `bindExportPanel`, `bindNotebooksPanel`, `bindAnimationPanel`, `bindPageNav`, `bindModals`, …) replace `bindUIActions()` and the scattered top-level bindings. index.js: **3,141 → 2,232 lines** (4,607 at v1.10.0's start).
+- **`layer-panel.js` extracted** (B3, 424 lines): the layer UI (add presets, move/duplicate/clear/flatten, add-dropdown) with a guarded `maybeUpdateLayerUI()` render hook; dead code removed (`addNewLayer`, `buildCharQueue`).
+- **Window bridge retired to its minimum**: only the lazy-reader publications remain (`renderText`, `autosave`, `debounceRender`, `S`, `updateInkPresetActive`, `syncMarkdownPenControls`, `syncHinglishControls`, `ALL_TEMPLATE_CHARS`, `renderSpecificPage`) — every handler-only publication is gone. Converting the remaining lazy readers to imports is a Phase B follow-up.
+
+### 🧪 Testing (Phase C)
+- **Export pipeline E2E (C2)**: 7 new assertions in `e2e/export-formats.spec.js` — PNG/JPG/transparent-PNG downloads with filename patterns, PDF in Standard + High presets (exercising `_upscaleCanvas`), SVG content validation from the downloaded file, real clipboard-image verification for Copy, and a `window.print` invocation counter. **17 E2E tests total.**
+- **Coverage ratchet in CI (C3)**: `@vitest/coverage-v8` wired into `npm run test:coverage` with thresholds (52% lines / 42% branches / 54% functions / 51% statements over the 15 module files) — CI now fails if coverage regresses; raise the ratchet with each release.
+- **Global error surface (C4)**: `window.onerror`-style `error` + `unhandledrejection` listeners surface failures as a rate-limited error toast (`showExportToast(msg, 'error')`) + console group — users can finally see and report failures.
+- `e2e/layer-manager.spec.js` updated to click the Add-Layer dropdown instead of the retired `window.addNewLayerPreset` publication.
+
+---
+
+## [1.10.0] — 2026-10-02
+
+**M2 Architecture** of `docs/upgrade-plan.md` — executed with parallel agents (two waves).
+
+### ✨ Changed — Architecture
+- **`handfonted-studio.js` extracted** (B1): the entire HandFonted Studio (~1,339 lines, 40+ functions) moved out of index.js into a 1,200-line module; shared glyph state (`draftedGlyphs`, the glyph image cache, and the IndexedDB glyph-persistence layer `getGlyphsDB`/`saveGlyphDB`/`pruneBlankGlyphs`) moved into `state.js` as live bindings. index.js: **4,607 → 3,141 lines** across this release.
+- **`persistence.js` extracted** (B2): `autosave()` (with its 1,000 ms debounce), `restoreState()`, and — newly factored out as pure functions — the autosave whitelist (`AUTOSAVE_KEYS`, 22 keys in byte-stable order), `buildAutosavePayload()` and `parseAutosaveState()`. `restoreState` moved in full; its three UI couplings go through the established lazy `window.*` pattern. **11 new unit tests** cover the whitelist round-trip, corrupt-JSON handling, and re-hydration semantics (227 total).
+- **Hashed production filenames + build-generated precache manifest** (B5): Vite emits `assets/index-[hash].js` / `-[hash].css`; `vite build` walks dist and injects the real file list between `BUILD-PRECACHE:BEGIN/END` markers in `dist/sw.js` (idempotent, fails loudly on drift). The hand-maintained precache array — the drift bug class that broke the SW twice — is gone. CI's dist sanity check is hash-safe.
+- **export-manager → export-renderers**: direct imports replace the `window.ExportRenderers` indirection; the namespace stays for console access.
+
+### 🧪 Testing
+- **3 new E2E specs** (10 total): `about-page.spec.js` (playground canvas pixels, dark-mode persistence, nav back), `handfonted-studio.spec.js` (modal open/tab-switch/close round-trip), `diagram-dropdown.spec.js` (click-toggle, outside-click/Escape close, template insertion). **227/227 unit + 10/10 E2E + 0 lint errors.**
+
+### 🛠️ Fixed
+- About-page hero pill was hardcoded to the release version (drifted to v1.8.0); now bumped with the release (full dynamic sync is a Phase D nicety).
+
+---
+
+## [1.9.0] — 2026-10-02
+
+**M1 Foundation** of `docs/upgrade-plan.md`: the app is now a real ES-module build.
+
+### ✨ Changed — Architecture (upgrade plan A2/A3)
+- **ES-module conversion complete**: index.html loads ONE `<script type="module" src="index.js">`; index.js imports all 21 library modules explicitly (in the classic load order). The 59 `window.*` glue handoffs are gone — every cross-file reference is a real import, verified by ESLint `no-undef` with the project-global allowlist removed (`sourceType: 'module'`).
+- **New `state.js`**: owns the shared application state (`S`, `pages`, `PAGE_W`/`PAGE_H`, `cursiveConnector`) that library modules read at call time. This removes every index.js ⇄ module import cycle (text-layout, paper-renderer, export-manager, export-renderers now import state directly). `pages` is mutated in place (`pages.length = 0`) so the live binding stays shared.
+- **Window bridge for inline handlers**: ES modules are strict and module-scoped, so index.js now explicitly bridges the ~45 inline-handler entry points (`Object.assign(window, { … })`) plus `renderText`/`autosave`/`debounceRender` for the modules that read them lazily.
+- **Real bundling**: `npm run build` produces a single minified `dist/index.js` (161.8 kB / 52.8 kB gzip — was 23 unbundled files), stable output names (`index.js`, `assets/index.css`), and the sw.js precache list now matches the bundled output exactly. (Hashed filenames + a generated precache manifest are Phase B5.)
+- **Service worker dev guard**: the SW registers from index.js only when `!import.meta.env.DEV` (statically replaced at build time) — the unstyled-dev-session quirk (Vite serves `.css` as HMR modules that the SW precached verbatim) is gone; `npm run dev` no longer installs a service worker.
+
+### 🛠️ Fixed
+- **2 high-severity npm audit findings** (`brace-expansion`, `undici` — dev chain) resolved via `npm audit fix`; the CI audit job is now **blocking** and covers dev dependencies too (was non-blocking, prod-only).
+- **3 dead inline handlers** discovered by the conversion inventory: `closeGrammarModal()` (grammar modal close button threw a ReferenceError) is implemented; `toggleLayerAddDropdown()`/`closeLayerAddDropdown()` (the ➕ Add Layer dropdown menu never opened — the E2E suite only exercised the CSS hover path) are implemented and wired.
+- Test files converted from `require()` to ES imports; `cursive-connector.test.js` → `cursive-connector.test.mjs` and `markdown-parser.pbt.js` → `markdown-parser.pbt.mjs` (Node-runnable ESM, still excluded from Vitest).
+
+### 📦 PWA & Offline
+- Precache list is now the real app shell: `/`, `index.html`, the bundled `index.js`, `assets/index.css`, the About page assets, the logo, and the manifest — installed and verified in production.
+
+### 🧪 Testing
+- 216/216 unit tests + 7/7 Playwright E2E + 0 lint errors (warnings 50 → 23) on the module graph; production bundle verified in-browser (render pipeline, bridged handlers, SW install, zero console errors).
+
+---
+
+## [1.8.0] — 2026-10-02
+
+Upstream sync: ports every feature from InkForge v1.6.25–v1.6.26 that the fork was missing (verified against the upstream changelog and source).
 
 ### ✨ Added
-- **Human Handwriting Realism Engine**: Replaced mechanical, pixel-identical character rendering with controlled, seeded organic variation algorithms:
-  - **Seeded PRNG (`mulberry32`)**: Keyed on note text/ID to produce 100% deterministic layout and rendering. Re-renders, page switches, and PDF exports produce pixel-identical output.
-  - **Per-Glyph Jitter**: Scaled scale (±7.5%) and rotation (±3.5°) applied per character. Devanagari script automatically scales jitter magnitude (0.3× rotation, 0.4× scale) so Indic matras and *shirorekha* top lines remain legible.
-  - **Baseline Drift**: Added a random-walk line offset accumulator clamped to `[-3.5 * realism * k, +3.5 * realism * k]` so handwriting naturally drifts along ruled lines without wandering off.
-  - **Pressure & Opacity Variations**: Per-character stroke width (`pressureMod` ~ ±15%) and opacity variations (`0.85`–`1.0`).
-  - **Variable Spacing**: Independent letter-spacing jitter (±0.4px) and wider word-spacing jitter (±2.0px).
-  - **Rare Imperfections & Realism Controls**: Added a **Realism / Human Jitter** slider (`0.0`–`1.0`) and **Rare Imperfections** toggle. When enabled, ~1.8% of glyphs render a faint 1px double-stroke retrace effect, and word spacing compresses by 35% on words approaching the right margin.
+- **Enhanced Realism Engine (upstream 1.6.25 parity)**, layered onto the seeded engine:
+  - **Anisotropic scale jitter**: `getCharVariationWithContext()` now returns independent `scaleX`/`scaleY` — `scaleX` is biased toward horizontal compression (range ±0.9·jitter) while `scaleY` allows slight vertical stretch (up to 1.1·jitter), reproducing how real pen strokes widen and shorten under varying hand pressure.
+  - **Micro-shear (`shearX`)**: each glyph receives a subtle horizontal shear (±0.022 × `S.realism`, scaled ×0.3 for Devanagari) applied via `ctx.transform()` in **all three draw paths** — static page render, writing animation, and export rendering — breaking the "mechanical italic" look of uniform slant. Neutralised in Clean mode (engine-level `clean` guard) and for Indic scripts.
+  - **Pressure-correlated ink bleed**: with Ink Bleed active, the per-glyph bleed shadow radius is modulated by `pressureMod` (`bleedFactor = 1 + (pressureMod − 1) × 0.4 × realism`) — heavier-pressure glyphs bleed slightly more, matching fluid ink dynamics on paper fibers.
+- **Blue Ink Pen preset (`#000F55`)**: deep royal-blue ballpoint tone added as the first preset in the ink row, with `data-ink`/`data-ink-name` attributes on every preset button.
+- **`updateInkPresetActive()` helper**: centralises preset active-state management — the accent-ring `.active-ink` highlight always reflects the live ink color. Called from `setInkPreset()`, the freeform color-picker handler, `restoreState()`, and `resetToDefaults()`.
+- **Standalone About page (`about.html` + `about.css`, upstream 1.6.26 parity)**, adapted to Inkflow branding:
+  - Interactive Realism Engine playground — type text, tweak jitter magnitude and baseline drift, toggle notebook guidelines and retrace double-strokes, rendered live on canvas with a deterministic `mulberry32` simulator.
+  - Deep-dive feature showcases (realism physics, paper styles, AI scribe, HandFonted Studio, exports, offline PWA), privacy guarantee, architecture & test-suite specs, documentation directory cards, and creator credits — all linked to the Inkflow repository, MIT license, and Inkflow docs.
+  - Dark/Light toggle synchronised with the app through the shared `inkflow-dark` localStorage key.
+- **Brand identity (upstream 1.6.26 parity)**: new brand emblem (`inkflow_logo.jpeg`) wired into the toolbar header, favicon, Apple touch icon, PWA manifest, and About page.
+- **Navigation overhaul (upstream 1.6.26 parity)**: clickable brand logo in the toolbar linking to `about.html`, a dedicated **ℹ️ About** toolbar button, and quick-access footer links (**About Inkflow / Docs / GitHub**) at the bottom of the sidebar drawer.
 
-## [1.6.21] — 2026-09-05
+### 📦 PWA & Offline
+- **Manifest**: added "New Note / Export PDF / About Inkflow" shortcuts, the logo as a 512×512 maskable icon, categories, and repository metadata.
+- **Service worker**: `about.html`, `about.css`, and `inkflow_logo.jpeg` precached for 100% offline availability; cache bumped to `inkflow-v1.8.0`.
+- **Build**: `vite.config.js` copies the About page, its stylesheet, and the logo verbatim into `dist` so the precached URLs stay exact.
 
-### 🐛 Fixed
-- **Editing In A Page Editor Consumed [sticky]/[callout] Markers**: The editors render sticky/callout blocks as invisible placeholder characters (`\uFFF0`/`\uFFF1`), and the editor→textarea sync wrote those placeholders back — permanently replacing the marker syntax in the source text (Auto-Fit's sync had the same effect). `getGlobalTextFromEditors()` now re-materializes the original `[sticky:color] … [sticky]` / `[callout:type] … [callout]` syntax from `parsedStickies`/`parsedCallouts` (placeholders map sequentially in document order), so markers survive editor edits and Auto-Fit round-trips.
+### 🧪 Testing
+- 8 new engine tests: `shearX` presence/bounds, zero-realism neutrality, Devanagari 0.3× shear scaling, anisotropic ranges (Latin + Indic), and the Clean style guard; the Devanagari scale-range assertion was updated to the upstream 1.6.25 anisotropic bounds. **216/216 passing.**
 
-## [1.6.20] — 2026-09-05
+---
+
+## [1.7.0] — 2026-09-13
 
 ### ✨ Added
-- **PDF Output Size Control**: New "PDF Output Size" dropdown in the Export section with three presets — **Compact** (1×, JPEG 75%, smallest file), **Standard** (2×, JPEG 92%, balanced, the previous default was lossless 2× PNG) and **High** (2×, lossless PNG — the old behavior, ideal for print/archive). The choice persists per browser via `localStorage` and is shown in the build toast.
+- **Seeded Realism Engine (upstream 1.6.22 parity)**: `mulberry32` PRNG seeded via an FNV-1a hash of the note text — re-renders, page switches, and PDF exports are now pixel-identical. New **Realism / Human Jitter** slider (0–1, default 0.5) scales all variation; Devanagari script auto-tightens jitter (0.3× rotation / 0.4× scale) to protect matras and the shirorekha line. Per-line baseline drift random walk (clamped ±3.5·r·k). New **Rare Imperfections** toggle: ~1.8% of glyphs render a faint 1px-offset retrace stroke in the live render, the writing animation, and exports.
+- **Clean paper style (upstream 1.4.0 parity)**: new "✨ Clean" paper button — crisp typographic mode (neutral variation, no grain, no ink-bleed shadow, drafted glyphs bypassed). Unsupported handwriting fonts auto-switch to Kalam; bare `Answer:` lines are hidden on canvas in Standard layout and represented by the margin **Ans** label (still editable).
+- **Margin Q/Ans labels (upstream 1.6.8–1.6.17 parity)**: new `margin-labels.js` module clusters the render queue into visual lines and draws **Q1…Qn** next to numbered question lines (space-tolerant matching, trailing `?` required) and **Ans** next to bare `Answer:` lines — right-aligned in the margin, document-wide sequential numbering computed per render, toggle in the Page Layout section (Standard layout only).
+- **PDF Output Size presets (upstream 1.6.20 parity)**: new dropdown in Export — Compact (1×, JPEG 75%), Standard (2×, JPEG 92%, default), High (2×, lossless PNG). Persisted per browser; toast names the active preset.
+- **AI Response Post-Processing (upstream 1.6.23 parity)**: new `ai-postprocess.js` — `sanitizeAiResponse()` strips markdown/HTML leakage before rendering (code fences, inline backticks, bold/italic, raw tags) while preserving Inkflow syntax and `​```diagram`/`​```mermaid` fences; `resequenceQA()` renumbers Q:/A: pairs sequentially from Q1 and silently drops near-duplicate questions (trigram Jaccard ≥ 0.72) with their paired answers. Applied to every AI result and accepted grammar corrections.
+- **Offline Smart Arrange (upstream 1.6.7 parity)**: the 🪄 Smart Arrange button no longer needs an AI provider or API key — a deterministic in-browser tidy-up normalizes bullets, headers, study tags, highlights, Q/A labels and punctuation spacing, inserts structural breaks, and reports the fix count via toast.
+- **Full 48-font handwriting suite**: Google Fonts expanded to 50 families; the font dropdown now mirrors the upstream grouping — Print Handwriting (20), Cursive & Script (20), Devanagari (8), Clean (2).
+- **Mobile UX overhaul (upstream 1.6.23/1.6.24 parity)**: proper sidebar drawer (`setSidebarOpen()`, `#sidebar-backdrop` scrim, body scroll-lock, closes on scrim tap / canvas tap / Escape); compact icon-only toolbar ≤768px; responsive canvas width via `getResponsiveCanvasWidth()` (≤480px: vw−24, ≤768px: vw−32, desktop min(794,720)) with full resize reflow; `viewport-fit=cover` + safe-area padding; `100dvh` stable height; `touch-action: manipulation`; ≥16px drawer inputs (iOS zoom guard); edge-to-edge HandFonted/Flashcards modals on phones.
+- **Accessibility**: ARIA labels on emoji-only buttons (ink presets, Animate/Start/Stop, page nav, modal closes, toolbar), `aria-live` screen-reader announcer wired to AI status and export toasts, skip-to-canvas link, `prefers-reduced-motion` support, canvas page `tabindex` focus.
+- **Theme Packs UI**: 6 one-click theme buttons in the Paper Style section (the packs previously existed but had no launcher).
+- **Supply chain**: SRI `integrity` + `crossorigin` attributes on all 7 CDN resources (hashes computed from the live CDN responses).
+- **Offline fonts**: the Google Fonts stylesheet is precached by the service worker — the full suite is available offline; `.woff2` files cache at runtime.
 
-## [1.6.19] — 2026-09-05
-
-### 🐛 Fixed
-- **Editing In The Page Editor Discarded Or Corrupted The Deletion/Typing Sync**: `getGlobalTextFromEditors()` read the canvas `dataset.text` snapshot, which only updates during a render — so real edits made in the page editors (Main Editor Mode) were thrown away, and the sidebar textarea could even *grow* while the user deleted text (a stale newline turning into a space). Editor content is now written via `textContent` (deterministic — no `<br>` conversion) with the existing `pre-wrap` CSS making `innerText` round-trip 1:1, and the sync reads the **live** editor text again. Deleting or typing in a page editor now propagates exactly to the sidebar textarea, canvas redraw, and autosave.
-
-## [1.6.18] — 2026-09-05
-
-### 🐛 Fixed
-- **Clean Notes: Numbered Lines Fused With The Following Text**: "1. Cardinality Constraint" opened a paragraph that the next line ("It specifies the number of entities …") merged into, rendering "1. Cardinality Constraint It specifies …" as one run-on line. Numbered lines are now self-contained blocks — the line after them always starts a fresh paragraph.
-
-## [1.6.17] — 2026-09-05
-
-### 🐛 Fixed
-- **Margin Labels Vertically Misaligned**: Labels were drawn with their baseline 0.35× below the line's character position, putting their ink center ~10px below the text they annotate (measured on canvas). The label baseline is now raised to `anchorY − 0.15 × fontSize`, optically centering the label on its line — verified by pixel measurement (Δ ≈ 0).
-
-## [1.6.16] — 2026-09-05
-
-### ✨ Changed
-- **One Empty Line After Every Answer (Clean Notes)**: The clean-style engine dropped all source blank lines, so an answer ran straight into the next question. `layoutTextCleanStandard` now inserts one empty row before each question block (except at the top of a page), with the row mirrored into `pageTexts` so the editor overlay stays pixel-aligned with the canvas. The Standard layout already renders source blank lines and is unchanged.
-
-## [1.6.15] — 2026-09-05
-
-### 🎨 Changed
-- **Ans Label Aligned With The Answer Content**: The margin **Ans** label sat next to the hidden `Answer:` row, one line above the actual answer text. It now shifts down one line so it aligns with the first line of the answer content.
-
-## [1.6.14] — 2026-09-05
-
-### 🐛 Fixed
-- **Clean Notes Questions Lost Their Trailing "?"**: The numbered-question capture group excluded the final `?`, so question headings rendered without it and the margin **Q** label (which requires the trailing `?` to distinguish questions from numbered sub-points) never matched. The `?` is now part of the captured text.
-
-## [1.6.13] — 2026-09-05
-
-### 🐛 Fixed
-- **Clean Notes Style Mangled Q&A Structure**: `parseStructuredContent()` merged consecutive non-empty lines into one paragraph, fusing bare `Answer:` lines onto the question line ("…ER model? Answer:") — which also broke the margin **Q** labels, since the merged line no longer matched the question pattern. It also only recognized `Q`-prefixed questions, so `1. …?` numbered questions rendered as plain merged paragraphs. Now: numbered lines ending with `?` become proper bold question blocks that keep their original number style (`3.` stays `3.`, `Q3.` stays `Q3.`), bare `Answer:` lines become their own block (hidden on canvas, represented by the margin **Ans** label, still editable in the textarea/editors), and other numbered lines start a fresh paragraph instead of fusing with preceding text.
-
-## [1.6.12] — 2026-09-05
-
-### 🐛 Fixed
-- **Margin Labels Touching The Red Rule**: Q/Ans labels right-aligned at `x = margin − 14` sat exactly on the inner red margin line. They now right-align at `x = margin − 24`, leaving ~10px of clear space between the label and both red rules (and staying inside the 0–62px margin-note strip).
-
-## [1.6.11] — 2026-09-05
-
-### ✨ Changed
-- **Bare "Answer:" Lines No Longer Draw On Canvas**: When margin labels are enabled, a line that is just `Answer:` is represented by the margin **Ans** label alone — the literal text no longer renders on the page, in full render, single-page blur redraw, and the writing animation. The word remains visible everywhere it is editable (textarea and per-page editors). Line clustering was extracted into `clusterQueueLines()` shared by the label pass and the new `collectAnswerLineItems()`; `redrawPageCanvas` also now draws margin question labels (previously lost on blur) via the new `onlyPageIdx` filter, which prevents double-drawing labels on other pages.
-
----
-
-## [1.6.10] — 2026-09-05
-
-### 🐛 Fixed
-- **Margin Labels Too Small And Cramped Against The Margin Rule**: Labels rendered at 0.6× font size at 0.8 alpha, right-aligned 10px from the red margin rule, so Q/Ans marks looked clipped into the rule and were hard to read. Labels now render at 0.78× font size (min 13px), full opacity, right-aligned 14px clear of the rule, with the baseline nudged down (0.35× font) to sit optically on the line's handwriting.
-
-## [1.6.9] — 2026-09-05
-
-### 🐛 Fixed
-- **Margin Q Labels Never Matched**: The layout queue contains no space characters (spaces only advance x), so joined line text is squashed (`"1.Whatare…"`) and the question regex requiring `\s+` never matched — only "Ans" labels appeared. The regex now tolerates missing spaces and requires the line to end with `?`, so numbered sub-points (e.g. "1. Cardinality Constraint") are not mislabeled.
-
-## [1.6.8] — 2026-09-05
-
-### ✨ Added
-- **Question & Answer Numbers in the Left Margin**: New `drawMarginQuestionLabels()` post-pass clusters the layout queue into visual lines and, for lines that start at the left margin, draws **Q1…Qn** next to numbered question lines and **Ans** next to `Answer:` lines — right-aligned against the red margin rule, vertically aligned with the line's handwriting. Standard layout only. Toggled by a new "Question & answer numbers in left margin" checkbox in the Page Layout section (`S.showMarginLabels`, default on), persisted in autosave state and per-note settings, and included in Reset Defaults.
-
----
-
-## [1.6.7] — 2026-09-05
-
-### ✨ Added
-- **Smart Arrange Works Without AI**: The 🪄 Smart Arrange button no longer requires an AI provider or API key. A new deterministic offline arranger (`smartArrangeLocal()`) tidies the document directly in the browser: normalizes bullet markers (`*`/`•`/`‣` → `- `), trims trailing whitespace, collapses double spaces and runs of 3+ blank lines, removes spaces before punctuation (while preserving fill-in lines with underscores), inserts a blank line before numbered questions, and ensures a single trailing newline. Reports the number of fixes via toast and the AI status line. The other AI actions (Summarize, Grammar, Lecture → Notes, Generate Assignment) still use their AI providers.
-
----
-
-## [1.6.6] — 2026-09-04
-
-### 🐛 Fixed
-- **Editor Text Feedback Loop Inflated Blank Lines**: `getGlobalTextFromEditors()` read `editor.innerText`, which emits an extra newline per block boundary — each round-trip of editor text back into `S.text` (via Auto-Fit or editor sync) doubled blank-line runs, so documents gained pages and pages broke early with growing gaps (observed: 8 → 9 pages with a 9-newline run at a page boundary). It now reads the exact per-page text stored in `canvas.dataset.text` during render, falling back to `innerText` only when unavailable.
-
----
-
-## [1.6.5] — 2026-09-04
-
-### 🐛 Fixed
-- **Pages Break Too Early (Wasted Bottom Lines)**: The page-break check required the full next line box (`y + lineHeight`) to fit above the bottom margin, refusing lines whose baseline was still well inside the bound and leaving 1–2 empty ruled lines at the bottom of nearly every page. All three layout engines (`layoutText`, `layoutTextTwoColumn`, `layoutTextCornell`) now break only when the baseline plus a half-font descender allowance (`y + S.fontSize * 0.5`) would cross the bottom margin, so ink stays inside the margin while the remaining lines are used. Verified in-browser: page 7's text now extends ~50px deeper (969 → ~1020), pulling overflow lines back from the following page.
-
----
-
-## [1.6.4] — 2026-09-04
-
-### 🐛 Fixed
-- **Sticky Notes, Callouts & Highlights Never Rendered**: `layoutText()` re-invoked `parseRichSyntax()` on already-processed text, and the parser's first action reset `parsedStickies`, `parsedCallouts`, and `highlightRanges` — so `paintStickyNotes()`/`paintCallouts()` always received empty arrays and highlight ranges were always empty. `parseRichSyntax()` now detects placeholder characters (`\uFFF0`/`\uFFF1`) and skips re-processing, preserving the first pass's parsed entities. Verified in-browser: sticky boxes, callout boxes, and yellow highlights now paint on the canvas.
-- **UI Event Wiring**: Replaced all ~80 inline `onclick`/`onchange`/`oninput` HTML attributes with `addEventListener` bindings in a new `bindUIActions()` (called from `initApp()`); the notebook delete button is now built via DOM APIs instead of string-interpolated inline handlers.
-- **Version Drift**: `package.json`, `sw.js CACHE_VERSION`, and the `index.html` cache-bust query now share one version, enforced by the new `npm run check-versions` script.
-- **Offline Font Cache Miss**: The service worker's pre-cached Google Fonts URL now matches the stylesheet URL actually requested by `index.html` (adds the `Reey` family).
-- **CDN Integrity**: Added SRI `integrity`/`crossorigin` attributes to the opentype.js and Font Awesome CDN resources (jsPDF and html2canvas already had valid hashes — verified).
-
-### 🧰 Tooling
-- Added ESLint flat config (`eslint.config.mjs`) targeting correctness classes (`no-undef`, `no-redeclare`, `no-dupe-*`, `no-unreachable`) — `npm run lint` passes with 0 errors.
-
----
-
-## [1.6.3] — 2026-09-02
-
-### 🐛 Fixed
-- **Right Margin Text Wrapping Parity**: Synchronized CSS `wordSpacing` on `.page-editor` and `.margin-text-overlay` elements with `S.wordSpacing`, removed double-counted word spacing in line-wrap checks (`layoutText`, `layoutTextCleanStandard`, `layoutTextTwoColumn`, `layoutTextCornell`), and added subpixel layout tolerance (`+2.5px`) matching browser DOM text bounds.
-- **Vertical Baseline Alignment**: Updated `updateEditorStyles()` so DOM editor top padding dynamically matches canvas first-line baselines (`S.margin + lineSpacingPx * 2` for standard/clean, `S.margin + S.fontSize + lineSpacingPx` for Cornell/Two-Column), eliminating vertical text jumping when focusing/blurring page editors.
-- **Line Click & Caret Positioning**: Corrected `handleLineClick()` line index calculation to map top padding accurately, and restricted `setCursorAtLine()` execution to newly appended unwritten lines so native character click placement inside existing words is preserved.
-- **Left Margin Text Bounding & Wrapping**: Updated `drawMarginTextOnCanvas()` to enforce strict word and character wrapping within `S.margin - 18px` (`62px`), preventing left margin notes from crossing red vertical lines or colliding with main page text.
-- **Auto-Fit Font Size Engine**: Updated `autoFitFontSize()` to fetch active editor text via `getGlobalTextFromEditors()`, binary-search optimum font size for target page count, call `syncAllEditorStyles()`, and update all DOM page editor overlays seamlessly.
-
----
-
-## [1.6.2] — 2026-08-31
-
-### 🐛 Fixed
-- **Duplicate `getGlobalTextFromEditors`**: Removed the first (simpler) definition that was silently overwritten by the later, more correct version.
-- **Missing `S.isStudyMode` initialization**: Added `isStudyMode: false` to the state object initializer to prevent undefined on first access.
-- **`textAlignment` not persisted**: Text alignment setting is now saved to localStorage and per-note IndexedDB settings, and restored on load and notebook switch.
-- **Duplicate `@keyframes spin` in CSS**: Removed the duplicate animation definition.
-- **`setPaper()` missing autosave**: Paper style changes now trigger `autosave()` and sync the theme dropdown.
-- **Theme dropdown not syncing**: Theme select dropdown now syncs when paper style changes via grid clicks or `resetToDefaults()`.
-- **XSS in `renderNotebooksList`**: User-provided notebook titles are now escaped via `escapeHtml()` before innerHTML injection.
-- **AI actions bypass Ollama**: Created `callAI()` provider router; all five AI actions now correctly dispatch to Ollama when selected instead of being hardcoded to `callClaude()`.
-- **Duplicate Theme Packs section**: Removed the dropdown-based theme section from HTML, keeping only the one-click grid.
+### 🛠️ Fixed
+- **Critical: `window.S` was never assigned** — `ai-assistant.js` and `notebooks.js` read shared state via `window.S`, which was `undefined`: any real AI action with a valid API key crashed with a TypeError mid-stream. State is now exposed in index.js.
+- **Critical: broken production build** — `npm run build` produced a dist missing all 17 classic `<script>` files (Rollup ignores non-module scripts), so the built site was dead. `vite.config.js` now copies root scripts into dist.
+- **Critical: cursive render crash** — `renderCursive(ctx, pageItems)` was called with 2 arguments against a 3-argument signature; Cursive Mode threw at render time.
+- **Service worker**: removed `/server.js` (a Node file that can never run in the browser) from precache; added `manifest.json`, `audio-recorder.js` and the new modules; cache-name version drift is now enforced by `npm run check:version` (runs in CI).
+- **`setPaper()` missing autosave** (claimed fixed in 1.6.2 but absent from the code).
+- **Voice recognition errors were silent** — friendly toasts now appear for mic-denied / no-microphone / network / no-speech conditions.
+- **ESLint**: the 45-name unused-vars allowlist no longer hides warnings for functions extracted to modules; 0 errors maintained.
 
 ### ♻️ Changed
-- **Inline styles moved to CSS**: Extracted ~12 inline styles from HTML into reusable CSS classes (`.notebook-actions-row`, `.flashcard-controls-row`, `.sketch-header-actions`, `.ollama-hint`, `.notebook-list-scroll`, `.template-actions-row`, `.flashcard-progress-label`).
-- **Improved textarea focus**: Added smooth focus ring transition to `#text-input`.
-- **Improved select focus**: Added hover state and focus ring to all `<select>` elements.
-- **Click-to-edit cursor placement**: Removed forced `setCursorAtLine` from `handleLineClick` so the browser places the cursor exactly where the user clicks.
+- **Version bumped** 1.6.0 → 1.7.0 (service-worker cache refreshes automatically for installed users).
+- **CI**: new GitHub Actions workflow — lint + unit tests (Vitest) + version-consistency check + production build with dist sanity check + non-blocking `npm audit` on every pull request.
+- **Modularization continued**: `flashcards.js`, `voice-notes.js`, `ai-postprocess.js` and `margin-labels.js` extracted from index.js; new unit suites for AI post-processing, flashcard extraction, margin labels and the realism engine — **197 tests passing** (up from 130).
+- **Root `README.md` added**, plus `docs/roadmap.md` (update & enhancement plan with progress log) and `docs/feature-gap-analysis.md` (fork-vs-upstream analysis, all items now closed).
 
 ---
 
-## [1.6.1] — 2026-08-29
-
-### 🐛 Fixed
-- **Clean Notes Ruled Grid Line Alignment**: Fixed line drift in `layoutTextCleanStandard` by locking all block transitions, word wraps, and heading heights to the exact notebook paper grid line height (`fontSize × lineHeight`), ensuring text lines never cross or drift away from the blue ruled notebook lines.
-- **Clean Handwriting & Glyph Connection Fix**: Removed synthetic Bézier curve ligature drawing post-pass that generated unwanted drooping ink drop artifacts and sagging loops underneath cursive characters (e.g. *Caveat*, *Kalam*, *Nanum Pen Script*). Relying on native font vector outlines and OpenType cursive joins for crisp, realistic handwriting without artifacts.
-- **Service Worker Cache Eviction**: Upgraded `CACHE_VERSION` to `inkforge-v1.5.2` in `sw.js` and added cache-busting query parameter `?v=1.5.2` to `index.js` in `index.html` to ensure immediate asset updates.
-
----
-
-## [1.6.0] — 2026-08-27
+## [1.6.0] — 2026-08-30
 
 ### ✨ Added
-- **Enhanced InkForge Brand Logo Integration**: Added high-resolution `inkforge_logo.jpeg` brand icon to the top navigation bar with circular glassmorphism container, hover scaling animation, PWA manifest icons, browser tab favicons, and service worker shell pre-caching.
-- **Updated OpenRouter AI Model Catalog**: Modernized the `AI_MODELS.openrouter` static fallback array in `index.js` and upgraded `fetchOpenRouterModels()` parser to support free model auto-routing (`openrouter/free`), Google Gemini (3.7 Flash, 3.6 Flash), Anthropic Claude (Sonnet 5, Opus 5), OpenAI GPT (GPT-5.6 Luna, GPT-4o), DeepSeek (V4 Flash, V4 Pro, R1), Meta Llama (Llama 4 Maverick), Mistral, Qwen, and xAI Grok.
-- **HandFonted Studio Standalone TTF Font Exporter**: Added `exportCustomFontTTF()` and `📥 Download TTF Font` button. Users can now compile their custom sketched or template-scanned vector handwriting font into a standalone `.ttf` TrueType Font binary file to install on Windows, macOS, iOS, Microsoft Word, or Photoshop.
-- **Upgraded AI Workflow System Prompts**: Introduced `AI_SYSTEM_BASE_PROMPT` in `index.js`, instructing OpenRouter, Anthropic, and Ollama AI engines to output InkForge's native rich study syntax (`#` H1 headers, `##` H2 subheaders, `-` bullet lists, `==highlights==`, `[sticky]` margin notes, `[callout]` inset boxes, and `Q: / A:` flashcards).
-- **API Key Storage Persistence**: Implemented `initApiKeyPersistence()`, persisting API keys per provider (`inkforge-api-key-openrouter`, `inkforge-api-key-anthropic`) in `localStorage` when *"Remember API key on this device"* is checked, restoring them seamlessly on page load.
-- **WCAG 2.1 Modal Focus Trapping**: Added `trapFocusModal()`, enforcing keyboard focus cycling (`Tab` / `Shift+Tab`) and `Escape` key dismissal across `HandFonted Studio` and `Flashcards Review` modals.
+- **Rich Syntax System**: `parseRichSyntax()` extracts `[sticky:color]...[sticky]`, `[callout:type]...[callout]`, `==highlighted==` markers, and `Q:/A:` flashcard pairs from raw text. `paintStickyNotes()` and `paintCallouts()` render margin annotations on canvas.
+- **Ollama Local AI**: New `callOllama()` function for local LLM inference via `localhost:11434`. Added `ollama` provider to AI dropdown with 7 pre-configured models (Llama 3.2, Mistral, Phi-4, Gemma 2, Qwen 2.5, DeepSeek R1, CodeLlama). No API key required.
+- **AI System Prompt**: New `AI_SYSTEM_BASE_PROMPT` constant for rich-syntax-aware AI output formatting.
+- **API Key Persistence**: New `initApiKeyPersistence()` saves/restores API keys per-provider in localStorage with "Remember key" checkbox.
+- **Study Mode**: `toggleStudyMode()` activates study-focused view with flashcard extraction from Q:/A: patterns.
+- **Flashcards Modal**: Interactive flip-card modal with prev/next navigation, counter, and 3D CSS flip animation.
+- **Voice to Notes**: `startVoiceRecording()` uses Web Speech API (Chrome) for real-time speech-to-text transcription directly into the note editor.
+- **Theme Packs**: 6 color presets (Default, Forest, Sunset, Ocean, Lavender, Charcoal) via `applyThemePack()`.
+- **Notebooks System**: Full IndexedDB CRUD via `notebooks.js` — `saveNotebook`, `loadNotebook`, `listNotebooks`, `deleteNotebook`, `duplicateNotebook`. Sidebar UI with save/open/delete controls.
+- **PWA Support**: `sw.js` service worker with cache-first static assets and network-first API calls. `manifest.json` for installable progressive web app.
+- **TTF Font Export**: `exportCustomFontTTF()` in `font-compilation.js` downloads compiled handwriting font as `.ttf` file. Export button added to HandFonted Studio.
+- **`drawRoundedRect`**: Rounded rectangle helper in `paper-renderer.js` for sticky notes and callout boxes.
+- **`drawWrappedText`**: Word-wrapped text rendering with max-lines truncation in `paper-renderer.js`.
+- **`splitRawTextIntoPages`**: Splits raw text by clean page boundaries for multi-page export fidelity in `text-layout.js`.
+- **`parseStructuredContent`**: Parses headings, bullets, questions, and paragraphs from text in `text-layout.js`.
+- **`containsDevanagari`**: Backward-compatible alias for `ScriptDetector.isIndicScript()` in `script-detector.js`.
+- **`_upscaleCanvas`**: 2× canvas upscaler for high-DPI export in `export-renderers.js`.
+- **`redrawPageCanvas`**: Full page re-render helper (background + smudge + queue) in `index.js`.
+- **Modal Accessibility**: ESC key closes modals, Tab focus trap on all `.modal-overlay` elements, focus save/restore.
+- **`glyphImageCache` LRU**: Converted from unbounded `{}` to `Map` with 500-entry cap.
+- **`diagramCache` LRU**: Converted from unbounded `{}` to `Map` with 100-entry cap in `diagram-engine.js`.
 
----
-
-## [1.5.0] — 2026-08-27
-
-### ✨ Added
-- **Progressive Web App (PWA) Offline Support**: Added `sw.js` (Service Worker) and `manifest.json` (Web App Manifest). InkForge can now be installed directly to desktop or mobile home screens and works 100% offline with a Cache-First strategy for CDN assets (Google Fonts, FontAwesome, jsPDF) and Network-First for app shell files.
-- **Ollama Local AI Provider Integration**: Added `ollama` option to the AI Provider selector with support for local models (`Llama 3.2`, `Mistral`, `Phi-4`, `Gemma 2`, `Qwen 2.5`, `DeepSeek R1`, `CodeLlama`). Integrates with Ollama's local REST API (`http://localhost:11434/api/chat`) for 100% private, offline AI notes summarization, smart arranging, and assignment generation without API keys.
-- **Connected Cursive Ligature Engine**: Added `CURSIVE_FONTS` set (`Caveat`, `Homemade Apple`, `Shadows Into Light`, `Nanum Pen Script`, `Reey`, `Amita`, `Kalam`) and `drawCursiveConnector()` quadratic Bezier stroke rendering pipeline that dynamically draws entry/exit ligature connectors between adjacent glyphs for realistic cursive writing.
-
----
-
-## [1.4.1] — 2026-08-24
-
-### ✨ Added
-- **Keyboard Shortcut for Study Mode**: Added an `Escape` key shortcut listener to exit Study Mode instantly from anywhere in the app.
-- **Active Page Auto-Centering**: `toggleStudyMode()` now automatically scrolls the active page canvas cleanly into center view (`scrollIntoView({ behavior: 'smooth', block: 'center' })`) upon entering or exiting Study Mode.
-- **Enhanced Voice Input Error Toasts**: `voiceRecognition.onerror` now displays friendly toast notifications (`showToast(msg, 'error')`) detailing microphone permission or network issues.
+### 🛠️ Fixed
+- **PDF Text Extraction**: Added `hasEOL` handling to preserve paragraph structure in `content.items`.
+- **Shape Rendering Dedup**: Extracted shared `drawShapeOrEdge()` function, replacing ~220L of duplicated code in `renderSpecificPage` and `startAnimation`. Adds diamond fallback and edge labels to animation path.
+- **Dead Code Removed**: Removed `drawStudioCanvas` reference (undefined function), IntersectionObserver force-render block (made observer redundant), redundant `arguments[1]` check in `renderSpecificPage`.
+- **Test Theater Removed**: `doubt-solver.test.js` and `solution-streaming.test.js` excluded from vitest — they tested mock data, not real code.
+- **`diagram-engine.js` Moved**: Moved from `<head>` to bottom of `<body>` in `index.html` (was render-blocking).
+- **`audio-recorder.js` Bug Fix**: `window.aiAction()` → `window.AIAssistant.aiAction()`.
 
 ### ♻️ Changed
-- **Study Mode Layout & Viewport Engine**: Completely rewritten Study Mode CSS (`body.study-mode-active`). Removed off-screen column shifts (`grid-template-columns: 1fr !important`). `#canvas-area` and `#canvas-area::before` (dot grid background pattern) now span 100% of the screen width. `#toolbar` auto-dims to `0.5` opacity and lights up smoothly on hover or focus-within.
-- **Clean Notes Text Alignment**: Integrated `getAlignmentOffset(S.textAlignment, blockFontSize, S.lineHeight)` into `layoutTextCleanStandard()`, enabling Upper, Middle, and Lower text alignment in Clean Notes paper style.
-- **Recalibrated Text Alignment Geometry**: Updated `getAlignmentOffset()` formulas so that `bottom` ("Lower") sits text baseline directly **ON** the ruled line (`0`), `middle` ("Middle") floats text **CENTERED** between lines (`-(lineH * 0.32)`), and `top` ("Upper") positions text touching the **UPPER** line (`-(lineH * 0.62)`).
-- **Text Alignment UI Preview Icons**: Adjusted `.align-text.align-bottom` positioning (`bottom: 5px`) in `index.css` so preview button icons accurately match the canvas paper placement.
-- **Voice Input Start/Stop Safety**: Removed recursive `toggleVoiceInput()` calls inside `onerror` and added `try-catch` guards around `.start()` and `.stop()`.
+- **Version Bumped**: `package.json` updated from 1.5.2 to 1.6.0.
+- **27+ New Functions**: Across `paper-renderer.js`, `text-layout.js`, `script-detector.js`, `export-renderers.js`, `font-compilation.js`, `ai-assistant.js`, `index.js`, `notebooks.js`.
+- **130 Vitest Tests Pass**: All existing tests plus new test theater exclusions.
 
 ---
 
-## [1.4.0] — 2026-08-15
+## [1.5.1] — 2026-08-29
+
+### 🛠️ Fixed
+- **Critical: `renderCursiveConnections` undefined** — Cursive mode rendering crashed with `ReferenceError`. Fixed to call `renderCursiveConnectionsOn(ctx, pageItems)` from `export-renderers.js`.
+- **Critical: Server crash on malformed operations** — `server.js` crashed on `op.char.length` when `op.char` was undefined. Added type validation and position bounds checking.
+- **Critical: `autoFitFontSize` state corruption** — Binary search mutated `S.fontSize` with no `try/finally`. If `layoutText()` threw, font size was permanently corrupted. Added restore on error.
+- **High: `loadImageToCanvas` hangs forever** — Promise never rejected on invalid images. Added `img.onerror` handler.
+- **High: `curr.v.pressureMod` null deref** — Cursive rendering crashed on malformed queue items. Added optional chaining.
+- **High: DOM null dereferences** — 8+ `getElementById` calls accessed properties without null checks. Added `?.` optional chaining to all.
+- **Medium: `resolveDimension` ignores `"px"` strings** — Template manager treated `"20px"` as `0`. Added `px` branch.
+- **Medium: `resolveTemplate` crashes on missing zones** — Added fallback `(template.zones || [])`.
+- **Medium: `getAllTemplates` corrupts Map** — Malformed localStorage entries added `undefined` key. Added validation.
+- **Medium: Blob URL leaked on invalid SVG** — `diagram-engine.js` didn't revoke URL on early return.
+- **Medium: `drawPaperBackground` crashes on missing globals** — Added guard for `S`, `PAGE_W`, `PAGE_H`.
+- **Medium: WebSocket reconnection** — Added exponential backoff (3 attempts, max 8s delay) in `collaborative-engine.js`.
+- **Medium: Server error handler** — Added `ws.on('error')` to prevent noisy stderr logs.
+
+---
+
+## [1.5.0] — 2026-08-28
 
 ### ✨ Added
-- **Clean Paper Style**: New `clean` paper style that bypasses custom drafted glyphs, ink bleed, and rotation chaos for a crisp, typographic look. When active (with the Standard layout), text is rendered through a structured content parser (`parseStructuredContent`) supporting Markdown-style `#` headings, `##` subheadings, `-`/`*` bullet lists (nested levels), and auto-numbered `Q1.` / `Q.` question blocks.
-- **Clean Style Font Restrictions**: Selecting `clean` paper automatically switches to a permitted font (Kalam or one of the clean/Devanagari set) when an unsupported handwriting font is active.
-- **Configurable Header Visibility**: New "Show Date & P. No. Header" checkbox toggles the printed header box on `ruled` and `clean` pages. The `S.showHeaderBox` flag persists across sessions.
-- **Structured Study Syntax**: The text parser now recognizes `[sticky:color]…[sticky]` notes, `[callout:type]…[callout]` boxes, `==highlight==` ranges, and `Q:`/`A:` flashcard pairs. Stickies float in the right margin (yellow/cyan/pink/mint), callouts attach to the left margin (warning/info/formula), and highlights are drawn behind their characters.
-- **Study Mode**: New toolbar toggle that dims editing chrome for review, with a floating "Exit Study Mode" button.
-- **Flashcard Review Deck**: `Q:`/`A:` pairs are collected into a flashcard deck. A toolbar button opens the flip-card review modal with prev/next navigation and a progress counter.
-- **Voice to Notes**: Speech-to-text input (Web Speech API) appends transcribed notes to the text area. Automatically disabled in browsers without `SpeechRecognition` support.
-- **Notebooks & Folders Explorer**: New sidebar section with persistent notebooks stored in IndexedDB (`InkForgeDB` → `notebooks` store). Supports creating notes/folders, loading, and deleting notes. A "Welcome to InkForge" note is auto-created on first boot, and the active notebook is autosaved on every change.
-- **Theme Packs**: Six one-click themes (Default, Vintage Diary, Cute Pastel, Science Lab, Minimal Noir, Scrapbook) that apply paper style, ink color, rotation, bleed, pressure, and font size presets together.
-- **Text Vertical Alignment**: New Upper / Middle / Lower alignment control (`setTextAlignment`) that shifts handwriting relative to the ruled grid lines via `getAlignmentOffset()`.
-- **Auto-Fit Font Size**: `autoFitFontSize()` binary-searches the font size (14–52px) that fits the current text within one page and applies it.
-- **High-Resolution Exports**: All image/PDF exports now upscale canvases 2× via `_upscaleCanvas()` (~150 DPI) for sharper output. PNG stays lossless (quality 1.0), JPG quality raised to 0.97, and PDF embeds lossless PNG with `compress: false` and `NONE` compression.
-- **Glyph Image Cache**: `glyphImageCache` decodes drafted-glyph data URLs once and only draws them when fully ready, eliminating race conditions between async image loads and `ctx.restore()`.
-- **Blank Glyph Pruning**: `pruneBlankGlyphs()` scans glyph data for visible ink (`glyphHasInk`) on boot and after imports, removing stale blank entries from memory and IndexedDB so they no longer render as invisible characters.
-- **3-Sheet Template Package**: `generateDownloadTemplate()` now downloads an instructions cover sheet plus the Letters and Numbers & Symbols grid sheets (staggered downloads).
+- **Modular Architecture**: Extracted 4 pure-logic modules from index.js, reducing it from ~5,000 to ~3,765 lines (−24.6%).
+- **`font-compilation.js`**: Contour tracing (Moore-Neighbor), RDP path simplification, blank-cell detection, OpenType path compilation.
+- **`paper-renderer.js`**: All 10 paper style renderers, smudge effects, layout decorations, alignment offsets.
+- **`text-layout.js`**: `sanitizeText`, `parseBlocks`, `getGraphemes` — pure text processing helpers.
+- **`export-renderers.js`**: `renderQueueItems` and `renderCursiveConnectionsOn` — pure canvas rendering for exports.
+- **ESLint + Prettier**: Code quality tooling with flat config (ESLint v9+), 0 errors, consistent formatting.
+- **Vitest Test Framework**: Modern test runner with `npm test`, `npm run test:watch`, `npm run test:coverage`.
 
 ### ♻️ Changed
-- **Editor Top Padding**: Inline page-editor top padding now accounts for `margin + fontSize × lineHeight` so typed text aligns with the ruled grid baselines (first line skipped).
-- **Export Pipeline**: JPG default quality updated from 0.93 to 0.97; PDF encoding switched from JPEG/`FAST` to lossless PNG/`NONE`.
-- **`parseRichSyntax()`**: Extended beyond highlight extraction to also produce `parsedStickies`, `parsedCallouts`, `highlightRanges`, and `activeFlashcards` arrays.
-- **`layoutText()`**: Gains a structured-content route (`layoutTextCleanStandard`) used when `paperStyle === 'clean'` and `noteLayout === 'standard'`.
-- **Autosave**: Now persists `activeNotebookId`, `pageDates`, `pageNos`, and `showHeaderBox`, and mirrors the current note into the active notebook in IndexedDB.
+- **index.js reduced to 3,765 lines** (from 4,993) — core UI, state, AI, animation remain.
+- **16 JS modules** total (up from 12), all passing syntax checks.
+- **178+ tests passing** (27 cursive-connector + 23 diagram-engine + 128 Vitest).
+- **Documentation updated** across all 19 files to match actual file structure and feature set.
+- **All JS files formatted** with Prettier (single quotes, trailing commas, 120 print width).
+
+### 🛠️ Fixed
+- **smudge-effects.test.js**: Migrated from Jest to Vitest (`jest.fn()` → `vi.fn()`).
+- **Standalone test files**: `cursive-connector.test.js` and `diagram-engine.test.js` now work with both Node.js and Vitest.
 
 ---
 
-## [1.3.0] — 2026-06-15
+## [1.4.0] — 2026-08-25
 
 ### ✨ Added
-- **Multi-Sheet HandFonting Templates**: Extended custom handwriting font coverage by dividing templates into two sheets: `Letters` (52 upper/lowercase letters) and `Numbers & Symbols` (32 standard numbers, symbols, and punctuation marks: `0–9` and standard symbols/punctuation: `. , ? ! @ # $ % ^ & * ( ) - _ + = / : ; ' "`).
-- **Tabbed HandFonted Studio UI**: Interactive sheet tabs inside the Live Sketchpad modal and a dropdown selector inside the Scan Template upload tab to switch sheets. Each sheet retains separate grid alignment offsets (`X, Y, W, H`) and uploaded alignment image states.
-- **IndexedDB Glyph Storage**: Migrated custom character drafts from `localStorage` to `IndexedDB` (`InkForgeDB` → `draftedGlyphs` store), bypassing the 5MB browser quota limit and preventing browser data crashes.
-- **IndexedDB Auto-Migration**: Included a transparent boot migration script in `restoreState()` that transfers any pre-existing custom glyphs from `localStorage` into the IndexedDB store, clearing the old keys automatically.
-- **Dotted Paper Grid**: New "Dot Grid" paper style rendering dots on a beige background (`#f6f2ec`).
-- **Engineering Paper Style**: New "Engineering" paper style on pale green background (`#eef6ed`) with minor/major grid lines and reddish-brown margins.
-- **Music Staff Paper Style**: New "Music Staff" paper style drawing groups of 5-line staffs with vertical bracket endpoints.
-- **Cornell Note Layout**: New "Cornell Study Notes" layout template. Divides the page into visual cues, main notes, and summary sections, drawing dividing lines dynamically. Lines starting with `? ` or `cue:` automatically render in the Cues sidebar, and lines starting with `== ` or `summary:` render in the bottom Summary footer.
-- **Two-Column Note Layout**: New "Two-Column Grid" layout template that wraps and flows text across two columns per page before breaking to the next page.
-- **Page Layout UI Section**: Added a new collapsed "Page Layout" section in the sidebar with a note layout template selector.
-- **Character-Level Soft Wrapping**: All layout engines (Standard, Two-Column, Cornell, and Clean) now perform per-character wrap checks. Long continuous strings without spaces (e.g. URLs, unbroken text) wrap at the right margin instead of overflowing off the page.
+- **6 Diagram Types**: New dropdown with Cycle, Flowchart, Hierarchy (Tree), Pipeline, Pyramid, and Mermaid diagram options. Each uses rough.js for hand-drawn aesthetic.
+- **New Shapes — Pill & Hexagon**: Added `pill`/`rounded` and `hexagon` shape types to diagram rendering (both rough.js and canvas2d), including animation support.
+- **Dated Paper Style**: New "Dated" paper style with a date column line to the left of the margin for date-stamped notes.
+- **Transparent PNG Export**: New `✨ Transparent` export button that renders text on a transparent background without paper grain or rulings.
+- **Cursive Connector Rendering**: New `renderConnectionStroke()` function that draws smooth cursive connections between characters using quadratic Bezier curves.
+- **Edge Label Rendering**: Diagram edges now support `label` property rendered with a background pill for readability.
+- **Node Label Rendering**: Diagram nodes support `label` property rendered below shapes via new `diagram-label` queue items.
+- **Diagram Engine Module**: Extracted `layoutCycle`, `layoutFlowchart`, `layoutHierarchy`, `getDiagramImage`, `parseDiagramJSON`, `positionDiagramNodes` into standalone `diagram-engine.js` module.
+- **Tests**: Added `diagram-engine.test.js` (23 tests) and `cursive-connector.test.js` (27 tests).
+
+### 🛠️ Fixed
+- **Cursive Exit/Entry Points**: Fixed `charExitPoints`/`charEntryPoints` Y coordinates from top-relative (0.1–0.55) to baseline-relative (0.02), eliminating diagonal slash-through-text bug on characters like L, T, V, W.
+- **fontSwitcher Null Dereference**: Fixed 8 call sites where `fontSwitcher?.getFontStack()` could return null, adding fallback to `S.font`.
+- **n.label Undefined Crash**: Diagram label rendering loop now skips nodes with no label; `ctx.font` set before `measureText`.
+- **Mermaid Object URL Leak**: Blob URLs from Mermaid rendering are now revoked after image loads (`URL.revokeObjectURL(url)`).
+- **autoFitFontSize Fallback**: Defaults to minimum font size (14) when no size fits the page.
+- **Collab Engine Event Listener Leak**: `disconnect()` now removes the input event listener to prevent memory leaks.
+- **Null Guards**: Added optional chaining for slider wiring loop, fontSelect, inkColorInput listeners, cursive getExitPoint/getEntryPoint, and audio-recorder timerDisplay/sizeDisplay.
 
 ### ♻️ Changed
-- **`initApp()` & `restoreState()`**: Upgraded to async/await to support asynchronous IndexedDB initialization and glyph retrieval.
-- **`cropTemplateCell()`**: Signature updated to `cropTemplateCell(index, sheetName)` to support slicing character cells from multiple templates.
-- **`generateDownloadTemplate()`**: Updated to dynamically name files and draw guide characters depending on the active sheet.
-- **`layoutText()` Engine**: Now includes character-level overflow detection in all layout modes; characters exceeding the right boundary trigger a soft line break with page-break checks.
-
----
-
-## [1.2.2] — 2026-08-13
-
-### ✨ Added
-- **Classmate-Style Notebook Paper**: Overhauled the `Ruled` paper style to render a classmate-style notebook page, including double red vertical margin lines, double red horizontal margin lines, light blue guidelines, and a printed top-right header box.
-- **Interactive Handwriting Baking**: Added interactive on-screen Date and Page No. inputs that display text in the active handwriting font when focused, and bake the text onto the canvas in real-time on blur to support printing and exporting.
-- **State Persistence**: Persisted page-specific dates and page numbers across sessions and folders via `localStorage` and IndexedDB.
+- **Diagram Queue Rendering**: Split `type: 'diagram'` queue items into individual shape+edge items for proper sequential rendering.
+- **Edge Label Background**: Now derives from paper style (dark: `rgba(26,26,46,0.85)`, light: `rgba(247,243,234,0.85)`).
+- **Script Loading**: `diagram-engine.js` loads without `defer` before `index.js` for proper global availability.
 
 ---
 
@@ -394,7 +370,7 @@ All notable changes to InkForge are documented in this file.
 - **Glyph Pruning for Custom Fonts**: The font synthesizer now uses blank-cell detection (brightness/alpha checks) to skip empty cells in handwriting templates, preventing "invisible" character bugs in generated `.ttf` files.
 
 ### ♻️ Changed
-- **"Line Spacing" Range**: Slider range tightened to **1.2 – 3.0** (default 1.5) for more precise vertical typography.
+- **"Line Height" Control Bar**: Renamed and upgraded "Line Spacing" to "Line Height", with an expanded scale range of $1.0$ to $3.5$ for more precise vertical typography.
 - **Automatic First-Line Skip**: The layout engine now defaults all handwritten text to start from the **second line** of the page (skipping the first ruled line), providing a more natural notebook aesthetic.
 
 ---
@@ -425,7 +401,7 @@ All notable changes to InkForge are documented in this file.
 - **`buildCharQueue(text)`**: Simplified to a thin wrapper (`return layoutText(text).queue`), delegating all coordinate computation to `layoutText()`.
 - **`renderText()`**: Updated to use `layoutText()` for all layout computation, then render the returned `queue` and sync `pageTexts` to editors.
 - **`clearText()`**: Restored and fully implemented: clears textarea, resets `S.text`, creates a blank canvas page with paper background, clears all page editors, and calls `autosave()`.
-- **Export pipeline**: Migrated from `html2canvas` (screenshot-based) to native `canvas.toBlob()` / `canvas.toDataURL()` methods for exports. *Note: the `html2canvas` CDN script is still loaded in `index.html` but is no longer used by any export path.*
+- **Export pipeline**: Migrated from `html2canvas` (screenshot-based) to native `canvas.toBlob()` / `canvas.toDataURL()` methods, removing the html2canvas dependency for exports and improving accuracy.
 - **`updateEditorStyles(editor, canvas)`**: New helper to keep page editor styles (font, padding, size) in sync whenever the canvas is resized or settings change.
 
 ---
@@ -469,7 +445,7 @@ All notable changes to InkForge are documented in this file.
 - **Template Grid Generator** — Downloadable 8×8 blank handwriting template (64 characters)
 - **Scan Upload & Alignment** — Upload scanned sheets with interactive grid overlay sliders
 - **Moore-Neighbor Contour Tracing** — Raster-to-vector boundary extraction
-- **RDP Curve Simplification** — Ramer-Douglas-Peucker path smoothing
+- **RDP Curve Simplification** — Ramer-Douglas-Peucker path smoothing (ε = 1.0)
 - **OpenType Font Compiler** — Client-side TrueType font compilation via opentype.js
 - **Dynamic Font Registration** — CSS FontFace registration and instant activation
 
@@ -479,6 +455,29 @@ All notable changes to InkForge are documented in this file.
 - **Responsive Layout** — Mobile-optimized with collapsible sidebar drawer
 - **Collapsible Sections** — Smooth cubic-bezier accordion panels
 - **State Persistence** — Auto-save to localStorage with debounced serialization
+
+---
+
+## [1.3.0] — 2026-06-15
+
+### ✨ Added
+- **Multi-Sheet HandFonting Templates**: Extended custom handwriting font coverage by dividing templates into two sheets: `Letters` (52 upper/lowercase letters) and `Numbers & Symbols` (32 standard numbers, symbols, and punctuation marks: `0–9` and standard symbols/punctuation: `. , ? ! @ # $ % ^ & * ( ) - _ + = / : ; ' "`).
+- **Tabbed HandFonted Studio UI**: Interactive sheet tabs inside the Live Sketchpad modal and a dropdown selector inside the Scan Template upload tab to switch sheets. Each sheet retains separate grid alignment offsets (`X, Y, W, H`) and uploaded alignment image states.
+- **IndexedDB Glyph Storage**: Migrated custom character drafts from `localStorage` to `IndexedDB` (`InkflowDB` -> `draftedGlyphs` store), bypassing the 5MB browser quota limit and preventing browser data crashes.
+- **IndexedDB Auto-Migration**: Included a transparent boot migration script in `restoreState()` that transfers any pre-existing custom glyphs from `localStorage` into the IndexedDB store, clearing the old keys automatically.
+- **Dotted Paper Grid**: New "Dot Grid" paper style rendering dots at 28px intervals on a beige background (`#f6f2ec`).
+- **Engineering Paper Style**: New "Engineering" paper style on pale green background (`#eef6ed`) with 10px minor grid lines, 50px major grid lines, and reddish-brown margins.
+- **Music Staff Paper Style**: New "Music Staff" paper style drawing groups of 5-line staffs with 8px spacing, 72px staff-to-staff spacing, and vertical bracket endpoints.
+- **Cornell Note Layout**: New "Cornell Study Notes" layout template. Divides the page into visual cues, main notes, and summary sections, drawing dividing lines dynamically. Lines starting with `? ` or `cue:` automatically render in the Cues sidebar, and lines starting with `== ` or `summary:` render in the bottom Summary footer.
+- **Two-Column Note Layout**: New "Two-Column Grid" layout template that wraps and flows text across two columns per page before breaking to the next page.
+- **Page Layout UI Section**: Added a new collapsed "Page Layout" section in the sidebar with a note layout template selector.
+- **Character-Level Soft Wrapping**: All three layout engines (Standard, Two-Column, and Cornell) now perform per-character wrap checks. Long continuous strings without spaces (e.g. URLs, unbroken text) wrap at the right margin instead of overflowing off the page.
+
+### ♻️ Changed
+- **`initApp()` & `restoreState()`**: Upgraded to async/await to support asynchronous IndexedDB initialization and glyph retrieval.
+- **`cropTemplateCell()`**: Signature updated to `cropTemplateCell(index, sheetName)` to support slicing character cells from multiple templates.
+- **`generateDownloadTemplate()`**: Updated to dynamically name files and draw guide characters depending on the active sheet.
+- **`layoutText()` Engine**: Now includes character-level overflow detection in all layout modes; characters exceeding the right boundary trigger a soft line break with page-break checks.
 
 ---
 

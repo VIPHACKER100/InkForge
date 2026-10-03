@@ -1,52 +1,83 @@
-<p align="center">
-  <img src="../inkforge_logo.jpeg" alt="InkForge Logo" width="80" style="border-radius: 50%; box-shadow: 0 4px 12px rgba(0,0,0,0.15);" />
-</p>
-
 # ♿ Accessibility
 
-This document records InkForge's current accessibility state and identifies gaps. The app is a canvas-heavy drawing tool, so some constraints are inherent to the medium.
+This document covers accessibility considerations, keyboard navigation, and screen reader support in Inkflow.
 
 ---
 
-## Current State
+## Current Accessibility Features
 
-### What Is Already in Place
+### Semantic HTML
+- Proper heading hierarchy (`<h1>` for app title, `<h2>` for section headers)
+- `<button>` elements for all interactive controls (not clickable `<div>`s)
+- `<label>` elements associated with all form inputs
+- `<nav>` for pagination controls
 
-- **Semantic buttons**: All interactive controls are native `<button>` elements — keyboard-activatable by default (Enter/Space).
-- **Accessible labels**: The hamburger, dark-mode toggle, and all six export buttons carry `aria-label` attributes (e.g. `"Export as PNG image"`).
-- **Native form controls**: Sliders, selects, checkboxes, and color inputs are native elements with visible value readouts (`<span class="val">` next to every label).
-- **Dark mode**: CSS custom properties in `html.dark` preserve contrast; text remains `#e8e4d8` on `#12121e` (high ratio).
-- **Reduced-motion respect (partial)**: The app uses `requestAnimationFrame` animation that stops cleanly with the **■ Stop** button.
-- **Focus visibility & Trapping**: Buttons and controls show focus rings. Open modals (`HandFonted Studio` & `Flashcards`) enforce WCAG 2.1 focus trapping via `trapFocusModal()`, cycling `Tab` / `Shift+Tab` within modal boundaries and restoring focus upon closure.
-- **Keyboard Shortcuts**: `Escape` key closes open modals, closes the mobile drawer, and exits Study Mode instantly.
-- **Mobile drawer state**: The hamburger carries `aria-expanded` and `aria-controls="sidebar"`, so assistive tech announces whether the navigation drawer is open. Scrim close, `Escape`, and canvas-tap close are all wired through the same `setSidebarOpen()` state.
-- **Touch ergonomics**: `@media (hover: none)` enforces ≥44px touch targets and larger slider thumbs; `touch-action: manipulation` removes the double-tap-zoom delay; sidebar inputs are ≥16px so iOS Safari never focus-zooms.
-- **Print**: `@media print` rules remove chrome so notes print cleanly.
+### Keyboard Navigation
+- All sidebar controls are focusable via Tab key
+- Collapsible sections toggle via Enter/Space
+- Export buttons accessible via keyboard
+- Modal can be closed with ESC key
 
-### Known Gaps
-
-| Area | Gap | Recommendation |
-| :--- | :--- | :--- |
-| `aria-live` regions | No render/export announcements exist | Add `aria-live="polite"` regions for toast + AI status |
-| Icon-only paper buttons | Emoji labels (📏⬜⊞…) have no `aria-label` | Add `aria-label`/`title` to each `.paper-btn` |
-| Canvas content | The handwriting canvas is not screen-reader readable | Provide the textarea as the accessible source of truth |
-| Contenteditable overlays | `.page-editor` overlays carry `aria-label="Edit Page N"` but no `role` | Add `role="textbox"` to complete the pattern |
-| Color contrast | Emoji/`Font Awesome` glyphs rely on color alone for ink presets | Add text labels or `title` attributes (some already present) |
-| XSS protection | User-provided content (notebook titles, folder names) is now escaped via `escapeHtml()` before innerHTML injection | ✅ Resolved |
+### Color & Contrast
+- Light mode: Navy text (`#1c2340`) on cream backgrounds — WCAG AAA contrast ratio
+- Dark mode: Chalk cream (`#e8e4d8`) on deep slate — WCAG AA contrast ratio
+- Accent color (`#c0622a`) meets minimum 4.5:1 contrast on light backgrounds
 
 ---
 
-## Conformance Notes
+## Recommended Improvements
 
-- The tool's **core interaction** (handwriting rendering to canvas) is fundamentally visual; keyboard navigation of rendered output is not feasible without a semantic fallback. The **textarea + Render** path is the accessible equivalent.
-- All AI actions and exports produce visible status feedback via toast/status-line, but not yet via `aria-live`.
-- On touch devices the app applies `touch-action: none` to drawing surfaces and larger hit targets via `adjustCanvasSizeForDevice()`.
+### ARIA Labels
+```html
+<!-- Add to interactive elements -->
+<button aria-label="Export as PDF">📄 PDF</button>
+<input type="range" aria-label="Font Size" />
+<div role="tabpanel" aria-labelledby="tab-sketchpad">...</div>
+```
+
+### Screen Reader Announcements
+```html
+<!-- Live region for AI status updates -->
+<div aria-live="polite" id="status-announcer"></div>
+```
+
+### Focus Management
+- Trap focus inside modal when HandFonted Studio is open
+- Return focus to trigger button when modal closes
+- Skip-to-content link for keyboard users
+
+### Motion Preferences
+```css
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+```
+
+### High Contrast Mode
+```css
+@media (forced-colors: active) {
+  .card { border: 2px solid CanvasText; }
+  .btn { border: 1px solid ButtonText; }
+}
+```
 
 ---
 
-## Priority Roadmap
+## Testing Checklist
 
-1. Add `aria-live` status region + wire toasts and AI status into it.
-2. Add focus trapping to both modals.
-3. Add `aria-label`/`title` to paper-style and ink-preset buttons.
-4. Add `role="textbox"` to page editors and link them with the main textarea.
+- [ ] Navigate entire app using keyboard only (no mouse)
+- [ ] Test with screen reader (NVDA, VoiceOver, or JAWS)
+- [x] Verify all form inputs have associated labels
+- [ ] Check color contrast ratios with axe DevTools
+- [ ] Test with browser zoom at 200%
+- [ ] Verify focus indicators are visible on all interactive elements
+- [ ] Test `prefers-reduced-motion` with OS setting enabled
+
+---
+
+## Contrast Audit (v1.13.1 — Phase D4)
+
+axe-core (WCAG 2.0/2.1 A+AA) was run against `index.html` in light and dark modes with all sidebar sections expanded. Light mode passes with **zero violations**. Dark mode's remaining `color-contrast` flags are a known axe limitation: the glassmorphism sidebar/toolbar use translucent rgba layers that axe cannot composite, so it resolves backgrounds against the wrong source (manually verified — every flagged pair is ≥ 5:1 against the effective composited background; e.g. toolbar logo 12:1, sidebar labels 5.4:1). Theme tokens were hardened in the prior contrast pass (light `--text-muted #6f6752` ≈ 4.7:1, dark `#948da9` ≈ 5.4:1) and `about.css`'s light `--accent` now matches (`#a34f1e`, 4.76:1 on cream). The audit also drove two structural fixes: contentEditable overlays carry `role="textbox"` + `aria-multiline` so their labels are valid, and the scrollable `#canvas-area` is keyboard-focusable.

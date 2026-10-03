@@ -1,0 +1,78 @@
+name: CI
+
+on:
+  push:
+    branches: [main, next-level]
+  pull_request:
+
+jobs:
+  build-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Version consistency (sw.js vs package.json)
+        run: node scripts/check-version.js
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Unit tests
+        run: npm test
+
+      - name: Coverage ratchet (upgrade plan C3)
+        run: npm run test:coverage
+
+      - name: Build (hashed output + SW precache injection)
+        run: npm run build && test -f dist/index.html && ls dist/assets/index-*.js >/dev/null && grep -q "/assets/" dist/sw.js
+
+      - name: Dependency audit (blocking)
+        run: npm audit --audit-level=high
+
+  lighthouse:
+    needs: build-test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - run: npm ci
+
+      - name: Build (hashed output + SW precache injection)
+        run: npm run build
+
+      - name: Lighthouse budgets (upgrade plan E1)
+        run: npm run lhci
+
+  e2e:
+    needs: build-test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - run: npm ci
+
+      - run: npx playwright install --with-deps chromium
+
+      - run: npm run build
+
+      - run: npx playwright test
+        env:
+          CI: true

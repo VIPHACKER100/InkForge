@@ -1,41 +1,10 @@
-# Dependencies
 node_modules/
-
-# Logs
-logs
-*.log
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-pnpm-debug.log*
-lerna-debug.log*
-
-# OS
-.DS_Store
-*.swp
-*.swo
-*~
-
-# IDE
-.vscode/
-.idea/
-*.sublime-project
-*.sublime-workspace
-
-# Environment
+dist/
 .env
-.env.local
-.env.*.local
-strategic_roadmap.md
-
-#graphify
-graphify-out
-
-#gui-test-screenshots
-gui-test-screenshots/*
-
-#gui-test-report
-gui-test-report.md
-
-#gui-test-analysis
-gui-test-analysis.md
+*.log
+.DS_Store
+Thumbs.db
+coverage/
+dist-verify*/
+.lighthouseci/
+graphify-out/cache/

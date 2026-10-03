@@ -1,117 +1,109 @@
-<p align="center">
-  <img src="../inkforge_logo.jpeg" alt="InkForge Logo" width="80" style="border-radius: 50%; box-shadow: 0 4px 12px rgba(0,0,0,0.15);" />
-</p>
-
 # 🌐 Deployment Guide
 
-InkForge is a fully static, client-side web application. There is no build step, no server, and no backend — deployment is just serving the static app files.
+Options and best practices for hosting Inkflow in production.
 
 ---
 
-## Requirements
+## Static Hosting (Recommended)
 
-- **Runtime**: Any modern browser (Chrome, Edge, Firefox, Safari). No Node.js required.
-- **Web server**: Any static host (GitHub Pages, Netlify, Vercel, Cloudflare Pages, Apache, nginx, S3).
-- **Minimum files**:
-  - `index.html` (main studio app shell)
-  - `index.css` (studio styles)
-  - `index.js` (application logic)
-  - `about.html` (standalone about & documentation portal)
-  - `about.css` (about page styling)
-  - `inkforge_logo.jpeg` (brand emblem)
-  - `sw.js` (PWA Service Worker for offline caching)
-  - `manifest.json` (PWA Web App Manifest for installability)
+Inkflow is a pure static site — no server-side runtime required. Any static hosting service works perfectly.
 
----
-
-## Versioning & Cache-Busting
-
-InkForge pins its version in three places that must agree: `package.json` (`version`), `sw.js` (`CACHE_VERSION`), and the `index.html` script tag (`index.js?v=…`, which busts the service worker's cache-first asset cache).
-
-- Run `npm run check-versions` to verify parity (exit code 1 on drift).
-- When you change `index.js` or `index.css`, bump **all three** and add a `docs/changelog.md` entry — skipping the bump risks clients being served stale code from the service worker's cache.
-
----
-
-## CDN Dependencies (Loaded Automatically)
-
-All third-party libraries load from CDNs at runtime — nothing is vendored:
-
-| Library | Version | Purpose | Source |
-| :--- | :--- | :--- | :--- |
-| html2canvas | 1.4.1 | Canvas rasterization for exports | `cdnjs.cloudflare.com` |
-| jsPDF | 2.5.1 | PDF generation (UMD build) | `cdnjs.cloudflare.com` |
-| Font Awesome | 6.4.0 | UI icons | `cdnjs.cloudflare.com` |
-| Google Fonts | — | Handwriting + UI font families | `fonts.googleapis.com` |
-| opentype.js | 1.3.4 | Custom font building (lazy-loaded) | `cdnjs.cloudflare.com` |
-| pdf.js | 3.4.120 | PDF file import (lazy-loaded) | `cdnjs.cloudflare.com` |
-
-The last two are lazy-loaded only when the relevant feature is first used (`ensureOpentypeLoaded()` for HandFonted Studio, `extractTextFromPDF()` for PDF import).
-
----
-
-## Quick Deploy Options
-
-### 1. Local (Offline Preview)
+### GitHub Pages
 ```bash
-# Python
-python -m http.server 8000
+# Push to a GitHub repository
+git add .
+git commit -m "Deploy Inkflow"
+git push origin main
 
-# Node
-npx serve .
+# Enable Pages in Settings → Pages → Source: main branch
 ```
-Open `http://localhost:8000`.
+Your app will be live at `https://username.github.io/inkflow/`
 
-### 2. GitHub Pages
-Push the repo, then in **Settings → Pages** set the source to the `main` branch root. The site appears at `https://<user>.github.io/InkForge/`.
+### Netlify
+1. Drag and drop the project folder to [app.netlify.com/drop](https://app.netlify.com/drop)
+2. Or connect your GitHub repo for automatic deployments
+3. No build command needed — deploy as-is
 
-### 3. Netlify / Vercel / Cloudflare Pages
-Connect the repository — each detects a static site with no build step. Deploy command: `none`. Publish directory: repository root.
+### Vercel
+```bash
+npx vercel --prod
+```
 
----
-
-## AI Integration Considerations
-
-The AI features (OpenRouter / Anthropic) call third-party APIs from the browser. CORS is generally open for these providers, so no proxy is required for personal use. If a network blocks these hosts, AI buttons will show a "connection error" status — the rest of the app continues to work normally.
-
-> **Security note**: users must provide their own API key (stored only in `localStorage`). Never ship a key inside the repo.
-
----
-
-## Continuous Security Analysis
-
-The repo includes `.github/workflows/codeql.yml` — a GitHub CodeQL Advanced workflow that runs static analysis on every push and pull request (scheduled weekly as well). After pushing to GitHub, enable **Settings → Security → Code security** to receive scan alerts.
+### Cloudflare Pages
+1. Connect GitHub repo in Cloudflare dashboard
+2. Build command: (leave empty)
+3. Output directory: `/`
 
 ---
 
-## SEO Surface
+## CDN Dependencies
 
-The app is a single page, so SEO is concentrated in `index.html` plus two crawler files:
+Inkflow loads these libraries from CDN at runtime:
 
-- **Meta**: `description`, `robots`, `author`, and `rel="canonical"` in `<head>`.
-- **Social cards**: Open Graph (`og:*`) and Twitter (`twitter:*`) tags, using the absolute
-  logo URL so scrapers can fetch it.
-- **Structured data**: an inline `application/ld+json` block (`schema.org/WebApplication`)
-  describing the app, its features, and its free offer. Allowed by the CSP because
-  `script-src` already permits `'unsafe-inline'`; the block is a data node and never executes.
-- **`robots.txt`** and **`sitemap.xml`** live at the repo root and are served as-is.
+| Library | CDN | Fallback Strategy |
+| :--- | :--- | :--- |
+| Google Fonts | fonts.googleapis.com | System fonts fallback |
+| Font Awesome | cdnjs.cloudflare.com | Unicode emoji fallback |
+| jsPDF | cdn.jsdelivr.net | PDF export disabled |
+| opentype.js | cdn.jsdelivr.net | Custom font disabled |
 
-All absolute URLs use the canonical origin `https://inkforge.in/`. If the
-production domain changes, update it in five places: the `canonical` link, `og:url`,
-`og:image`, `twitter:image`, and the JSON-LD `url` in `index.html`, plus the URLs in
-`robots.txt` and `sitemap.xml`. The offline fallback page served by `sw.js` is marked
-`noindex` so crawlers never index it instead of the real app.
+### Self-Hosting Dependencies
+For air-gapped or offline deployments, download all CDN assets locally:
+
+```bash
+mkdir vendor
+# Download each library and update script/link tags in index.html
+```
 
 ---
 
-## Verification Checklist
+## Production Checklist
 
-Before shipping an update:
+- [ ] Test all export formats (PNG, JPG, PDF, Print)
+- [ ] Verify custom font creation works end-to-end
+- [ ] Test on mobile viewport (< 768px)
+- [ ] Verify dark mode toggle
+- [ ] Check AI integration with valid API key
+- [ ] Validate localStorage persistence across sessions
+- [ ] Test cross-browser: Chrome, Firefox, Safari, Edge
+- [ ] Minify CSS and JS for production (optional)
+- [ ] Add favicon and meta tags for SEO
+- [ ] Set up HTTPS for secure context features
 
-- [ ] `index.html`, `index.css`, `index.js` all present and the app loads
-- [ ] No localhost references remain in CDN/API URLs
-- [ ] `localStorage` and IndexedDB persist across reloads (state + notebooks + custom glyphs)
-- [ ] Exports (PNG/JPG/PDF/SVG/Copy/Print) produce correct output
-- [ ] Dark mode, paper styles, and theme packs render correctly
-- [ ] AI features fail gracefully when offline
-- [ ] SEO tags intact (description, canonical, OG/Twitter, JSON-LD, `robots.txt`, `sitemap.xml`)
+---
+
+## Environment Notes
+
+- **No `.env` files**: API keys are entered by the user at runtime
+- **No build step**: Deploy the source files directly
+- **No external database**: All general settings persist in browser `localStorage`, and custom handwriting glyphs persist in `IndexedDB`
+- **CORS**: AI features require the `anthropic-dangerous-direct-browser-access` header
+
+## PWA Deployment
+
+Inkflow includes a service worker (`sw.js`) and web app manifest (`manifest.json`) for progressive web app support.
+
+### Features
+- **Offline support**: All static assets (JS, CSS, HTML) are precached on first load
+- **Installable**: Users can "Add to Home Screen" on mobile or "Install" on desktop
+- **Network-first for APIs**: AI requests always go to the network (no stale cache)
+
+### Requirements
+- Must be served over HTTPS (or localhost) for service worker registration
+- The `manifest.json` must be accessible at the root path
+
+### Verification
+After deployment, open DevTools → Application → Service Workers to confirm registration.
+
+---
+
+## Collaboration Relay Hardening (v1.18.0 — Phase F4)
+
+The WebSocket relay (`server.js`) supports an optional shared room token. Run it
+with `INKFLOW_ROOM_TOKEN=your-secret node server.js`; clients must then set the
+same value before connecting — `localStorage.setItem('inkflow-collab-token',
+'your-secret')` — or they are disconnected with close code 4401 ("Room token
+required"). Without the variable the relay runs in open LAN mode exactly as
+before. Additional built-in limits: 240 messages per 10 s per connection
+(closed with 1008), a maximum of 5 concurrent connections per IP (closed with
+1013), a 64 KB per-frame cap (1009), and binary frames are rejected (1003).

@@ -1,512 +1,348 @@
-<p align="center">
-  <img src="../inkforge_logo.jpeg" alt="InkForge Logo" width="80" style="border-radius: 50%; box-shadow: 0 4px 12px rgba(0,0,0,0.15);" />
-</p>
-
 # 📚 API Reference
 
-Complete reference for all public JavaScript functions in `index.js`.
-
----
-
-## Global State
-
-### `S` (global config object)
-Single source of truth for the app. Fields: `text`, `font`, `fontSize`, `lineHeight`, `wordSpacing`, `margin`, `rotationMax`, `inkColor`, `bleed`, `pressure`, `paperStyle`, `noteLayout`, `textAlignment`, `animSpeed`, `currentPage`, `pageDates`, `pageNos`, `showHeaderBox`. Runtime-only fields include `activeTheme`, `_highlightColor`, `isStudyMode`.
-
-### Constants
-- `PAGE_W` / `PAGE_H` — canvas size (794 × 1123)
-- `TEMPLATE_SHEETS` — `{ letters: [52 chars], symbols: [32 chars] }`
-- `ALL_TEMPLATE_CHARS` — 84-character union of both sheets
-- `AI_MODELS` — static fallback model lists for `openrouter` / `anthropic`
-- `THEMES` — theme pack presets (`default`, `vintage`, `cute`, `science`, `minimal`, `scrapbook`)
-- `DB_NAME` (`InkForgeDB`), `STORE_NAME` (`draftedGlyphs`), `NOTEBOOKS_STORE` (`notebooks`)
+Complete reference for the public JavaScript surface. Since the v1.20.1 ES-module
+conversion, functions live in their owning modules (see the module map in
+`docs/system-architecture.md`) — this page groups them by feature area and notes
+the owning module for each entry.
 
 ---
 
 ## Core Rendering
 
 ### `layoutText(text)`
-Unified layout engine that computes all character positions, word-wrap, baseline drift, variable spacing, and page breaks. Instantiates a seeded `mulberry32` PRNG based on `hashString((activeNotebookId || '') + cleanText)` for 100% deterministic layout & rendering. Routes internally to `layoutTextTwoColumn`, `layoutTextCornell`, or `layoutTextCleanStandard` depending on `noteLayout` / `paperStyle`.
+**v1.4.0** — Unified layout engine that computes all character positions, word-wrap, and page breaks. Supports Mermaid diagram blocks (````mermaid`). Routes internally to `layoutTextTwoColumn` or `layoutTextCornell` if layout-specific overrides are active (Note: Diagram blocks currently supported in standard layout).
 - **Parameters**: `text` (String) — raw input text
 - **Returns**: `{ queue, pageTexts, pageCount }` — character render items, per-page text strings, total pages
-- **Used by**: `renderText()`, `buildCharQueue()`, `startAnimation()`, `autoFitFontSize()`, `redrawPageCanvas()`
+- **Used by**: `renderText()`, `buildCharQueue()`, `startAnimation()`
 
-### `layoutTextTwoColumn(text, S, PAGE_W, PAGE_H, sanitizeText, containsDevanagari, getFontStack, getCharVariation, getGraphemes, ctx, prng)`
-Computes two-column layout wrapping and coordinates with seeded PRNG jitter.
-- **Returns**: `{ queue, pageTexts, pageCount }`
+### `layoutTextTwoColumn(text, S, PAGE_W, PAGE_H, sanitizeText, containsDevanagari, getFontStack, getCharVariation, getGraphemes, ctx)`
+**v1.3.0** — Computes two-column layout word wrapping and coordinates.
+- **Parameters**: Takes raw text, global state `S`, canvas size configuration, text-helper functions, and a rendering context.
+- **Returns**: `{ queue, pageTexts, pageCount }` formatted for two columns.
 
-### `layoutTextCornell(text, S, PAGE_W, PAGE_H, sanitizeText, containsDevanagari, getFontStack, getCharVariation, getGraphemes, ctx, prng)`
-Computes Cornell Study Notes coordinates with seeded PRNG jitter. Lines prefixed `? ` / `cue:` → cues column; `== ` / `summary:` → summary footer; other lines → main notes.
-- **Returns**: `{ queue, pageTexts, pageCount }`
-
-### `layoutTextCleanStandard(cleanText, S, PAGE_W, PAGE_H, ctx, prng)`
-Structured-content layout for `clean` paper + Standard layout. Parses `#`/`##` headings, bullets, and questions via `parseStructuredContent()`, with proportional font sizes, block spacing, and vertical text alignment offsets (`getAlignmentOffset`). One empty row is inserted before each question block (except at page top) so a finished answer is followed by breathing room; the row is mirrored into `pageTexts` to keep the editor overlay aligned.
-- **Returns**: `{ queue, pageTexts, pageCount }`
-
-### `hashString(str)` & `createPRNG(seed)`
-Generates an FNV-1a hash of a string and returns a seeded `mulberry32` pseudo-random number generator function for deterministic variation generation.
-- **Returns**: `Function` returning deterministic random floats `[0, 1)`.
-
-### `getCharVariation(rotMax, pressure, fontSize, prng, isIndic, paperStyle)`
-Generates individual glyph transforms scaled by `fontSize` and `S.realism`. Returns neutral values when `paperStyle === 'clean'`. Automatically tightens jitter for Indic/Devanagari script (`scriptRotMult = 0.3`, `scriptScaleMult = 0.4`).
-- **Parameters**: `rotMax` (Float), `pressure` (Float), `fontSize` (Number), `prng` (PRNG Function), `isIndic` (Boolean), `paperStyle` (String)
-- **Returns**: `{ tiltDeg, scaleX, scaleY, shearX, baselineOff, spacingExtra, pressureMod, opacity, isRetrace }`
-  - `shearX` — micro-shear applied via `ctx.transform()` (±0.022 × `realism`)
-  - `isRetrace` — `true` on ~1.8% of glyphs when `S.rareImperfections` is enabled, triggering a faint 1px double-stroke
+### `layoutTextCornell(text, S, PAGE_W, PAGE_H, sanitizeText, containsDevanagari, getFontStack, getCharVariation, getGraphemes, ctx)`
+**v1.3.0** — Computes layout coordinates matching the Cornell Study Notes structure.
+- **Parameters**: Same as `layoutTextTwoColumn`. Parses lines starting with `? ` / `cue:` as cues, lines starting with `== ` / `summary:` as summary notes, and all other text as main notes.
+- **Returns**: `{ queue, pageTexts, pageCount }` divided into three functional areas.
 
 ### `renderText(text)`
-Renders text onto canvas pages with full handwriting simulation.
+Renders the given text onto canvas pages with full handwriting simulation.
 - **Parameters**: `text` (String)
-- **Side Effects**: Sanitizes + parses rich syntax, calls `layoutText()`, clears/recreates pages, draws characters (skipping bare `Answer:` lines when margin labels are on), runs sticky/callout post-passes, draws margin question/answer labels, syncs page editors
+- **Side Effects**: Calls `layoutText()`, creates/updates canvas pages, draws characters, syncs page editors
 
 ### `buildCharQueue(text)`
-Thin wrapper around `layoutText()` returning only the character queue.
-- **Returns**: Array of character render items
+Thin wrapper around `layoutText()` that returns only the character queue.
+- **Parameters**: `text` (String)
+- **Returns**: Array of character render items `{ ch, x, y, v, pageIdx, isIndic, fontStack }`
 
-### `drawPaperBackground(ctx, style, pageNum)`
-Paints the paper background (ruled/clean/plain/grid/legal/vintage/dark/dot_grid/engineering/music) including grain texture, margin rules, header box, and layout decorations.
-- **Parameters**: `ctx`, `style` (String), `pageNum` (Integer, default 1)
-- **Side Effects**: Invokes `drawLayoutDecorations()`
+### `drawPaperBackground(ctx, style)`
+Paints the paper background on a canvas context.
+- **Parameters**: `ctx` (CanvasRenderingContext2D), `style` (String — `ruled|plain|grid|legal|vintage|dark|dot_grid|engineering|music|dated`)
+- **Side Effects**: Also invokes `drawLayoutDecorations()` to overlay layout dividers and labels.
 
 ### `drawLayoutDecorations(ctx, noteLayout)`
-Draws Cornell dividers and `Cues / Questions`, `Main Notes`, `Summary` labels.
-- **Parameters**: `ctx`, `noteLayout` (String)
+**v1.3.0** — Draws dividing boundaries and text titles (e.g. "Cues", "Summary") for the active page layout template.
+- **Parameters**: `ctx` (CanvasRenderingContext2D), `noteLayout` (String)
+- **Side Effects**: Draws layout visual lines and labels onto the background canvas.
 
-### `drawRoundedRect(ctx, x, y, width, height, radius)`
-Strokes a rounded-rectangle path (used by the header box).
-
-### `getAlignmentOffset(alignment, fontSize, lineHeight)`
-Returns the vertical baseline shift for `top` (Upper: `-(lineH * 0.62)`), `middle` (Middle: `-(lineH * 0.32)`), and `bottom` (Lower: `0`) text alignments relative to notebook line baselines.
-
-### `drawCursiveConnector(ctx, item1, item2, S)`
-*(Deprecated / No-op)* Preserved for backwards compatibility. Synthetic Bézier ligature drawing is disabled to prevent baseline artifacts in favor of native font vector connections.
-
-### `drawMarginTextOnCanvas(ctx, pageNum)`
-Renders left-margin notes onto canvas with strict word and character wrapping within `S.margin - 18px` (`62px`), maintaining vertical line-height alignment with ruled lines while preventing overflow past the vertical red margin lines (`X = 66px`).
-- **Parameters**: `ctx`, `pageNum` (Integer)
-
-### `getCachedGlyphImage(char, src)`
-Returns a fully-decoded `<img>` for a drafted glyph (cached), or `null` while decoding; triggers `debounceRender()` when ready.
+### `getCharVariation(rotMax, pressure, fontSize)`
+Generates randomized per-character variation parameters.
+- **Parameters**: `rotMax` (Float), `pressure` (Float), `fontSize` (Integer)
+- **Returns**: `{ tiltDeg, scaleX, scaleY, baselineOff, spacingExtra, pressureMod, opacity }`
 
 ---
 
-## Text Processing & Rich Syntax
-
+## Text Processing Helpers
 
 ### `sanitizeText(str)`
-Strips non-printable control characters and Private Use Area codepoints. Returns cleaned string.
-
-### `escapeHtml(str)`
-Escapes HTML special characters (`&`, `<`, `>`, `"`, `'`) to prevent XSS when injecting user content into `innerHTML`. Returns escaped string.
+Strips non-printable control characters and Private Use Area codepoints.
+- **Parameters**: `str` (String)
+- **Returns**: Cleaned string
 
 ### `getGraphemes(text)`
-Segments text into grapheme clusters via `Intl.Segmenter` with `Array.from()` fallback.
+Segments text into individual grapheme clusters using `Intl.Segmenter` with `Array.from()` fallback.
+- **Parameters**: `text` (String)
+- **Returns**: Array of grapheme strings
 
 ### `isIndicScript(text)` / `containsDevanagari(text)`
-Tests for Indic script characters (Devanagari, Bengali, Tamil, etc.). Returns Boolean.
+Tests if text contains Indic script characters (Devanagari, Bengali, Tamil, etc.).
+- **Parameters**: `text` (String)
+- **Returns**: Boolean
 
 ### `getFontStack(isIndic)`
-Builds the CSS font-family string, appending `"Noto Sans Devanagari", "Hind", sans-serif` fallbacks when needed.
-
-### `parseRichSyntax(rawText)`
-Extracts stickies, callouts, highlights, and flashcards from raw text.
-- **Parameters**: `rawText` (String)
-- **Returns**: `{ cleanText, flashcards }`
-- **Side Effects**: Populates `parsedStickies[]`, `parsedCallouts[]`, `highlightRanges[]`, `activeFlashcards[]`, and updates the flashcards button indicator
-- **Guard (v1.6.4+)**: When the input already contains `\uFFF0`/`\uFFF1` placeholders (i.e. it was pre-processed), the parser returns immediately without resetting the parsed arrays — `layoutText()` re-invokes this parser internally, and a second pass would wipe the first pass's entities.
-
-### `parseStructuredContent(text)`
-Splits text into blocks: `heading`, `subheading`, `bullet` (levels 1/2), `question` (from `Q1.`/`Q.` lines, or numbered lines ending with `?` — keeping their original number style), `paragraph`, and standalone `Answer:` marker paragraphs. Consecutive plain lines merge into one paragraph, but `Answer:` lines and other numbered lines always start a new block.
-
-### `splitRawTextIntoPages(rawText, cleanPageTexts)`
-Maps cleaned per-page text back to raw (un-sanitized) page slices.
-
-### `paintStickyNotes(queue, targetPageIdx)`
-Post-pass that draws sticky notes into the right margin from `parsedStickies`.
-- **Parameters**: `queue` (Array), `targetPageIdx` (Integer or `null` for all pages)
-
-### `paintCallouts(queue, targetPageIdx)`
-Post-pass that draws callout boxes into the left margin from `parsedCallouts`.
-
-### `clusterQueueLines(queue)`
-Groups queue items into visual lines (clusters per page, split when the y gap exceeds half a line height). Shared helper for the margin-label pass and the answer-line detection.
-- **Returns**: Array of `{ pageIdx, items }`
-
-### `collectAnswerLineItems(queue)`
-Returns a `Set` of queue items belonging to lines whose text is just `Answer:` (standard layout). Those items are skipped by canvas drawing so the margin **Ans** label carries the meaning, while the word remains visible in the editors.
-
-### `drawMarginQuestionLabels(queue, onlyPageIdx)`
-Post-pass that draws **Q1…Qn** labels next to numbered question lines (ending with `?`) and **Ans** labels next to bare `Answer:` lines, right-aligned in the left margin (clear of both red rules). The **Ans** label anchors one line down, aligned with the first line of the answer content, and labels are optically centered on their line's handwriting (`baseline − 0.15 × fontSize`). Standard layout only; respects `S.showMarginLabels`.
-- **Parameters**: `queue` (Array), `onlyPageIdx` (Integer or `null` for all pages — used by `redrawPageCanvas()` to avoid stamping other pages)
-
-### `drawWrappedText(ctx, text, x, y, maxWidth, lineHeight, maxLines)`
-Word-wraps and fills short text (used inside stickies/callouts).
+Builds CSS font-family string with Devanagari fallbacks if needed.
+- **Parameters**: `isIndic` (Boolean)
+- **Returns**: Font family string (e.g., `"Caveat", "Noto Sans Devanagari", "Hind", sans-serif`)
 
 ---
 
 ## Page Management
 
 ### `createPage(pageNum)`
-Creates a canvas page with a `contenteditable` editor overlay, Date/Page No. inputs, and margin-text overlay. The canvas CSS display size is set by `getResponsiveCanvasWidth()` so it fills the viewport correctly on mobile from the moment of creation. The `.worksheet-header` DOM element is appended inside `.canvas-container` (v1.6.24) rather than `.page-wrapper`, ensuring the DATE/P.NO box is always positioned relative to the actual canvas surface.
+Creates a new canvas page with an inline `contenteditable` editor overlay.
+- **Parameters**: `pageNum` (Integer)
 - **Returns**: Canvas element
-- **Side Effects**: Appends wrapper to DOM, registers focus/blur/input listeners, pushes to `pages[]`, calls `updatePageNav()`
-
-### `redrawPageCanvas(pageNum)`
-Re-paints a single page's background and character queue (used during date/page-number editing).
-
-### `getResponsiveCanvasWidth()` *(v1.6.24)*
-Computes the correct CSS display width for a page canvas based on the current `window.innerWidth`.
-- ≤ 480 px: `min(PAGE_W, vw − 24)`
-- ≤ 768 px: `min(PAGE_W, vw − 32)`
-- Desktop: `min(PAGE_W, 720)`
-- **Returns**: `Number` — pixel width to assign to `canvas.style.width`
-- **Called by**: `createPage()` and the `window.resize` listener
-
-### `updateEditorStyles(editor, canvas)`
-Syncs the page editor (`.page-editor`) and left-margin notes (`.margin-text-overlay`) font family, font size, line-height, top padding, left padding, width, and word spacing to canvas dimensions and settings. Dynamically calculates `firstLineBaseline` (`S.margin + lineSpacingPx * 2` for standard/clean; `S.margin + S.fontSize + lineSpacingPx` for Cornell/Two-Column) so DOM text baseline aligns perfectly with canvas paper ruled lines without vertical shifting.
-
-### `handleLineClick(e, targetElement, canvas)`
-Calculates the target line index `Math.floor((clickYInCanvas - topPadding) / lineSpacingPx)` when a user clicks on the page editor or margin overlay. Appends empty lines and calls `setCursorAtLine()` when clicking unwritten lines below existing text, while preserving native character click positioning when editing existing words.
-
-### `setCursorAtLine(element, targetLineIndex)`
-Positions the contentEditable caret at the target line index using DOM `Selection` and `Range` APIs.
-
-### `getGlobalTextFromEditors()`
-Concatenates all `.page-editor` `innerText` values and returns String. Editors are written via `textContent` and rendered with `pre-wrap`, so the read is a 1:1 lossless round-trip (v1.6.19) — live edits in the page editors (typing, deletions) propagate exactly to `S.text`, the sidebar textarea, and autosave.
+- **Side Effects**: Appends wrapper to DOM, registers focus/blur/input listeners, pushes to `pages[]`
 
 ### `clearPages()`
 Removes all canvas pages from the DOM and resets the `pages[]` array.
 
 ### `clearText()`
-Clears the textarea, resets `S.text`, creates one blank page with paper background, and calls `autosave()`.
+Clears the textarea, resets `S.text`, creates a blank page with paper background, and calls `autosave()`.
 
-### `updatePageNav()`
-Updates `Page X of Y` indicators and disables/enables prev/next buttons.
+### `updateEditorStyles(editor, canvas)`
+Syncs the page editor overlay's font, padding, and size to match current settings and canvas dimensions.
 
-### `navigatePage(dir)`
-Scrolls to the target page with smooth behavior and updates the nav.
-- **Parameters**: `dir` (Integer — `-1` or `1`)
+### `getGlobalTextFromEditors()`
+Reads all `.page-editor` elements and concatenates their `innerText`, keeping the sidebar textarea in sync.
 
 ---
 
 ## Animation
 
 ### `startAnimation()`
-Begins the live writing animation. Parses rich syntax, builds the queue via `layoutText()`, recreates pages, then drives a `requestAnimationFrame` loop drawing `S.animSpeed` characters per frame. Moves the pen cursor, auto-scrolls the viewport, and calls `renderText()` on completion.
+Begins the live writing animation sequence.
+- **Side Effects**: Calls `layoutText()`, creates paper backgrounds, starts RAF loop, shows pen cursor, auto-scrolls viewport
 
 ### `stopAnimation()`
-Cancels the animation frame, sets `isAnimating = false`, and hides the pen cursor.
-
-### `buildCharQueue(text)`
-Returns the character queue for the given text (see above).
+Stops the active animation and hides the pen cursor.
 
 ---
 
 ## AI Integration
 
-### `callAI(prompt, systemPrompt, onChunk)`
-Provider-aware AI router. Checks the selected provider and dispatches to `callClaude()` or `callOllama()`.
-- **Parameters**: `prompt` (String), `systemPrompt` (String), `onChunk` (Function)
-- **Returns**: Promise resolving to the full response text, or `null` on failure
-
 ### `callClaude(prompt, systemPrompt, onChunk)`
-Sends a streaming request to OpenRouter or Anthropic.
-- **Parameters**: `prompt` (String), `systemPrompt` (String), `onChunk` (Function)
-- **Returns**: Promise resolving to the full response text, or `null` on failure
-- **Streaming**: SSE via `ReadableStream` / `TextDecoder`, `max_tokens: 1500`
+Sends a streaming request to OpenRouter or Anthropic API.
+- **Parameters**: `prompt` (String), `systemPrompt` (String), `onChunk` (Function — called with each text delta)
+- **Returns**: Promise resolving to the full AI response text
+- **Streaming**: Uses SSE via `ReadableStream` for real-time word-by-word rendering
 
-### `callOllama(prompt, systemPrompt, model, onChunk)`
-Sends a streaming request to a local Ollama server (default `http://localhost:11434/api/chat`).
-- **Parameters**: `prompt` (String), `systemPrompt` (String), `model` (String), `onChunk` (Function)
-- **Returns**: Promise resolving to full response text, or `null` on failure (e.g. connection error)
-- **Privacy**: 100% private client-side REST call; requires no API key.
+### `aiAction(action)`
+Dispatches an AI workflow (summarize, fix grammar, lecture→notes, generate assignment).
+- **Parameters**: `action` (String — `summarize|grammar|lecture|assignment`)
+
+### `callOllama(prompt, systemPrompt, onChunk)`
+Sends a streaming request to a local Ollama instance.
+- **Parameters**: `prompt` (String), `systemPrompt` (String), `onChunk` (Function)
+- **Returns**: Promise resolving to the full AI response text
+- **Endpoint**: `http://localhost:11434/api/chat` (streaming)
+
+### `AI_SYSTEM_BASE_PROMPT`
+System prompt constant for rich-syntax-aware AI output (headers, bullets, sticky notes, callouts, Q:/A: flashcards).
 
 ### `initApiKeyPersistence()`
-Wires `input` and `change` event listeners to `#api-key` and `#remember-api-key`. Saves `inkforge-api-key-{provider}` to `localStorage` when checked and restores it on page boot or provider change.
-
-### `aiAction(type)`
-Dispatches an AI workflow and streams the result onto the canvas.
-- **Parameters**: `type` (String — `arrange | summarize | grammar | lecture | assignment`)
-- **Note (v1.6.7+)**: `arrange` does **not** call any AI provider — it runs the offline `smartArrangeLocal()` tidy-up and reports the number of fixes via toast and `#ai-status`.
-
-### `smartArrangeLocal(text)`
-Offline deterministic text tidy-up engine used by Smart Arrange. Normalizes markdown headers (`#Title` → `# Title`, `##   Heading` → `## Heading`), InkForge study tags (`[sticky : color]` → `[sticky:color]`), highlight markers (`== key ==` → `==key==`), bullet points (`*`/`•`/`‣`/`+`/`⁃`/`◦`/`▪`/`▫`/`–`/`—` → `- ` with preserved indentation and capitalized first char), Q&A flashcards (`q 1 :` / `question 1:` → `Q1:`, `a 1 :` / `ans 1:` → `A1:`), punctuation spacing (removes space before `,.;:!?` and adds space after `,;!?`), double space collapsing (preserving leading line indentation and fill-in underscores), structural line breaks before headers/questions, 3+ blank line collapse, and trailing single newline.
-- **Parameters**: `text` (String)
-- **Returns**: `{ text, fixes }`
-
-### `bindUIActions()`
-Wires every click/input handler for the toolbar, sidebar sections, paper/ink presets, AI actions, export grid, animation, theme packs, page navigation, and both modals via `addEventListener` (v1.6.4+ — replaced all inline `onclick`/`onchange`/`oninput` HTML attributes). Called first thing in `initApp()`.
+Initializes API key save/restore from localStorage. Listens for provider changes and checkbox state.
 
 ### `fetchOpenRouterModels()`
-Asynchronously fetches the OpenRouter model catalog and replaces the fallback list (free models first, then alphabetical).
+Asynchronously fetches the complete model catalog from OpenRouter API and updates the dropdown.
 
 ### `onProviderChange()`
-Rebuilds the model dropdown and API-key label for the selected provider (`openrouter | anthropic | ollama`); triggers `fetchOpenRouterModels()` for OpenRouter and loads saved API keys.
+Updates the model dropdown and API key label when the AI provider selection changes.
 
-### `setAiStatus(msg)`
-Writes a status message into `#ai-status`.
+---
 
-### `sanitizeAiResponse(text)`
-Post-processes raw AI provider response text before it reaches the canvas renderer or state. Strips markdown triple-backtick code fences (` ```python … ``` `, preserving code body), inline backtick spans (`` `term` `` → `term`), bold/italic markers (`**`, `__`, `*`, `_`), and raw HTML tags (`<p>`, `<code>`, etc.), while preserving InkForge's native syntax tags (`[Q: ...]`, `[sticky:...]`, `[callout:...]`, `==highlight==`, `---`, `***`, `#`, etc.).
-- **Parameters**: `text` (String)
-- **Returns**: Cleaned plain text (String)
+## Study Mode & Flashcards
 
-### `resequenceQA(text)`
-Post-processes Q&A sections in AI output. Rewrites model question numbers (`Q:`, `Q3:`, `Q7.`) into clean sequential `Q1:`, `Q2:`, … labels using a local counter (ignoring model numbering), and deduplicates near-identical questions via character trigram Jaccard similarity (threshold ≥ 0.72). Dropped duplicate questions automatically drop their paired answer.
-- **Parameters**: `text` (String)
-- **Returns**: Resequenced and deduplicated text (String)
+### `toggleStudyMode()`
+Activates or deactivates study mode. Loads flashcards from Q:/A: patterns in text. Opens flashcards modal if cards found.
 
-### `_trigrams(str)`
-Helper function that extracts a `Set` of character trigrams (overlapping 3-character substrings) from a string, normalized to lowercase.
-- **Parameters**: `str` (String)
-- **Returns**: `Set` of 3-character substrings
+### `openFlashcardsModal()` / `closeFlashcardsModal()`
+Opens/closes the flashcards modal with 3D flip animation.
 
-### `_jaccard(setA, setB)`
-Helper function that calculates the Jaccard similarity index `|A ∩ B| / |A ∪ B|` between two `Set` instances. Returns a Float between `0.0` and `1.0`.
-- **Parameters**: `setA` (Set), `setB` (Set)
-- **Returns**: Float
+### `flipFlashcard()` / `nextFlashcard()` / `prevFlashcard()`
+Flashcard navigation — flip to reveal answer, next/previous card.
+
+### `loadFlashcardsFromText()`
+Extracts Q:/A: pairs from `S.text` using `parseRichSyntax()` regex.
+
+## Voice to Notes
+
+### `startVoiceRecording()`
+Uses Web Speech API for real-time speech-to-text. Toggles on/off. Supports English (en-US).
+
+## Theme Packs
+
+### `applyThemePack(packId)`
+Applies a named color preset (default, forest, sunset, ocean, lavender, charcoal) by setting CSS custom properties and updating state.
+
+## Notebooks (notebooks.js)
+
+### `NotebooksDB.saveNotebook(id, data)`
+Saves a notebook record to IndexedDB with title, text, state, and timestamps.
+
+### `NotebooksDB.loadNotebook(id)`
+Loads a single notebook by ID from IndexedDB.
+
+### `NotebooksDB.listNotebooks()`
+Returns all notebooks sorted by `updatedAt` descending.
+
+### `NotebooksDB.deleteNotebook(id)`
+Deletes a notebook from IndexedDB.
+
+### `NotebooksDB.duplicateNotebook(id, newTitle)`
+Clones a notebook with a new ID and optional new title.
+
+### `NotebooksUI.saveCurrentNotebook()`
+Prompts for a title and saves the current editor state as a new notebook.
+
+### `NotebooksUI.renderNotebooksSidebar()`
+Renders the notebook list in the sidebar section.
+
+## PWA
+
+### `sw.js`
+Service worker with cache-first strategy for static assets; never intercepts AI
+provider endpoints. The precache list is **generated at build time** from the actual
+dist output (hashed bundle + CSS + shell) — see docs/pwa.md.
+
+## State Management
+
+### `async initApp()`
+**v1.3.0** — Initializes the application asynchronously. Awaits `restoreState()` to populate custom glyphs from IndexedDB, sets up the file upload triggers, initializes HandFonted Studio controls, and triggers the initial page render.
+
+### `autosave()`
+Debounced function (1000ms) that serializes current configurations to `localStorage` under key `inkflow-state`. Does *not* include custom glyph coordinate arrays.
+
+### `async restoreState()`
+**v1.3.0** — Hydrates the system state on boot. Reads saved settings from `localStorage`, updates all corresponding DOM UI inputs (sliders, dropdowns, layouts), and loads drawn glyphs from IndexedDB. If legacy glyph data is found in `localStorage`, migrates it to IndexedDB and purges it from `localStorage`.
+
+### `resetToDefaults()`
+Resets all configurations to factory defaults, updates DOM controls, and triggers a re-render.
+
+### `getDB()`
+**v1.3.0** — Resolves a Promise with the active `IndexedDB` connection instance to `InkflowDB`, initializing the `draftedGlyphs` object store if it does not exist.
+
+### `saveGlyphDB(char, dataUrl)`
+**v1.3.0** — Asynchronously writes the SVG path data URL for a given character to `IndexedDB`.
+- **Parameters**: `char` (String), `dataUrl` (String)
+- **Returns**: Promise resolving on transaction success.
+
+### `getGlyphsDB()`
+**v1.3.0** — Retrieves all drafted characters and their coordinates stored in the `IndexedDB` database.
+- **Returns**: Promise resolving to an object mapping characters to their data URLs.
 
 ---
 
 ## Export Functions
 
-### `_upscaleCanvas(src, scale)`
-Renders a canvas onto a `scale`× higher-resolution off-screen canvas with high-quality smoothing. Returns the new canvas.
-
 ### `exportImage(format)`
-Exports pages as PNG or JPG, 2× upscaled, via `canvas.toBlob()` and Blob URLs. Multi-page documents download one file per page.
+Exports rendered pages as PNG or JPG using `canvas.toBlob()` and Blob URLs.
+- **Parameters**: `format` (String — `png|jpg`)
 
 ### `exportPDF()`
-Compiles all pages into a multi-page A4 PDF via `PDF_SIZE_PRESETS`, selected by the `#pdf-size-select` dropdown (persisted in `localStorage`):
-- **Compact** — 1× render, JPEG 75%, `FAST` — smallest file
-- **Standard** (default) — 2× render, JPEG 92%, `FAST` — balanced
-- **High** — 2× render, lossless PNG, `NONE` — print/archive
-
-Output: `inkforge-notes.pdf`; progress and the chosen preset are shown in toasts.
+Compiles all pages into a multi-page A4 PDF with progress toasts. Output: `inkflow-notes.pdf`.
 
 ### `exportSVG()`
-Generates SVG files wrapping full-resolution PNG images, one file per page.
+Generates SVG files wrapping full-resolution PNG images. One file per page for multi-page documents.
 
 ### `copyToClipboard()`
-Copies the current page as PNG to the system clipboard via the Clipboard API.
+Copies the current page as a PNG image to the system clipboard via the Clipboard API.
 
 ### `triggerDownload(url, filename)`
-Creates a temporary anchor element, triggers the download, and cleans up.
+Shared helper that creates a temporary anchor element, triggers the download, and cleans up.
 
 ### `showExportToast(msg, type)`
-Shows a non-blocking toast (`info | success | warn | error`) with auto-dismiss for non-info types.
+Displays a non-blocking toast notification with auto-dismiss for success/warn/error types.
+
+### `exportTransparentPNG()`
+**v1.4.0** — Exports rendered text on a transparent background (no paper grain, no rulings, no decorations). Renders all pages to a transparent canvas and downloads as PNG.
+- **Side Effects**: Calls `renderQueueItems()` and `renderCursiveConnectionsOn()` to draw text directly onto transparent canvas.
+
+### `renderQueueItems(queue, ctx, pageIndex)`
+**v1.4.0** — Renders a subset of the character queue onto a given canvas context. Used by both static rendering and transparent export.
+- **Parameters**: `queue` (Array), `ctx` (CanvasRenderingContext2D), `pageIndex` (Integer)
+
+### `renderCursiveConnectionsOn(ctx, queue, pageIndex)`
+**v1.4.0** — Renders cursive connection strokes between characters on a given canvas context. Only active when `S.cursive` is enabled.
+- **Parameters**: `ctx` (CanvasRenderingContext2D), `queue` (Array), `pageIndex` (Integer)
 
 ---
 
-## Persistence
-
-### `autosave()`
-Debounced (1000ms) serializer that writes settings to `localStorage` (`inkforge-state`) and mirrors the current note into the active notebook in IndexedDB.
-
-### `async restoreState()`
-Hydrates `S` from `localStorage`, syncs DOM controls, loads glyphs from IndexedDB, migrates legacy glyphs, and prunes blank glyphs.
-
-### `resetToDefaults()`
-Resets all settings to factory defaults and updates every relevant DOM control.
-
-### `getDB()`
-Resolves a Promise with the `InkForgeDB` connection, creating the `draftedGlyphs` store if needed.
-
-### `saveGlyphDB(char, dataUrl)`
-Writes a drafted glyph data URL to IndexedDB. Returns a Promise.
-
-### `getGlyphsDB()`
-Returns a Promise resolving to an object mapping characters → data URLs from IndexedDB.
-
-### `glyphHasInk(dataUrl)`
-Returns a Promise resolving to `true` if the data URL contains a visible (non-blank) pixel.
-
-### `async pruneBlankGlyphs()`
-Removes blank/corrupt glyphs from memory and IndexedDB, updates the char-grid UI, and clears cache entries. Returns the number pruned.
-
----
-
-## Notebooks & Folders
-
-### `getNotebooksDB()`
-Resolves a Promise with the `InkForgeDB` connection, creating the `notebooks` store (keyPath `id`) if needed.
-
-### `saveNotebook(notebook)`
-Puts a notebook record into the `notebooks` store. Returns a Promise.
-
-### `getAllNotebooks()`
-Returns a Promise resolving to the array of all notebook records.
-
-### `deleteNotebook(id)`
-Deletes a notebook record. Returns a Promise.
-
-### `async createNewNotebook()`
-Prompts for a title/folder, saves a new note, loads it, and re-renders the explorer.
-
-### `async createNewFolder()`
-Prompts for a folder name and creates an untitled note inside it.
-
-### `async loadNotebook(id)`
-Loads a notebook's content and per-note settings into `S`, syncs the UI, and re-renders.
-
-### `async deleteNotebookClicked(id, event)`
-Confirms and deletes a note; loads the next available note (or clears) if the active note was deleted.
-
-### `renderNotebooksList()`
-Renders the folder-grouped notebook explorer from IndexedDB.
-
----
-
-## Study Tools
-
-### `toggleStudyMode()`
-Toggles the `study-mode-active` body class, expands canvas area to 100% viewport width (`grid-template-columns: 1fr`), auto-dims top toolbar (`opacity: 0.5`) with hover reveal, displays floating exit button, smoothly scrolls active page into view, and supports `Escape` key shortcut exit.
-
-### Flashcards — `openFlashcardsModal()`, `closeFlashcardsModal()`, `flipFlashcard()`, `nextFlashcard()`, `prevFlashcard()`, `updateFlashcardUI()`
-Open/close the review modal, flip the active card, navigate the deck, and update the question/answer/progress UI.
-
-### Voice — `initVoiceToNotes()`, `toggleVoiceInput()`
-Initializes the Web Speech API recognizer (continuous, `en-US`) and toggles recording inside `try-catch` guards. Appends transcripts to the textarea, displays toast error notifications (`showToast`) on permission or speech errors, and disables the mic button when unsupported.
-
----
-
-## Theme Packs
-
-### `applyTheme(themeId)`
-Applies a theme preset (`default | vintage | cute | science | minimal | scrapbook`) to `S` and syncs all UI controls, then re-renders and autosaves.
-
----
-
-## Font & Style Controls
-
-### `setPaper(btn)`
-Activates a paper style, enforces the clean-style font allow-list when needed, and toggles header visibility.
-
-### `setInkPreset(hex, name)`
-Sets `S.inkColor` to `hex`, updates the `#ink-color` picker value and `#ink-color-label` text, then calls `updateInkPresetActive()`, `syncAllEditorStyles()`, and `debounceRender()`.
-
-### `updateInkPresetActive()`
-Iterates over all `button[data-ink]` elements and applies the `.active-ink` CSS class (accent-coloured ring) to whichever button's `data-ink` attribute matches `S.inkColor` (case-insensitive). Called automatically by `setInkPreset()`, the color picker `input` handler, `restoreState()`, and `resetToDefaults()`. Available ink presets:
-
-| Button | Name | Hex |
-| :--- | :--- | :--- |
-| 🖊️ | Blue Ink Pen | `#000F55` |
-| 🔵 | Navy | `#1c2340` |
-| ⚫ | Black | `#1a1a1a` |
-| 💙 | Blue | `#0a3d62` |
-| 🟣 | Purple | `#6d2177` |
-| 🔴 | Red | `#8b0000` |
-| 🟢 | Green | `#2d6a4f` |
-
-### `setTextAlignment(alignment)`
-Sets `S.textAlignment` (`top` / `middle` / `bottom`), updates the alignment UI, and re-renders.
-
-### `autoFitFontSize()`
-Synchronizes in-page edits via `getGlobalTextFromEditors()`, performs a 7-step binary search (`12px` – `48px`) to find the optimum font size for the target page count, synchronizes DOM page editor overlays via `syncAllEditorStyles()`, updates the font size UI slider (`#font-size-slider`), and re-renders canvas pages cleanly.
+## UI Helpers
 
 ### `toggleSection(id)`
-Toggles a collapsible sidebar section.
+Toggles a collapsible sidebar section open/closed with smooth animation.
+- Parameters: `id` (String) — The HTML ID of the sidebar section to toggle
 
 ### `applyDark()`
-Toggles dark mode on the root element and updates the toggle icon.
+Toggles the dark mode state on the root element of the document and updates the theme toggle icon.
 
-### `trapFocusModal(modalElement)`
-Enforces WCAG 2.1 accessible focus trapping (`Tab` cycling and `Escape` dismissal) within the specified open modal element.
+### `navigatePage(direction)`
+Navigates between rendered pages with smooth scroll-into-view.
+- **Parameters**: `direction` (Integer — `-1` for previous, `1` for next)
+
+### `updatePageNav()`
+Updates the page indicator text and disables/enables navigation buttons based on current page.
+
+### `debounceRender()`
+Debounced wrapper (280ms) around `renderText()` to prevent redundant renders during fast typing.
+
+### `triggerRender()`
+Immediate (non-debounced) render from the current textarea value.
 
 ---
 
 ## Custom Font Suite
 
-### `openHandFontedModal()` / `closeHandFontedModal()`
-Show/hide the HandFonted Studio modal (resets to the Letters sheet on open).
-
-### `switchFontTab(tab)`
-Switches between `sketchpad` and `template` panels.
-
-### `switchSheet(sheet)`
-Switches the active sheet (`letters` / `symbols`), re-renders the char grid, and selects the first character.
-
-### `renderSketchCharGrid()`
-Builds the character button grid for the active sheet, marking drafted characters.
-
-### `selectSketchCharacter(char)`
-Selects a character, updates the guide/display, clears the canvas, and loads the drafted image if present.
-
-### `saveActiveCharacter()`
-Guards against blank sketches (`isCellBlank`), saves the canvas as a data URL into `draftedGlyphs` and IndexedDB, updates the UI, and shows a preview.
-
-### `clearSketchCanvas()`, `undoSketchStroke()`, `updateBrushSize()`
-Canvas tools for clearing, undoing strokes, and adjusting brush width.
-
-### `updateCharProgress()`
-Updates the `completed / 84` progress bar.
-
-### `showCharPreview(dataUrl)`
-Draws the just-saved glyph into the preview canvas.
-
-### `exportFontProject()`
-Downloads the entire glyph set + font name as a JSON project file.
-
-### `importFontProject(event)`
-Loads a JSON project, merges glyphs, prunes blanks, and refreshes the UI.
-
-### `advanceActiveCharacter()`
-Saves the current character and selects the next one; prompts to switch sheets when a set is complete.
-
 ### `generateDownloadTemplate()`
-Generates and downloads the 3-sheet template package (instructions + Letters + Numbers & Symbols) as 1600×1600 PNGs.
+Generates and downloads a blank 8×8 handwriting template grid (1600×1600px PNG) corresponding to the active character sheet (`Letters` or `Numbers & Symbols`).
 
-### `setupTemplateUploader()`
-Wires the template dropzone, sheet selector, and grid sliders.
+### `buildCustomFont()`
+Compiles sketched/traced glyphs across both sheets into a single, comprehensive TrueType font file and registers it via CSS FontFace.
 
-### `handleTemplateImage(file)`
-Loads an uploaded sheet image and stores it per-sheet in `alignerImages`.
+### `traceContours(imageData, width, height)`
+Runs Moore-Neighbor contour tracing on binary pixel data.
+- **Returns**: Array of closed contour coordinate arrays
+
+### `simplifyPath(points, epsilon)`
+Applies Ramer-Douglas-Peucker simplification to a contour path.
+- **Returns**: Simplified array of {x, y} coordinates
 
 ### `updateAlignerGrid()`
-Redraws the alignment overlay (shading + 8×8 grid) from the current slider values.
+Redraws the template alignment overlay for the active upload template sheet using its corresponding slider values.
+
+### `switchSheet(sheet)`
+**v1.3.0** — Switches the active character sheet in HandFonted Studio.
+- **Parameters**: `sheet` (String — `letters|symbols`)
+- **Side Effects**: Sets the active sheet state, toggles active tab CSS classes, regenerates the character grid, and selects the first character of the sheet.
 
 ### `cropTemplateCell(index, sheetName)`
-Crops a character cell (128×128) from the aligned upload for the given sheet. Returns a canvas or `null`.
-
-### `traceCanvasContours(canvas)`
-Runs Moore-Neighbor contour tracing on a binarized canvas. Returns an array of contour point arrays.
-
-### `isCellBlank(canvas)`
-Returns `true` when the canvas has no significant ink (alpha > 50 and brightness < 160).
-
-### `simplifyPath(points, tolerance)`
-Applies Ramer–Douglas–Peucker simplification. Returns a reduced point array.
-
-### `loadImageToCanvas(dataUrl)`
-Decodes a data URL into a centered 256×256 canvas. Returns a Promise.
-
-### `canvasToOpentypePath(canvas)`
-Converts traced contours into an `opentype.Path` scaled into the 1000-unit em box (fit within 600×700 units).
-
-### `ensureOpentypeLoaded()`
-Lazy-loads opentype.js 1.3.4 from CDN. Returns a Promise.
-
-### `async buildCustomFont()`
-Compiles all drafted glyphs into a TrueType font, registers it as a `FontFace`, appends it to the font selector, and applies it.
-
-### `async exportCustomFontTTF()`
-Compiles all drafted vector glyphs into a standalone TrueType Font (`.ttf`) binary file using `font.download(`${fontName}.ttf`)` for installation on Windows, macOS, iOS, Microsoft Word, or Photoshop.
+**v1.3.0** — Slices and crops a character cell from the uploaded scanned template image for the specified sheet.
+- **Parameters**: `index` (Integer) — character cell index, `sheetName` (String — `letters|symbols`)
+- **Returns**: Canvas element containing the cropped character, or `null` if no image has been uploaded for that sheet.
 
 ---
 
-## Device & Misc Helpers
+## Diagram Engine (`diagram-engine.js`)
 
-### `getDeviceType()`
-Returns `{ type, canvasSize, isTouchDevice }` based on viewport width (mobile / tablet-portrait / tablet-landscape / desktop / large-desktop).
+**v1.4.0** — Standalone module for diagram rendering. Exposed as `window.DiagramEngine` in browser and `module.exports` in Node.js.
 
-### `adjustCanvasSizeForDevice()`
-Sets the sketchpad canvas resolution based on device pixel ratio (up to 2×) and applies touch optimizations.
+### `DiagramEngine.layoutCycle(data, W, H)`
+Lays out a circular/cycle diagram.
+- **Parameters**: `data` (Object — `{ nodes, edges }`), `W` (Integer — canvas width), `H` (Integer — canvas height)
+- **Returns**: `{ items, edges }` — queue items and edge render data
 
-### `getOptimalAnimationSettings()`
-Returns `{ useRAF, smoothing }` based on screen refresh rate. *(Defined but currently unused.)*
+### `DiagramEngine.layoutFlowchart(data, W, H)`
+Lays out a flowchart diagram with top-down node placement.
+- **Parameters**: Same as `layoutCycle`
+- **Returns**: `{ items, edges }`
 
-### `debounceRender()`
-Debounced wrapper (280ms) around `renderText(S.text)`.
+### `DiagramEngine.layoutHierarchy(data, W, H)`
+Lays out a tree/hierarchy diagram with root at top.
+- **Parameters**: Same as `layoutCycle`
+- **Returns**: `{ items, edges }`
 
-### `triggerRender()`
-Immediate render from the current textarea value.
+### `DiagramEngine.getDiagramImage(type, markdown, W, H)`
+Renders a Mermaid diagram to a PNG data URL.
+- **Parameters**: `type` (String — diagram type), `markdown` (String — Mermaid source), `W` (Integer), `H` (Integer)
+- **Returns**: Promise resolving to a data URL string
+
+### `DiagramEngine.parseDiagramJSON(raw)`
+Parses a JSON diagram definition string, extracting nodes and edges.
+- **Parameters**: `raw` (String — JSON source)
+- **Returns**: `{ nodes, edges }` or `null` on parse failure
+
+### `DiagramEngine.positionDiagramNodes(nodes, W, H)`
+Computes x/y positions for nodes in a simple circular layout.
+- **Parameters**: `nodes` (Array), `W` (Integer), `H` (Integer)
+- **Returns**: Array of positioned nodes with `x`, `y`, `w`, `h` properties

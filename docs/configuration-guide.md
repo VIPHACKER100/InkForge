@@ -1,10 +1,6 @@
-<p align="center">
-  <img src="../inkforge_logo.jpeg" alt="InkForge Logo" width="80" style="border-radius: 50%; box-shadow: 0 4px 12px rgba(0,0,0,0.15);" />
-</p>
-
 # ⚙️ Configuration Guide
 
-Complete reference for all user-configurable controls in InkForge.
+Complete reference for all user-configurable controls in Inkflow.
 
 ---
 
@@ -12,15 +8,10 @@ Complete reference for all user-configurable controls in InkForge.
 
 | Control | Range | Default | Effect |
 | :--- | :--- | :--- | :--- |
-| **Font Family** | Dropdown (40+ fonts) | Caveat | Handwriting font used for rendering |
+| **Font Family** | Dropdown (12+ fonts) | Caveat | Handwriting font used for rendering |
 | **Font Size** | 14px – 52px | 22px | Character size on canvas |
 | **Line Height** | 1.2 – 3.0 | 1.5 | Vertical spacing between lines |
 | **Word Spacing** | -2px – 14px | 1px | Horizontal gap between words |
-| **Auto-Fit** | — | — | Binary-searches a font size that fits the current text on one page |
-| **Text Alignment** | Upper / Middle / Lower | Middle | Vertical position of handwriting relative to the grid lines |
-| **Custom Font Upload** | `.ttf` / `.otf` | — | Loads a local font; remembered via `localStorage` (`inkforge-fonts`) |
-
-> Devanagari content automatically falls back to `Noto Sans Devanagari` / `Hind` when the selected font lacks Indic glyphs.
 
 ---
 
@@ -28,18 +19,16 @@ Complete reference for all user-configurable controls in InkForge.
 
 | Style | Description | Best For |
 | :--- | :--- | :--- |
-| **Ruled** | Off-white notebook with blue guidelines, double red margin lines, printed Date/P. No. box | Standard notebook notes |
-| **Clean** | Same ruling as Ruled but crisp, typographic text (no rotation/bleed/drafted glyphs), structured headings & bullets | Lecture notes, study handouts |
+| **Ruled** | Cream background, blue lines, red margin | Standard notebook notes |
 | **Plain** | Clean ivory, no lines | Freeform writing, letters |
-| **Grid** | Light grid at `fontSize × lineHeight` intervals | Math, diagrams, engineering |
+| **Grid** | Light grid at 28px intervals | Math, diagrams, engineering |
 | **Legal** | Yellow background, dense ruled lines | Legal documents, formal notes |
 | **Vintage** | Aged parchment with vignette | Creative writing, journals |
-| **Dark** | Indigo slate, muted guide lines | Dark mode, presentations |
-| **Dot Grid** | Dotted background at grid intervals | Technical sketches, bullet journaling |
-| **Engineering** | Pale green grid (minor + major lines) with reddish margins | Math calculations, graphing |
-| **Music Staff** | Sets of 5-line staffs, bracket endpoints | Writing sheet music |
-
-> Ruled and Clean styles also expose the **Show Date & P. No. Header** checkbox, and let you edit the date/page number directly on each page.
+| **Dark** | Indigo slate, neon guide lines | Dark mode, presentations |
+| **Dot Grid** | Dotted background at 28px intervals | Technical sketches, diagrams, bullet journaling |
+| **Engineering** | Pale green grid (10px minor / 50px major lines) with reddish margins | Math calculations, structural designs, graphing |
+| **Music Staff** | Sets of 5-line staffs, vertical bracket endpoints | Writing sheet music, music notation |
+| **Dated** | Ruled with date column line to the left of the margin | Daily journaling, dated lecture notes |
 
 ---
 
@@ -49,28 +38,12 @@ Complete reference for all user-configurable controls in InkForge.
 | :--- | :--- | :--- |
 | **Standard (Flowing)** | Default single-column layout where text flows naturally and wraps. | Standard text |
 | **Two-Column Grid** | Splits the page into two equal-width columns. Text fills the left column first, then the right column, before breaking to the next page. | Standard text |
-| **Cornell Study Notes** | Divides the page into "Cues / Questions" (left column), "Main Notes" (right column), and "Summary" (bottom footer). | Prefix a line with `? ` or `cue:` → Cues column.<br>Prefix a line with `== ` or `summary:` → Summary area.<br>Other lines flow into Main Notes. |
-
-> **Clean style** additionally parses structured content: `#` headings, `##` subheadings, `-` / `*` bullets (nested levels), `Q1.` / `Q.` auto-numbered questions **and numbered questions ending with `?`** (e.g. `3. What are … ?` — rendered bold, keeping their original number style), and bare `Answer:` lines (own block; hidden on canvas, represented by the margin **Ans** label). One empty line is also rendered after every finished answer, before the next question.
-
-### Margin Labels (Standard layout, v1.6.8+)
-
-The **Question & answer numbers in left margin** checkbox (below the layout selector) draws **Q1…Qn** next to numbered question lines and **Ans** next to bare `Answer:` lines, right-aligned in the left margin with clear space before the red margin rules, in the current ink color.
-
-- The **Ans** label sits one line down from the hidden `Answer:` row, aligned with the first line of the answer content; both label types are optically centered on their line's handwriting.
-- When enabled, a line containing only `Answer:` is *not* drawn on the page — the margin label carries the meaning — while the word stays visible and editable in the textarea and the per-page editors.
-- The setting is saved with your state and per-note settings, included in Reset Defaults, and honored by exports and print (labels are drawn on the canvas).
-
----
-
-## Study Syntax (rich note markup)
-
-| Syntax | Rendered As |
-| :--- | :--- |
-| `[sticky:yellow] text [sticky]` | Sticky note floating in the right margin (colors: `yellow`, `cyan`, `pink`, `mint`) |
-| `[callout:warning] text [callout]` | Boxed tag in the left margin (types: `warning`, `info`, `formula`) |
-| `==text==` | Translucent highlight behind characters |
-| `Q: question` followed by `A: answer` | Flashcards in the review deck (toolbar 🃏 button) |
+| **Cornell Study Notes** | Divides the page into three areas: "Cues / Questions" (left column), "Main Notes" (right column), and "Summary" (bottom footer). | Prefix a line with `? ` or `cue:` to place it in the Cues column.<br>Prefix a line with `== ` or `summary:` to place it in the bottom Summary area.<br>All other lines automatically flow into the Main Notes area. |
+| **Lecture Notes** (F3) | Topic/date header → main notes → key-terms column |
+| **Lab Report** (F3) | Objective → Method → Observations → Result, flowing in order |
+| **Vocabulary (Term / Definition)** (F3) | 40/60 labeled columns |
+| **Reading Notes** (F3) | Book/chapter header → main notes → quotes & page refs |
+| **Meeting Notes** | Structured layout for meeting minutes with agenda, notes, and action items. | Standard text |
 
 ---
 
@@ -79,30 +52,20 @@ The **Question & answer numbers in left margin** checkbox (below the layout sele
 | Control | Range | Default | Effect |
 | :--- | :--- | :--- | :--- |
 | **Ink Color** | Color picker (hex) | `#1c2340` | Color of all rendered text |
-| **Ink Presets** | Blue Ink Pen / Navy / Black / Blue / Purple / Red / Green | — | One-click ink colors; the active preset shows an accent-coloured ring via `.active-ink` |
+| **Ink Presets** | 7 one-click buttons | — | Blue Ink Pen `#000F55`, Navy `#1c2340`, Black `#1a1a1a`, Blue `#0a3d62`, Purple `#6d2177`, Red `#8b0000`, Green `#2d6a4f`; the button matching the live color carries an accent ring |
 | **Rotation Max** | 0° – 12° | 1.0° | Maximum character tilt angle |
-| **Realism / Jitter** | 0.0 – 1.0 | 0.5 | Organic handwriting jitter intensity — scales tilt, anisotropic X/Y scale, micro-shear, and baseline drift |
-| **Rare Imperfections** | Toggle (Checkbox) | `false` | Enables 1px retrace double-strokes (~1.8% of glyphs) and right-margin space compression; also modulates bleed radius with per-glyph pressure |
-| **Ink Bleed** | 0.0 – 2.5 | 0.5 | Shadow blur simulating ink spread into paper fibers; bleed radius is pressure-correlated when Rare Imperfections is on |
-| **Pen Pressure** | 0.0 – 0.3 | 0.12 | Stroke thickness variation and opacity fluctuation |
+| **Ink Bleed** | 0.0 – 2.5 | 0.5 | Shadow blur simulating ink spread (per-glyph radius scales with pen pressure since 1.8.0) |
+| **Pen Pressure** | 0.0 – 0.3 | 0.12 | Stroke thickness variation |
 | **Margin** | 20px – 100px | 80px | Page boundary padding |
 
----
+### Preset Combinations
 
-## Theme Packs
-
-One-click theme presets applied via `applyTheme(themeId)`:
-
-| Theme | Paper Style | Ink | Rotation | Bleed | Pressure | Font Size |
-| :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-| **Default** | Ruled | `#1c2340` | 1.0 | 0.5 | 0.12 | 22 |
-| **Vintage Diary** | Vintage | `#3c2f2f` | 3.0 | 0.8 | 0.15 | 22 |
-| **Cute Pastel** | Plain | `#5d3f6a` | 1.5 | 0.4 | 0.10 | 22 |
-| **Science Lab** | Engineering | `#1a331e` | 0 | 0.3 | 0.08 | 20 |
-| **Minimal Noir** | Dark | `#e0e0e0` | 0.8 | 0.2 | 0.10 | 22 |
-| **Scrapbook** | Dot Grid | `#1c3144` | 2.2 | 0.6 | 0.14 | 24 |
-
-The **Reset Defaults** button restores factory settings for all of the above.
+| Preset | Rotation | Bleed | Pressure | Style |
+| :--- | :--- | :--- | :--- | :--- |
+| **Clean & Neat** | 0.5° | 0.2 | 0.05 | Careful student writing |
+| **Natural** | 1.0° | 0.5 | 0.12 | Default — realistic handwriting |
+| **Messy & Quick** | 4.0° | 1.0 | 0.20 | Rushed lecture notes |
+| **Calligraphic** | 1.5° | 0.8 | 0.25 | Stylized pen writing |
 
 ---
 
@@ -120,46 +83,68 @@ The viewport auto-scrolls to keep the pen cursor visible during animation.
 
 ---
 
-## Study & Productivity Features
-
-| Feature | Description |
-| :--- | :--- |
-| **Study Mode** | Toolbar toggle that dims editing chrome for review; floating exit button |
-| **Flashcards** | `Q:`/`A:` pairs collected into a flip-card review deck with prev/next |
-| **Voice to Notes** | Microphone button uses the Web Speech API to append transcribed notes |
-| **Notebooks & Folders** | IndexedDB-backed explorer to create, load, and delete notes, grouped by folder |
-| **File Upload** | Drag-and-drop `.txt`, `.md`, `.pdf`; PDFs extracted via pdf.js with a progress bar |
-
----
-
 ## AI Configuration
 
 | Setting | Description |
 | :--- | :--- |
-| **AI Provider** | OpenRouter (100+ models), Anthropic (direct), or Ollama (local, no API key) |
+| **AI Provider** | OpenRouter (100+ models) or Anthropic (direct) |
 | **Model** | Selected from provider's model list (auto-fetched for OpenRouter) |
-| **API Key** | Your OpenRouter or Anthropic API key (entered at runtime, stored in browser only). Not required for Ollama. |
-| **Smart Arrange** | Tidies and structures text — **works fully offline, no API key required** (deterministic tidy-up, v1.6.7+) |
-| **Summarize** | Converts text to bullet-point notes |
-| **Fix Grammar** | Corrects spelling and phrasing |
+| **API Key** | Your OpenRouter or Anthropic API key (stored in browser only) |
+| **Record Lecture** | Records audio and transcribes to text |
+| **Doubt Solver** | Answers questions about your notes |
+| **Generate Diagram** | Creates visual diagrams from text descriptions |
+| **Smart Arrange** | Restructures notes for better readability |
+| **Summarize Notes** | Converts text to bullet-point notes |
+| **Improve Grammar** | Corrects spelling and phrasing |
 | **Lecture → Notes** | Transforms transcripts to study notes |
 | **Generate Assignment** | Creates essay-style assignments on a given topic |
-
-> All AI actions route through `callAI()`, which dispatches to the correct backend based on the selected provider.
 
 ---
 
 ## Export Options
 
-| Control | Description |
-| :--- | :--- |
-| **PDF Output Size** | Preset for the PDF export: **Compact** (1× render, JPEG 75% — smallest file, good for sharing), **Standard** (2× render, JPEG 92% — balanced, default), **High** (2× render, lossless PNG — print/archive, largest file). Persisted per browser. |
-
 | Format | Quality | Use Case |
 | :--- | :--- | :--- |
-| **PNG** | Lossless, 2× upscaled (~150 DPI) | Digital sharing, presentations |
-| **JPG** | 97% JPEG, 2× upscaled | Email attachments, web upload |
+| **PNG** | Lossless, native canvas | Digital sharing, presentations |
+| **Transparent PNG** | Lossless, no paper background, no grain | Compositing, layering, design work |
+| **JPG** | 93% JPEG, smaller size | Email attachments, web upload |
 | **SVG** | PNG embedded in SVG wrapper | Vector-aware applications |
-| **PDF** | Multi-page A4, lossless PNG embed | Printing, submission, archival |
+| **PDF** | Multi-page A4, 93% JPEG | Printing, submission, archival |
 | **Copy** | PNG to system clipboard | Quick paste into other apps |
 | **Print** | Native OS dialog | Direct hardcopy printing |
+
+---
+
+## File Upload
+
+| Format | Method |
+| :--- | :--- |
+| **TXT / MD** | FileReader API — direct text extraction |
+| **PDF** | pdf.js (CDN-loaded) — page-by-page text extraction with progress bar |
+
+Drag-and-drop is supported on the upload zone.
+
+---
+
+## Additions since 1.7.0
+
+| Control | Where | Values / Behavior |
+| :--- | :--- | :--- |
+| **✨ Clean** paper style | Paper Style grid | Crisp typographic mode: no paper grain, no ink-bleed shadow, no variation (neutral tilt/scale/baseline), drafted glyphs bypassed. Non-clean handwriting fonts auto-switch to **Kalam**. In Standard layout with margin labels on, bare `Answer:` lines are hidden on canvas and represented by the margin **Ans** label. |
+| **Realism / Human Jitter** | Ink Effects | 0.0 – 1.0 (default 0.5). Scales all handwriting variation; layout is seeded from the note text, so re-renders and PDF exports are pixel-identical. Devanagari automatically tightens jitter. |
+| **Rare Imperfections** | Ink Effects | Checkbox. ~1.8% of glyphs render a faint 1px retrace stroke (in render, animation, and exports). |
+| **Q & Ans numbers in left margin** | Page Layout | Checkbox (default on, Standard layout). Draws **Q1…Qn** next to numbered question lines ending with `?` and **Ans** next to bare `Answer:` lines. |
+| **PDF Output Size** | Export | Compact (1×, JPEG 75%) / Standard (2×, JPEG 92%) / High (2×, lossless PNG). Persisted per browser; shown in the export toast. |
+| **Theme Packs** | Paper Style | Six one-click buttons (Default, Forest, Sunset, Ocean, Lavender, Charcoal) applying accent/paper/ink colors. |
+| **Fonts** | Font selector | Full 48-font suite in four groups: Print Handwriting (20), Cursive & Script (20), Devanagari (8), Clean (2). |
+| **Smart Arrange** | AI Features | Now fully **offline** — no API key or provider needed. Reports the number of fixes via toast. |
+| **Blue Ink Pen** | Ink presets row (1.8.0) | Deep royal-blue `#000F55` ballpoint preset, first in the row; the accent ring follows the live ink color. |
+| **Realism transforms** | (1.8.0) | Anisotropic scale jitter + per-glyph micro-shear + pressure-correlated ink bleed, neutralised in Clean mode and scaled ×0.3 for Devanagari. |
+| **Template gallery** | Note Layout (1.17.0) | Lecture Notes, Lab Report, Vocabulary (Term / Definition), Reading Notes — see the layouts above. |
+
+## Additions since 1.16.0
+
+| Control | Where | Values / Behavior |
+| :--- | :--- | :--- |
+| **🌐 language toggle** | Toolbar (1.20.0) | Switches the interface between English and हिंदी (toolbar, section headers, primary actions, paper styles, export actions). Persisted per browser. |
+| **Flashcard grading** | Study Mode (1.16.0) | After flipping: **1 Again / 2 Hard / 3 Good / 4 Easy** (buttons or number keys). SM-2-lite scheduling per card, persisted under `inkflow-srs`; the header badge shows `📅 N due`. |

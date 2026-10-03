@@ -1,16 +1,12 @@
-<p align="center">
-  <img src="../inkforge_logo.jpeg" alt="InkForge Logo" width="80" style="border-radius: 50%; box-shadow: 0 4px 12px rgba(0,0,0,0.15);" />
-</p>
-
 # 🤝 Contributing
 
-Guidelines for contributing to InkForge.
+Guidelines for contributing to Inkflow.
 
 ---
 
 ## Project Philosophy
 
-InkForge is a **single-page, zero-dependency-install** application. Contributions should maintain this philosophy:
+Inkflow is a **single-page, zero-dependency-install** application. Contributions should maintain this philosophy:
 - No build tools, bundlers, or transpilers required
 - All code runs directly in the browser
 - Dependencies are loaded via CDN only
@@ -44,22 +40,50 @@ InkForge is a **single-page, zero-dependency-install** application. Contribution
 ## File Structure
 
 ```
-index.html    # Studio workspace structure and CDN library loads
-index.css     # Studio styles — design tokens, components, layouts, modals
-index.js      # Core application logic — engines, state, UI handlers, storage
-about.html    # Standalone About & Documentation portal with live Realism Simulator
-about.css     # Dedicated glassmorphic stylesheet for the About portal
-inkforge_logo.jpeg # Official brand emblem (Minimalist Scribe Flame)
-manifest.json # Web App Manifest and PWA shortcut descriptors
-sw.js         # Service worker offline caching
-scripts/      # Version parity and headless logic smoke tests
-docs/         # Documentation (markdown suite — see docs/README.md)
-.github/
-  workflows/
-    codeql.yml # GitHub CodeQL Advanced static-analysis CI
+index.html              # App shell — loads ONE <script type="module" src="index.js">
+about.html / about.css  # Standalone About page (playground, docs directory)
+inkflow_logo.jpeg       # Brand emblem (toolbar, favicon, PWA, About)
+index.css               # Design tokens, components, layouts, light/dark themes
+index.js                # Boot + initApp + prediction + page-editor focus + error hook
+state.js                # Shared state: S, pages, PAGE_W/PAGE_H, draftedGlyphs, fontSwitcher
+render-pipeline.js      # renderText / renderSpecificPage / animation / page DOM
+layout-engine.js        # layoutText + zone-chaining templates + sticky/callout painters
+ui-bindings.js          # Per-panel binders — every control wired via addEventListener
+persistence.js          # autosave / restoreState + serialization whitelist
+settings-sync.js        # Sidebar control-sync helpers (shared with persistence)
+paper-renderer.js       # 10 paper styles (LRU-cached backgrounds), smudge effects
+text-layout.js          # sanitizeText, parseBlocks, getGraphemes, parseRichSyntax
+template-manager.js     # 8 built-in layouts (gallery) + custom templates
+export-manager.js       # PNG/JPG/transparent/PDF/SVG/clipboard pipelines
+export-renderers.js     # Queue item rendering + cursive connections on canvas
+margin-labels.js        # Margin Q/Ans clustering + drawing
+flashcards.js           # Flashcards, study mode, SM-2 lite spaced repetition
+ai-assistant.js         # Provider router: OpenRouter/Anthropic/Gemini/Ollama (SSE)
+ai-postprocess.js       # sanitizeAiResponse, resequenceQA, smartArrangeLocal
+handfonted-studio.js    # Sketch/template glyph capture, aligner, TTF build
+inkfont-format.js       # .inkfont community-share wrap/parse
+font-compilation.js     # Contour tracing, RDP, OpenType compilation
+diagram-engine.js       # Diagram layout algorithms, Mermaid rendering
+shape-drawing.js        # drawArrowhead / drawShapeOrEdge (rough.js)
+cursive-connector.js    # Cursive exit/entry points, Bezier connections
+collaborative-engine.js # WebSocket real-time collaboration (OT client)
+layer-compositor.js     # Multi-layer canvas compositing
+markdown-parser.js      # Markdown tokenization for AI output
+stroke-prediction-engine.js # Stroke completion prediction
+audio-recorder.js       # Voice-to-notes audio recording
+script-detector.js      # Unicode script detection + FontSwitcher
+notebooks.js            # IndexedDB notebook CRUD + sidebar UI
+i18n.js                 # EN/हिंदी string tables + language toggle
+voice-notes.js          # Web Speech voice-to-notes
+server.js               # Hardened collaboration relay (room token, rate limits)
+sw.js                   # Service worker — build-generated precache
+manifest.json           # PWA manifest (shortcuts, logo, share targets)
+e2e/                    # 17 Playwright specs
+scripts/                # check-version, contrast-audit tooling
+docs/                   # This documentation
 ```
 
-The core editor architecture follows a clean, decoupled client-side design. Avoid adding bundler build dependencies.
+Do NOT split JS/CSS into additional files without discussion. The single-file architecture is intentional.
 
 ---
 
@@ -73,13 +97,10 @@ The core editor architecture follows a clean, decoupled client-side design. Avoi
 
 ### PR Checklist
 - [ ] Code follows existing style conventions
-- [ ] `npm run lint` passes with 0 errors (style warnings are acceptable)
-- [ ] `npm run check-versions` passes (`package.json`, `sw.js`, and the `index.html` cache-bust agree)
 - [ ] All existing features still work (no regressions)
 - [ ] Tested on desktop and mobile viewports
 - [ ] Tested in at least 2 browsers
-- [ ] Documentation updated if adding new features (keep the version number in `docs/README.md` and `docs/changelog.md` in sync)
-- [ ] GitHub CodeQL workflow passes (no new high-severity findings)
+- [ ] Documentation updated if adding new features
 - [ ] No new npm/build dependencies added
 
 ---
@@ -112,6 +133,8 @@ Use GitHub Issues with one of these templates:
 - Additional paper styles (e.g. isometric, manuscript, ledger)
 - New handwriting fonts
 - Extended character sets (diacritics, CJK, Arabic)
+- Additional diagram types (e.g. Gantt, sequence, class diagrams)
 - Accessibility improvements (ARIA labels, screen reader testing)
 - Performance optimizations for large documents
 - Localization / i18n support
+- Unit and integration tests for rendering engines

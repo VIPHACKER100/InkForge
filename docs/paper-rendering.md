@@ -1,16 +1,12 @@
-<p align="center">
-  <img src="../inkforge_logo.jpeg" alt="InkForge Logo" width="80" style="border-radius: 50%; box-shadow: 0 4px 12px rgba(0,0,0,0.15);" />
-</p>
-
 # 📄 Paper Rendering Engine
 
-This document describes InkForge's paper background rendering system — the supported styles, grain texture shader, ruling/grid mathematics, and the printed Date / Page No. header box.
+This document describes Inkflow's paper background rendering system — the supported styles, grain texture shader, and ruling/grid mathematics.
 
 ---
 
 ## Overview
 
-InkForge features A4 aspect ratio rendering (794px × 1123px) inside standard `<canvas>` blocks. The background generator dynamically paints complex background styles based on the selected notebook options via `drawPaperBackground(ctx, style, pageNum)`.
+Inkflow features A4 aspect ratio rendering ($794\text{px} \times 1123\text{px}$) inside standard `<canvas>` blocks. The background generator dynamically paints complex background styles based on selected notebook options.
 
 ---
 
@@ -18,42 +14,43 @@ InkForge features A4 aspect ratio rendering (794px × 1123px) inside standard `<
 
 | Style | Background | Features |
 | :--- | :--- | :--- |
-| **Ruled** | Off-white (`#faf9f5`) | Classmate-style: double red vertical margin lines, double red horizontal top lines, blue horizontal guidelines, printed Date / P. No. header box |
-| **Clean** | Off-white (`#faf9f5`) | Same ruling as Ruled (with header box), used by the clean structured-layout mode |
-| **Plain** | Warm ivory (`#faf7f0`) | No guidelines — clean blank sheet |
-| **Grid** | Light brown (`#f6f2ec`) | Coordinate grid cells sized to `fontSize × lineHeight` |
-| **Legal Pad** | Bright yellow (`#fef9c3`) | Red left margin line, dense ruled horizontal lines |
-| **Vintage** | Aged parchment (`#f2e8ce`) | Radial vignette overlay simulating aged paper |
-| **Dark** | Indigo slate (`#1a1a2e`) | Muted guide lines for dark-mode writing |
-| **Dot Grid** | Warm beige (`#f6f2ec`) | Dots at `fontSize × lineHeight` intervals (`#c0b49a` at 0.35 opacity) |
-| **Engineering** | Pale green (`#eef6ed`) | Minor grid (0.18 opacity) + major grid (0.4 opacity), reddish-brown margins |
-| **Music Staff** | Soft ivory (`#faf7f0`) | 5-line music staff blocks with bracket endpoints |
+| **Ruled** | Cream (`#f7f3ea`) | Red vertical margin line, blue horizontal guidelines |
+| **Plain** | Warm ivory | No guidelines — clean blank sheet |
+| **Grid** | Light gray/brown | Coordinate grid cells at 28px square intervals |
+| **Legal Pad** | Bright yellow | Left margin lines, dense ruled horizontal lines |
+| **Vintage** | Dark radial gradient | Vignette overlays simulating aged parchment paper |
+| **Dark** | Indigo slate (`#1e1e2e`) | Glowing neon guide lines for dark-mode writing |
+| **Dot Grid** | Warm beige (`#f6f2ec`) | Subtle dotted grid layout at 28px intervals (`#c0b49a` at 0.35 opacity) |
+| **Engineering** | Pale green (`#eef6ed`) | Technical grid: minor lines every 10px (0.18 opacity), major lines every 50px (0.4 opacity), with reddish margins |
+| **Music Staff** | Soft ivory (`#faf7f0`) | 5-line music staff blocks with 8px line spacing, 72px staff spacing, and vertical bracket endpoints |
+| **Dated** | Cream (`#f7f3ea`) | Ruled lines with a date column line to the left of the margin |
 
 ---
 
 ## Rendering Pipeline (`drawPaperBackground`)
 
-**Inputs**: `ctx` (Canvas 2D Context), `style` (String), `pageNum` (Integer, used for the header box).
+**Inputs**: `ctx` (Canvas 2D Context), `style` (String representation of notebook sheet theme).
 
 ### Step-by-Step Process
 
-1. **Clear Frame**: Clear the canvas using `ctx.clearRect(0, 0, w, h)`.
-2. **Base Fill**: Select the theme background color and apply a solid fill.
-3. **Paper Grain Noise**: Run 2,200 iterations drawing micro-rectangles (1–4px, opacity 0.018) in warm organic tones. **Skipped** for `dark` and `clean` styles.
-4. **Ruled / Clean margins**: Draw **double** vertical red lines (`#ff4d6d`) at `x = margin − 10` (70px) and `x = margin − 14` (66px), and **double** horizontal red lines at `y = margin` and `y = margin − 4`. Left margin notes (`.margin-text-overlay` / `drawMarginTextOnCanvas`) are strictly constrained to `0`–`62px` (`S.margin - 18px`), staying to the left of the vertical red lines. Margin question/answer labels (`drawMarginQuestionLabels`, v1.6.8+) right-align at `x = margin − 24`, clear of both red rules (toggleable via `S.showMarginLabels`).
-5. **Baseline Parity with DOM Editors**: Main page editors (`.page-editor`) start writing text on Line 2 baseline (`S.margin + lineSpacingPx * 2 = 146px` for standard/clean), with DOM top padding `topPadding = firstLineBaseline - 0.5 * lineSpacingPx - 0.30 * fontSize` ensuring 100% pixel-perfect alignment between DOM text and paper ruled lines without vertical text jumping.
-6. **Legal margin**: A single vertical red margin guide (`#e07070`) at `x = margin − 10`.
-6. **Date / Page No. header box** (ruled + clean, when `S.showHeaderBox !== false`): Draw a rounded red-bordered box in the top-right (145×42px at `w − 175, 20`), split horizontally, labelled `DATE:` and `P. NO.:`. The interactive overlay inputs (`#date-input-N`, `#page-input-N`) are DOM elements inside `.canvas-container` (v1.6.24 — moved from `.page-wrapper` so `position: absolute; right: 8px` is always relative to the actual canvas surface on all viewport sizes). Inputs bake their values into the canvas in the active handwriting font with a small handwritten rotation, unless the matching input is focused.
-7. **Horizontal ruling lines**: Spaced by
+1. **Clear Frame**: Clear the canvas using `ctx.clearRect`.
+2. **Base Fill**: Select the theme background color and apply a solid fill:
+   ```javascript
+   ctx.fillStyle = config.bg;
+   ctx.fillRect(0, 0, w, h);
+   ```
+3. **Paper Grain Noise**: Run 2,200 iterations drawing micro-rectangles (1–4px, opacity 0.018) in warm organic tones to mimic tactile paper fibers.
+4. **Margin Lines**: For `ruled`, `legal`, and `dated` styles, draw a vertical red margin guide (`#e08080`) at $x = \text{S.margin} - 10$.
+   - For `dated` style, also draw a date column line at $x = 36$ to the left of the margin.
+5. **Ruling Lines**: Draw horizontal lines separated by:
    $$\Delta y = \text{S.fontSize} \times \text{S.lineHeight}$$
-   drawn from `y = margin + Δy` down to `h − 20`.
-8. **Grid layouts**:
-   - **Grid**: Vertical and horizontal lines at `fontSize × lineHeight` intervals, aligned to the margin.
-   - **Dot Grid**: 1.2px-radius dots at the same grid pitch.
-   - **Engineering**: Minor lines every `Δy/5`, major lines every `Δy`, reddish-brown margins at `x = margin − 10` and `y = margin`.
-   - **Music**: Groups of 5 staff lines (line spacing `Δy × 8/33`, staff spacing `Δy × 72/33`) with vertical bracket endpoints.
-9. **Layout Decorations**: Call `drawLayoutDecorations(ctx, S.noteLayout)` to paint template guidelines (e.g., Cornell dividers and cues/notes/summary titles).
-10. **Edge Shadowing**: Layer a soft shadow border along the sheet edges for depth.
+6. **Grid Layouts**:
+   - For `grid` sheets, draw vertical and horizontal lines at 28px increments.
+   - For `dot_grid` sheets, draw 1.2px radius circles (dots) at 28px intervals.
+   - For `engineering` sheets, draw minor lines (0.4px width, 0.18 opacity) every 10px, major lines (0.8px width, 0.4 opacity) every 50px, and reddish-brown margins at $x = \text{S.margin} - 10$ and $y = \text{S.margin}$.
+   - For `music` sheets, draw sets of 5 staff lines (8px spacing, 72px spacing between staffs) with vertical brackets marking the start and end of each staff.
+7. **Layout Decorations**: Call `drawLayoutDecorations(ctx, S.noteLayout)` to paint any template guidelines (e.g., Cornell dividers and cues/notes/summary titles).
+8. **Edge Shadowing**: Layer a soft shadow border along the A4 sheet edges to create depth.
 
 ---
 
@@ -78,23 +75,13 @@ This creates a subtle organic paper texture that varies each time the canvas is 
 
 ---
 
-## Cornell Layout Decorations
-
-`drawLayoutDecorations(ctx, noteLayout)` (active for `cornell`):
-- Vertical divider at `x = 230`
-- Horizontal divider at `y = h − 190`
-- Faint labels: `Cues / Questions`, `Main Notes`, `Summary`
-
----
-
 ## Theme Color Configurations
 
-Each paper style defines a unique color palette (local to `drawPaperBackground`):
+Each paper style defines a unique color palette:
 
 ```javascript
-const configs = {
-  ruled:       { bg: '#faf9f5', lineColor: '#85add4', lineOpacity: 0.65, redLine: '#ff4d6d' },
-  clean:       { bg: '#faf9f5', lineColor: '#85add4', lineOpacity: 0.65, redLine: '#ff4d6d' },
+const PAPER_CONFIGS = {
+  ruled:       { bg: '#f8f4ea', lineColor: '#c5b9a0', lineOpacity: 0.55, redLine: '#e08080' },
   plain:       { bg: '#faf7f0', lineColor: null },
   grid:        { bg: '#f6f2ec', lineColor: '#c0b49a', lineOpacity: 0.35 },
   legal:       { bg: '#fef9c3', lineColor: '#c8b820', lineOpacity: 0.45, redLine: '#e07070' },
@@ -103,5 +90,9 @@ const configs = {
   dot_grid:    { bg: '#f6f2ec', lineColor: '#c0b49a', lineOpacity: 0.35 },
   engineering: { bg: '#eef6ed', lineColor: '#78a67d', lineOpacity: 0.4 },
   music:       { bg: '#faf7f0', lineColor: '#4a4a4a', lineOpacity: 0.55 },
+  dated:       { bg: '#f8f4ea', lineColor: '#c5b9a0', lineOpacity: 0.55, redLine: '#e08080', dateColumn: true },
+  clean:       { bg: '#faf9f5', lineColor: '#85add4', lineOpacity: 0.65, redLine: '#ff4d6d' }
 };
 ```
+
+The **clean** style (1.7.0) shares the Ruled branch — same vertical red margin rule and horizontal guidelines, but with the paper-grain noise pass skipped. It pairs with the crisp rendering mode: neutral variation, no ink-bleed shadow, and drafted glyphs bypassed (see `docs/handwriting-engine.md`).
