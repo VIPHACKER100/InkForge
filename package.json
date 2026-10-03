@@ -2,6 +2,9 @@
   "name": "inkforge",
   "version": "1.20.1",
   "description": "AI Handwritten Notes Generator",
+  "engines": {
+    "node": ">=20.19.0"
+  },
   "main": "index.js",
   "scripts": {
     "dev": "vite",

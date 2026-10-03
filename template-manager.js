@@ -554,7 +554,5 @@ if (typeof window !== 'undefined') {
   window.templateManager = new TemplateManager();
 }
 
-// Export for Node.js / test environments
-if (typeof module !== 'undefined' && module.exports) {
-  module.exports = { TemplateManager };
-}
+// ES module export
+export { TemplateManager };

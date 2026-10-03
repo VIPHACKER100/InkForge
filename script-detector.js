@@ -134,10 +134,6 @@ class FontSwitcher {
   }
 }
 
-// Export for module systems (if applicable), or keep in global scope for InkForge
-if (typeof module !== 'undefined' && module.exports) {
-  module.exports = { ScriptDetector, FontSwitcher };
-}
 
 // ponytail: backward-compat alias — docs reference containsDevanagari()
 function containsDevanagari(text) {

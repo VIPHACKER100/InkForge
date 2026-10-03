@@ -137,7 +137,5 @@ export function initI18n() {
   });
 }
 
-// Export for node tests
-if (typeof module !== 'undefined' && module.exports) {
-  module.exports = { LANGUAGES, STRINGS, getLanguage, setLanguage, t, initI18n };
-}
+// ES module re-export for test files that import via ESM
+export { STRINGS };

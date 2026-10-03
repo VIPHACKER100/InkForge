@@ -1,7 +1,7 @@
 module.exports = [
   {
     files: ['**/*.js'],
-    ignores: ['node_modules/**', 'dist/**', 'vite.config.js', '*.test.js', 'sw.js', 'layer-tests.js'],
+    ignores: ['node_modules/**', 'dist/**', 'vite.config.js', 'vite.config.mjs', '*.test.js', 'sw.js', 'layer-tests.js'],
     languageOptions: {
       ecmaVersion: 'latest',
       // App scripts are ES modules (upgrade plan A3): explicit imports replace the
